@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+<!--form view starts-->
+		
+		<record id ='t_form_v_stock_movement' model='ir.ui.view'>
+			<field name='name'>Stock Movement</field>
+			<field name='model'>kg.stock.movement</field>
+			<field name='arch' type='xml'>
+			<form string='Stock movement' version='7.0' >					
+					<header>
+						<button name="entry_approve" type="object" string="Approve" attrs="{'invisible':[('state','in',('draft','approved','reject'))]}" class="oe_highlight"  confirm="Are you sure to proceed ?"/>				
+						<button name="entry_confirm" type="object" string="Confirm" state="draft" attrs="{'invisible':[('state','in',('reject','confirm','approved'))]}" class="oe_highlight"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","reject":"red"}' readonly="1"/>
+					</header>				
+						<group>
+							<group>								
+								<field name='name' readonly="1"/>
+								<field name='process_type' required="1" attrs="{'readonly': [('process_type','!=',False)]}" invisible="1"/>
+								<field name='from_location' invisible="1"/>
+								<field name='sub_location' attrs="{'required': [('process_type','not in',('damage_frommain','purchase_frommain','gp_frommain'))],'invisible': [('process_type','in',('damage_frommain','purchase_frommain','gp_frommain'))],'readonly': [('sub_location','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>
+								<field name='to_location' invisible="1"/>
+							</group>
+							<group >
+								<field name='date' required ="True" readonly='1'/>
+								<field name='main_location' attrs="{'required': [('process_type','in',('excess_sub2main','damage_frommain','purchase_frommain','gp_frommain'))],'invisible': [('process_type','not in',('excess_sub2main','damage_frommain','purchase_frommain','gp_frommain'))],'readonly': [('main_location','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>
+								<field name='sub_location1' attrs="{'required': [('process_type','in',('stock_transfer'))],'invisible': [('process_type','not in',('stock_transfer'))],'readonly': [('sub_location1','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>					
+								<field name='scrap_location' attrs="{'required': [('process_type','in',('damage_fromsub','damage_frommain'))],'invisible': [('process_type','not in',('damage_fromsub','damage_frommain'))],'readonly': [('scrap_location','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>					
+								<field name='supplier_location' attrs="{'required': [('process_type','in',('purchase_frommain','purchase_fromsub','gp_frommain','gp_fromsub'))],'invisible': [('process_type','not in',('purchase_frommain','purchase_fromsub','gp_frommain','gp_fromsub'))],'readonly': [('supplier_location','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>					
+							</group>
+						</group>
+				<group string='Remarks' attrs="{'invisible':[('state','in',('draft'))]}">
+					<group>	
+								<field name="remark" attrs="{'readonly': [('state','=','approved')],'invisible': [('state','in',('draft','approved'))]}"/>
+					</group>
+			</group>						
+						<notebook>
+							<page string='Item Details' >								
+									<field name='line_ids' nolabel="1" attrs="{'readonly': [('state','in',['approved','reject'])]}" context="{'process_type':process_type,'from_location':from_location,'to_location':to_location}">										
+										<tree editable="bottom">
+											<field name = 'product_id' colspan="4" required="True" on_change="onchange_product_id(product_id, uom,process_type,from_location,to_location)"/>											
+											<field name = 'uom' readonly="True" />											
+											<field name = 'qty' readonly="True" />											
+											<field name = 'pending_qty' readonly="True"/>											
+											<field name = 'return_qty' required="True" on_change="onchange_qty(pending_qty,return_qty)"/>
+											<field name = 'remark'/>
+											<field name = 'price_unit' invisible='1'/>											
+											<field name = 'from_location' invisible='1'/>											
+											<field name = 'to_location' invisible='1'/>											
+											<field name = 'process_type' invisible='1'/>											
+										</tree>	
+									</field>								
+							</page>		
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>	
+							<page string="Entry Info">	
+								<group>
+										<field name="company_id"/>
+										<field name="active"/>
+								</group>
+								<group>
+									<group>
+										<field name="user_id"/>
+										<field name="confirm_user_id" attrs="{'invisible':[('state','in',['draft'])]}"/>
+										<field name="app_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm'])]}"/>
+										<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>										
+										<field name="update_user_id"/>
+									</group>
+									<group>
+										<field name="crt_date"/>
+										<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+										<field name="approve_date" attrs="{'invisible':[('state','in',['draft', 'confirm'])]}"/>
+										<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>																				
+										<field name="update_date"/>
+									</group>
+								</group>
+							</page>	
+						</notebook>										
+			</form>
+			</field>
+		</record>
+		<record id ='t_form_v_stock_movement_main' model='ir.ui.view'>
+			<field name='name'>Stock Movement</field>
+			<field name='model'>kg.stock.movement</field>
+			<field name='arch' type='xml'>
+			<form string='Stock movement' version='7.0' >					
+					<header>						
+						<button name="entry_approve" type="object" string="Approve"  attrs="{'invisible':[('state','in',('draft','approved','reject'))]}" class="oe_highlight"  confirm="Are you sure to proceed ?" />				
+						<button name="entry_confirm" type="object" string="Confirm" state="draft" attrs="{'invisible':[('state','in',('reject','confirm','approved'))]}" class="oe_highlight"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","reject":"red"}' readonly="1"/>
+					</header>				
+						<group>
+							<group>								
+								<field name='name' readonly="1"/>
+								<field name='process_type' required="1" attrs="{'readonly': [('process_type','!=',False)]}" invisible="1"/>
+								<field name='from_location' invisible="1"/>
+								<field name='to_location' invisible="1"/>
+								<field name='date' required ="True" readonly='1'/>
+							</group>
+							<group >
+								<field name='sub_location' attrs="{'required': [('process_type','not in',('damage_frommain','purchase_frommain','gp_frommain'))],'invisible': [('process_type','in',('damage_frommain','purchase_frommain','gp_frommain'))],'readonly': [('sub_location','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>					
+								<field name='main_location' attrs="{'required': [('process_type','in',('excess_sub2main','damage_frommain','purchase_frommain','gp_frommain'))],'invisible': [('process_type','not in',('excess_sub2main','damage_frommain','purchase_frommain','gp_frommain'))],'readonly': [('main_location','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>					
+								<field name='sub_location1' attrs="{'required': [('process_type','in',('stock_transfer'))],'invisible': [('process_type','not in',('stock_transfer'))],'readonly': [('sub_location1','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>					
+								<field name='scrap_location' attrs="{'required': [('process_type','in',('damage_fromsub','damage_frommain'))],'invisible': [('process_type','not in',('damage_fromsub','damage_frommain'))],'readonly': [('scrap_location','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>					
+								<field name='supplier_location' attrs="{'required': [('process_type','in',('purchase_frommain','purchase_fromsub','gp_frommain','gp_fromsub'))],'invisible': [('process_type','not in',('purchase_frommain','purchase_fromsub','gp_frommain','gp_fromsub'))],'readonly': [('supplier_location','!=',False)]}" on_change="onchange_location(process_type,sub_location,main_location,scrap_location,sub_location1,supplier_location)"/>					
+							</group>
+						</group>
+				<group string='Remarks' attrs="{'invisible':[('state','in',('draft'))]}">
+					<group>	
+						<field name="remark" attrs="{'readonly': [('state','=','approved')],'invisible': [('state','in',('draft','approved'))]}"/>
+					</group>
+					<group>												
+						<field name="cancel_remark" attrs="{'invisible':[('state','in',['draft','reject','confirmed'])], 'readonly': [('state','in',['cancel'])]}"/>												
+					</group>
+					</group>
+						<notebook>
+							<page string='Item Details' >								
+									<field name='line_ids' nolabel="1" attrs="{'readonly': [('state','in',['approved','reject'])]}" context="{'process_type':process_type,'from_location':from_location,'to_location':to_location}">										
+										<tree>
+											<field name = 'product_id' required="True" on_change="onchange_product_id(product_id, uom,process_type,from_location,to_location)"/>											
+											<field name = 'uom' readonly="True" />											
+											<field name = 'qty' readonly="True" />											
+											<field name = 'pending_qty' readonly="True"/>											
+											<field name = 'return_qty' required="True" on_change="onchange_qty(pending_qty,return_qty)"/>	
+											<field name = 'remark'/>										
+											<field name = 'price_unit' invisible='1'/>											
+											<field name = 'from_location' invisible='1'/>											
+											<field name = 'to_location' invisible='1'/>												
+											<field name = 'process_type' invisible='1'/>											
+										</tree>	
+										<form>
+											<group>
+												<group>
+													<field name = 'product_id' required="True" on_change="onchange_product_id(product_id, uom,process_type,from_location,to_location)"/>											
+													<field name = 'uom' readonly="True" />											
+													<field name = 'qty' readonly="True" />
+												</group>
+												<group>
+													<field name = 'return_qty' required="True" on_change="onchange_qty(pending_qty,return_qty)"/>											
+													<field name = 'pending_qty' readonly="True"/>											
+													<field name = 'remark'/>											
+													<field name = 'price_unit' invisible='1'/>	
+													<field name = 'from_location' invisible='1'/>											
+													<field name = 'to_location' invisible='1'/>												
+													<field name = 'process_type' invisible='1'/>
+												</group>
+												<group string="GRN Details" colspan="4">
+												<field name="kg_grn_moves" nolabel="1"/>
+											</group>
+											</group>										
+										</form>																			
+									</field>								
+									
+							</page>			
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>	
+							<page string="Entry Info">								
+								<group>
+										<field name="company_id"/>
+										<field name="active"/>
+								</group>
+								<group>
+									<group>
+										<field name="user_id"/>
+										<field name="confirm_user_id" attrs="{'invisible':[('state','in',['draft'])]}"/>
+										<field name="app_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm'])]}"/>
+										<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>										
+									</group>
+									<group>
+										<field name="crt_date"/>
+										<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+										<field name="approve_date" attrs="{'invisible':[('state','in',['draft', 'confirm'])]}"/>
+										<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>																				
+									</group>
+								</group>
+							</page>	
+						</notebook>										
+			</form>
+			</field>
+		</record>
+
+<!--form view ends-->
+
+<!--tree view starts-->
+
+		<record id='t_tree_v_stock_movement' model='ir.ui.view'>
+			<field name='name'>Stock Movement</field>
+			<field name='model'>kg.stock.movement</field>
+			<field eval='8' name='priority'/>
+			<field name ='arch' type='xml'>
+				<tree colors="Blue:state=='draft';gray:state=='reject';black:state=='approved';red:state=='confirm'" toolbar="True" string="Direct Expense Entry">
+					<field name='name'/>
+					<field name='date'/>
+					<field name='from_location'/>
+					<field name='to_location'/>
+					<field name = 'state' invisible="1"/>
+					<field name = 'process_type' invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		
+<!--tree view ends-->
+		
+<!--search view starts-->
+
+		<record id="t_search_v_stock_movement" model="ir.ui.view">
+            <field name="name">Stock Movement</field>
+            <field name="model">kg.stock.movement</field>
+            <field name="arch" type="xml">
+                <search string="Sample Search">
+					<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="draft" string="Confirmed" domain="[('state','=','confirm')]"/>
+					<filter icon="terp-check" name="draft" string="Approved" domain="[('state','=','approved')]"/>
+					<filter icon="terp-check" name="draft" string="Cancelled" domain="[('state','=','reject')]"/>											
+					<separator/>
+                    <group expand="0" string="Group By...">
+						<filter string="Process Type" name="process_type"  icon="terp-personal" domain="[]" context="{'group_by':'process_type'}"/>
+						<filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Date" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'date'}"/>                        
+					</group>
+                </search>
+			</field>
+		</record>
+		
+<!--search view ends-->
+            
+<!--menu action starts-->
+		<record id='tma_stock_movement' model='ir.actions.act_window'>
+			<field name='name'>Excess Return</field>
+			<field name='type'>ir.actions.act_window</field>
+			<field name='res_model'>kg.stock.movement</field>
+			<field name='view_type'>form</field>
+			<field name='view_id' ref='t_tree_v_stock_movement'/>
+			<field name="domain">[('process_type','=','excess_sub2main')]</field>
+			<field name="context">{'default_process_type':'excess_sub2main'}</field>
+			<field name="search_view_id" ref="t_search_v_stock_movement"/>		
+		</record>
+			
+		<record id='tma_sm_damage_fromsub' model='ir.actions.act_window'>
+			<field name='name'>Demage Return SS</field>
+			<field name='type'>ir.actions.act_window</field>
+			<field name='res_model'>kg.stock.movement</field>
+			<field name='view_type'>form</field>
+			<field name='view_id' ref='t_tree_v_stock_movement'/>
+			<field name="domain">[('process_type','=','damage_fromsub')]</field>
+			<field name="context">{'default_process_type':'damage_fromsub'}</field>
+			<field name="search_view_id" ref="t_search_v_stock_movement"/>		
+		</record>	
+		
+		<record id='tma_sm_purchase_fromsub' model='ir.actions.act_window'>
+			<field name='name'>Purchase Return SS</field>
+			<field name='type'>ir.actions.act_window</field>
+			<field name='res_model'>kg.stock.movement</field>
+			<field name='view_type'>form</field>
+			<field name='view_id' ref='t_tree_v_stock_movement'/>
+			<field name="domain">[('process_type','=','purchase_fromsub')]</field>
+			<field name="context">{'default_process_type':'purchase_fromsub'}</field>
+			<field name="search_view_id" ref="t_search_v_stock_movement"/>		
+		</record>	
+		
+		<record id='tma_sm_gatepass_fromsub' model='ir.actions.act_window'>
+			<field name='name'>Gate Pass SS</field>
+			<field name='type'>ir.actions.act_window</field>
+			<field name='res_model'>kg.stock.movement</field>
+			<field name='view_type'>form</field>
+			<field name='view_id' ref='t_tree_v_stock_movement'/>
+			<field name="domain">[('process_type','=','gp_fromsub')]</field>
+			<field name="context">{'default_process_type':'gp_fromsub'}</field>
+			<field name="search_view_id" ref="t_search_v_stock_movement"/>		
+		</record>	
+		
+		<record id='tma_sm_stock_transfer' model='ir.actions.act_window'>
+			<field name='name'>Stock Transfer</field>
+			<field name='type'>ir.actions.act_window</field>
+			<field name='res_model'>kg.stock.movement</field>
+			<field name='view_type'>form</field>
+			<field name='view_id' ref='t_tree_v_stock_movement'/>
+			<field name="domain">[('process_type','=','stock_transfer')]</field>
+			<field name="context">{'default_process_type':'stock_transfer'}</field>
+			<field name="search_view_id" ref="t_search_v_stock_movement"/>		
+		</record>	
+		
+		<record id="tma_stock_movement_main" model="ir.actions.act_window">
+            <field name="name">Damage Return MS</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kg.stock.movement</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('process_type','=','damage_frommain')]</field>
+			<field name="context">{'default_process_type':'damage_frommain'}</field>
+            <field name="search_view_id" ref="t_search_v_stock_movement"/>
+        </record>
+		
+		<record id="tma_stock_movement_main_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="t_tree_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_stock_movement_main"/>
+        </record>
+        
+        <record id="tma_stock_movement_main_action_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="t_form_v_stock_movement_main"/>
+            <field name="act_window_id" ref="tma_stock_movement_main"/>
+        </record>
+
+		<record id="tma_stock_movement_purchase_main" model="ir.actions.act_window">
+            <field name="name">Purchase Return MS</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kg.stock.movement</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('process_type','=','purchase_frommain')]</field>
+			<field name="context">{'default_process_type':'purchase_frommain'}</field>
+            <field name="search_view_id" ref="t_search_v_stock_movement"/>
+        </record>
+		
+		<record id="tma_stock_movement_purchase_main_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="t_tree_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_stock_movement_purchase_main"/>
+        </record>
+        
+        <record id="tma_stock_movement_purchase_main_action_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="t_form_v_stock_movement_main"/>
+            <field name="act_window_id" ref="tma_stock_movement_purchase_main"/>
+        </record>
+
+		<record id="tma_stock_movement_gp_main" model="ir.actions.act_window">
+            <field name="name">Gate Pass MS</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kg.stock.movement</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('process_type','=','gp_frommain')]</field>
+			<field name="context">{'default_process_type':'gp_frommain'}</field>
+            <field name="search_view_id" ref="t_search_v_stock_movement"/>
+        </record>
+		
+		<record id="tma_stock_movement_gp_main_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="t_tree_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_stock_movement_gp_main"/>
+        </record>
+        
+        <record id="tma_stock_movement_gp_main_action_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="t_form_v_stock_movement_main"/>
+            <field name="act_window_id" ref="tma_stock_movement_gp_main"/>
+        </record>
+        
+<!--
+		<record forcecreate="1" id="seq_excess_return" model="ir.sequence.type"> 
+			<field name="name">Excess Return</field>
+			<field name="code">kg.stock.movement</field>
+		</record>
+
+		<record forcecreate="1" id="seq_excess_return_id" model="ir.sequence">
+			  <field name="name">Excess Return</field>
+			  <field name="code">kg.stock.movement</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">ER/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>
+-->
+		 
+	</data>
+</openerp>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_so_stm_report" model="ir.ui.view">
+            <field name="name">Service Order Register</field>
+            <field name="model">kg.so.register.wiz</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+             <form string="Service Order Register">
+                <separator string="Service Order Register" colspan="4"/>
+                   
+                    <notebook tabpos="up" colspan="4">
+						<page string="Filters" name="filters">
+						  <group>
+							<group string="SO Date">
+								<field name="date_from" required="1"/>
+								<field name="date_to" required="1"/>
+							</group>
+							<group string="Status">
+								<field name="status"/>
+							</group>
+						   </group>
+						</page>
+                        
+                        <page string="Supplier" name="supplier">
+                            <group colspan="2" col="2">
+								<separator string="Supplier" colspan="2" col="2" />
+								<field name = "supplier" domain="[('supplier','=',True)]"/>
+							</group>
+                        </page>
+                        <page string="Product Name" name="product_id">
+                            <group colspan="2" col="2">
+								<separator string="Product Name" colspan="2" col="2" />
+								<field name = "product_id"/>
+							</group>
+                        </page>
+                                                                         
+                    </notebook>                
+                    <separator colspan="4"/>
+						<group col="4" colspan="4">
+							<button icon="gtk-print" name="check_report" string="Generate" type="object" colspan="2" default_focus="1" />
+							<button icon="gtk-cancel" special="cancel" string="Cancel" colspan="2"/>
+						</group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_so_stm_report" model="ir.actions.act_window">  
+            <field name="name">Service Order Register</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kg.so.register.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+           
+	
+
+    </data>
+</openerp>

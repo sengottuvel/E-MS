@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		
+		<record model="ir.ui.view" id="kg_purchase_indent_form_inherit">
+		<field name="name">kg.purchase.indent.form.inherit</field>
+		<field name="model">purchase.requisition</field>
+		<field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+		<field name="arch" type="xml">
+			
+		<button name="tender_done" states="in_progress" string="Purchase Done" type="object" class="oe_highlight" position="replace">
+			<button name="tender_in_progress" states="draft" string="Confirm" type="object" class="oe_highlight"/>
+		</button>
+		<button name="tender_in_progress" states="draft" string="Confirm" type="object" class="oe_highlight" position="after">
+			<button name="tender_for_approve" states="in_progress" string="Approve " type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+		</button>
+		<button name="tender_cancel" states="draft,in_progress" string="Cancel" type="object" position="replace">
+			<button name="tender_cancel" states="approved" string="Cancel" type="object" confirm="Are you sure to proceed ?"/>
+			<button name="tender_reject" states="in_progress" string="Reject" type="object" confirm="Are you sure to proceed ?"/>
+		</button>
+		
+		<button name="%(purchase_requisition.action_purchase_requisition_partner)d" type="action"
+								string="Request a Quotation" icon="gtk-execute"
+								attrs="{'invisible': [('line_ids','=',False),('state', 'not in', ('in_progress'))]}"
+								position="replace">
+		<button name="%(purchase_requisition.action_purchase_requisition_partner)d" type="action"
+								string="Request a Quotation" icon="gtk-execute"
+								attrs="{'invisible': [('line_ids','=',False),('state', 'not in', ('in_progress'))]}"
+								context="{'indent_type':indent_type}"
+								invisible="1"/>
+		</button>
+		<field name="name" position="replace">
+		<group>
+		</group>
+		</field>
+		
+		<field name="date_start" position="replace">
+			<field name="date_start" required="1" readonly='1' />
+			<field name="expected_date" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+		</field>
+
+		<field name="user_id" position="replace">
+		<field name="name" readonly="1"/>
+		<field name="user_id" readonly="1"/>
+		</field>
+		<field name="date_end" position="replace">
+		<field name="dep_name" invisible="1"/>
+		</field>
+		<field name="exclusive" position="replace">
+		<field name="exclusive" invisible="1"/>
+		</field>
+
+		<field name="warehouse_id" position="replace">
+		<field name="warehouse_id" invisible="1"/>
+		</field>
+		<field name="user_id" position="replace">
+		<field name="user_id" invisible="1"/>
+		<field name="kg_store" invisible="1"/>
+		<field name="pi_flag" invisible="1"/>
+		<field name="indent_type" on_change="onchange_indent_type(indent_type,pi_flag)" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+		<field name="entry_mode" on_change="onchange_entry_mode(entry_mode,pi_flag)" invisible="1"/>
+		</field>
+		
+		<xpath expr = "//page[@string='Indent Item Details']" position="after" >
+			<page string="Select Pending Indent" attrs="{'invisible':[('indent_type','!=','fromdi')]}">
+				<field name="kg_depindent_lines" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}">
+				<tree string = "Dep Indent" editable="bottom">
+					<field name="indent_id" string="Indent No" readonly="1"/>
+					<field name="line_date" string="Indent Date" readonly="1"/>
+					<field name="product_id" string="Item Name" readonly="1"/>
+					<field name="brand_id" string="Brand"  readonly="1"/>
+					<field name="uom" readonly="1"/>
+					<field name="qty" string="Qty" readonly="1"/>
+					
+					<field name="note" readonly="1"/>
+					<field name="pending_qty" readonly="1" invisible="1"/>
+					</tree>
+					</field>						
+				 <button name="update_pil" type='object' string="Save Record" states="draft,in_progress"/>
+			 </page>		
+		</xpath>
+		
+		<xpath expr = "//page[@string='Select Pending Indent']" position="after">
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>	
+		</xpath>
+		
+		<xpath expr = "//page[@string='Internal Notes']" position="after">
+			<page string="Entry Info">
+				<group>
+					<field name="company_id" readonly="1"/>
+					<field name="active"/>
+				</group>
+				<group>
+					<group>
+					<field name="created_by"/>
+					<field name="confirmed_by" attrs="{'invisible':[('state','in',['draft'])]}"/>
+					<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'in_progress','approved','cancel','done'])]}"/>
+					<field name="approved_by" attrs="{'invisible':[('state','in',['draft', 'in_progress','reject'])]}"/>
+					<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft', 'in_progress','approved','done','reject'])]}"/>
+					<field name="update_user_id"/>
+					</group>
+					<group>
+					<field name="creation_date"/>
+					<field name="confirmed_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+					<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'in_progress','approved','cancel','done'])]}"/>
+					<field name="approved_date" attrs="{'invisible':[('state','in',['draft', 'in_progress','reject'])]}"/>
+					<field name="cancel_date" attrs="{'invisible':[('state','in',['draft', 'in_progress','approved','done','reject'])]}"/>
+					<field name="update_date"/>
+					</group>
+				</group>
+			</page>
+		</xpath>
+				
+		<xpath expr="//tree[@string='Dep Indent']" position="attributes">
+			<attribute name="create">0</attribute>
+				<attribute name="create">0</attribute>
+				<attribute name="delete">0</attribute>
+				<attribute name="edit">0</attribute>
+		</xpath>
+		
+		</field>
+		
+	</record>
+	
+	
+	<record model="ir.ui.view" id="kg_purchase_requisition_tree">
+			<field name="name">purchase.requisition</field>
+			<field name="model">purchase.requisition</field>
+			<field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_tree"/>
+			<field name="arch" type="xml">
+
+			<field name="user_id" position="replace" >
+				<field name="user_id" invisible="1"/>
+			</field>
+			<field name="user_id" position="after" >
+				<field name="expected_date"/>
+			</field>
+
+			</field>
+	</record>
+	
+		<!-- Confirmed Purchase Indent -->
+		
+		<record id="kg_pi_line_tree_view1" model="ir.ui.view">
+            <field name="name">PI Line Tree View</field>
+            <field name="model">purchase.requisition.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="PI Tree View" create="false" delete="false">					
+					<field name="requisition_id" string="Indent No"/>
+					<field name="line_date"/>
+					<field name="product_id"/>
+					<field name="product_uom_id" invisible="1"/>
+					<field name="product_qty" string="Indent Qty" sum="product_qty"/>
+					<field name="pending_qty" string="PO Pending Qty" sum="pending_qty"/>
+					<field name="brand_id"/>
+					<field name="note"/>
+					<field name="line_state" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kg_pi_line_form_view1" model="ir.ui.view">
+            <field name="name">PI Line Form</field>
+            <field name="model">purchase.requisition.line</field>
+            <field name="arch" type="xml">
+                <form string="PI Line Details" version="7.0">
+					<header>
+						<button name="approve_pi" string="approve" type="object" attrs="{'invisible': [('line_state', '!=', 'noprocess')]}"/>
+						<button name="line_cancel"  string="Cancel" type="object" attrs="{'invisible': [('line_state', '=', 'cancel')]}"/>
+					</header>
+                    <group>
+                        <group>                            
+                            <field name="requisition_id" string="Purchase Indent No" readonly="True"/>
+                            <field name="product_id"  readonly="True"/> 
+                            <field name="product_qty" readonly="True"/> 
+                            <field name="line_state"  readonly="True"/>                                               
+                        </group>
+                        <group>                            
+							<field name="line_date"  readonly="True"/>
+							<field name="product_uom_id"  readonly="True"/>
+							<field name="cancel_remark" />                      
+                        </group>
+                    </group>
+                   
+                </form>
+            </field>
+        </record>
+        
+        <record id="pil_search_view" model="ir.ui.view">
+			<field name="name">Indent Line</field>
+			<field name="model">purchase.requisition.line</field>
+			<field name="arch" type="xml">
+				<search string="Indent">
+					<field name="name" string="Product" filter_domain="[('product_id','ilike',self)]"/>
+					<field name="requisition_id" string="Indent No" filter_domain="[('requisition_id','ilike',self)]"/>
+				<separator/> 
+				<group expand="0" string="Group By...">
+					<filter string="Indent No" icon="terp-personal" domain="[]" context="{'group_by':'requisition_id'}"/>
+					<filter string="Indent Date" icon="terp-personal" domain="[]" context="{'group_by':'line_date'}"/>
+					<filter string="Product" name="group_product_id" icon="terp-personal" domain="[]" context="{'group_by':'product_id'}"/>
+				</group>                   
+				</search>
+			</field>
+		</record>
+		
+		<record id="kg_piline_confirmed_action" model="ir.actions.act_window">
+            <field name="name">Item Details</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="domain">[('pending_qty','>',0),('requisition_id.state','=','approved')]</field>
+            <field name="context">{'search_default_group_product_id':1}</field>
+            <field name="search_view_id" ref="pil_search_view"/>
+        </record>
+
+        <record id="pi_line_new_tree1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="kg_pi_line_tree_view1"/>
+            <field name="act_window_id" ref="kg_piline_confirmed_action"/>
+        </record>
+      
+
+    <!-- Approved PI -->
+    
+    <record id="kg_pi_line_tree_view" model="ir.ui.view">
+            <field name="name">PI Line Tree View</field>
+            <field name="model">purchase.requisition.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="PI Tree View">					
+					<field name="requisition_id" string="Indent No"/>
+					<field name="line_date"/>
+					<field name="product_id"/>
+					<field name="product_uom_id"/>
+					<field name="product_qty"/>
+					<field name="cancel_remark"/>
+					<field name="line_state"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kg_pi_line_form_view" model="ir.ui.view">
+            <field name="name">PI Line Form</field>
+            <field name="model">purchase.requisition.line</field>
+            <field name="arch" type="xml">
+                <form string="PI Line Details" version="7.0">
+					<header>
+						
+						<button name="line_cancel"  string="Cancel" type="object" attrs="{'invisible': [('line_state', '=', 'cancel')]}"/>
+						<button string="Hold" type="object"/>
+					</header>
+                    <group>
+                        <group>                            
+                            <field name="requisition_id" string="Purchase Indent No"  readonly="True"/>
+                            <field name="product_id"  readonly="True"/> 
+                            <field name="product_qty" readonly="True"/> 
+                            <field name="line_state" readonly="True"/>                                               
+                        </group>
+                        <group>                            
+							<field name="line_date" readonly="True"/>
+							<field name="product_uom_id" readonly="True"/>
+							<field name="cancel_remark"/>                      
+                        </group>
+                    </group>
+                   
+                </form>
+            </field>
+        </record>
+		
+		<record id="kg_piline_approved_action" model="ir.actions.act_window">
+            <field name="name">Approved PI</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('line_state','=','process')]</field>
+        </record>
+
+        <record id="pi_line_new_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="kg_pi_line_tree_view"/>
+            <field name="act_window_id" ref="kg_piline_approved_action"/>
+        </record>
+        <record id="pi_line_new_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="kg_pi_line_form_view"/>
+            <field name="act_window_id" ref="kg_piline_approved_action"/>
+        </record>
+
+    <record id="kg_pi_line_tree_view2" model="ir.ui.view">
+            <field name="name">PI Line Tree View</field>
+            <field name="model">purchase.requisition.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="PI Tree View">					
+					<field name="requisition_id" string="Purchase Indent No"/>
+					<field name="line_date"/>
+					<field name="product_id"/>
+					<field name="product_uom_id"/>
+					<field name="product_qty"/>
+					<field name="cancel_remark"/>
+					<field name="line_state"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kg_pi_line_form_view2" model="ir.ui.view">
+            <field name="name">PI Line Form</field>
+            <field name="model">purchase.requisition.line</field>
+            <field name="arch" type="xml">
+                <form string="PI Line Details" version="7.0">
+                    <group>
+                        <group>                            
+                            <field name="requisition_id" string="Purchase Indent No"  readonly="True"/>
+                            <field name="product_id"  readonly="True"/> 
+                            <field name="product_qty" readonly="True"/> 
+                            <field name="line_state" readonly="True"/>                                               
+                        </group>
+                        <group>                            
+							<field name="line_date" readonly="True"/>
+							<field name="product_uom_id" readonly="True"/>
+							<field name="cancel_remark"/>                      
+                        </group>
+                    </group>
+                   
+                </form>
+            </field>
+        </record>
+		
+		
+		<record id="kg_piline_approved_action2" model="ir.actions.act_window">
+            <field name="name">Cancelled PI</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('line_state','=','cancel')]</field>
+        </record>
+
+        <record id="pi_line_new_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="kg_pi_line_tree_view2"/>
+            <field name="act_window_id" ref="kg_piline_approved_action2"/>
+        </record>
+        <record id="pi_line_new_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="kg_pi_line_form_view2"/>
+            <field name="act_window_id" ref="kg_piline_approved_action2"/>
+        </record>
+        
+        
+<!--
+		<record forcecreate="1" id="seq_kg_purchase_indent" model="ir.sequence.type"> 
+			<field name="name">Purchase Indent</field>
+			<field name="code">kg.purchase.indent</field>
+		</record>
+
+		<record forcecreate="1" id="kg_purchase_indent_id" model="ir.sequence">
+			  <field name="name">Purchase Indent</field>
+			  <field name="code">kg.purchase.indent</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">DI/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>        
+-->
+	
+	</data>
+</openerp>

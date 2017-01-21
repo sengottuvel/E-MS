@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="profit_loss_report" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="89"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="dataset1">
+		<queryString>
+			<![CDATA[select a_product_id,
+a_prod_qty as purchase_qty ,
+CASE WHEN b_prod_qty is NULL THEN 0.00 ELSE b_prod_qty END as sale_qty,
+pp.name_template as product,
+uom.name as uom,
+CASE WHEN (a_prod_qty - b_prod_qty) is NULL THEN a_prod_qty ELSE (a_prod_qty - b_prod_qty) END as close_qty,
+a_price as purchase_cost,
+CASE WHEN b_price is NULL THEN 0.00 ELSE b_price END as sale_cost,
+a_prod_qty * a_price as purchase_total,
+CASE WHEN (b_prod_qty * b_price ) is NULL THEN 0.00 ELSE (b_prod_qty * b_price ) END as sale_total,
+
+CASE WHEN ((b_prod_qty * b_price ) - (a_prod_qty * a_price)) < 0.00 THEN 0.00 WHEN ((b_prod_qty * b_price ) - (a_prod_qty * a_price)) is null THEN 0.00 ELSE ((b_prod_qty * b_price ) - (a_prod_qty * a_price)) END as profit
+
+ from
+
+(select a.product_id as a_product_id,a.product_uom as a_uom,sum(a.product_qty) as a_prod_qty,a.location_dest_id as a_location,
+a.price_unit as a_price
+from stock_move a where a.move_type='out' and a.state='done'
+group by a.product_id,a.location_dest_id,a.product_uom,a.price_unit) as query1
+left outer join
+(select b_product_id,b_prod_qty,b_price from
+(select b.product_id as b_product_id,sum(b.product_qty) as b_prod_qty,b.price_unit as b_price
+from stock_move b where b.move_type='cons' and b.state='done'
+group by b.product_id,b.price_unit ) as query2) as query2 on query2.b_product_id = query1.a_product_id
+left join stock_location loc on (loc.id = query1.a_location)
+left join product_product pp on (pp.id = query1.a_product_id)
+left join product_uom uom on (uom.id = query1.a_uom)
+where loc.name = 'Sales location']]>
+		</queryString>
+		<field name="a_product_id" class="java.lang.Integer"/>
+		<field name="purchase_qty" class="java.math.BigDecimal"/>
+		<field name="sale_qty" class="java.math.BigDecimal"/>
+		<field name="product" class="java.lang.String"/>
+		<field name="uom" class="java.lang.String"/>
+		<field name="close_qty" class="java.math.BigDecimal"/>
+		<field name="purchase_cost" class="java.math.BigDecimal"/>
+		<field name="sale_cost" class="java.math.BigDecimal"/>
+		<field name="purchase_total" class="java.math.BigDecimal"/>
+		<field name="sale_total" class="java.math.BigDecimal"/>
+		<field name="profit" class="java.math.BigDecimal"/>
+	</subDataset>
+	<subDataset name="dataset2"/>
+	<subDataset name="dataset3"/>
+	<subDataset name="dataset4">
+		<parameter name="user_id" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[select a_product_id,
+a_prod_qty as purchase_qty ,
+CASE WHEN b_prod_qty is NULL THEN 0.00 ELSE b_prod_qty END as sale_qty,
+pp.name_template as product,
+uom.name as uom,
+CASE WHEN (a_prod_qty - b_prod_qty) is NULL THEN a_prod_qty ELSE (a_prod_qty - b_prod_qty) END as close_qty,
+a_price as purchase_cost,
+CASE WHEN b_price is NULL THEN 0.00 ELSE b_price END as sale_cost,
+a_prod_qty * a_price as purchase_total,
+CASE WHEN (b_prod_qty * b_price ) is NULL THEN 0.00 ELSE (b_prod_qty * b_price ) END as sale_total,
+
+CASE WHEN ((b_prod_qty * b_price ) - (a_prod_qty * a_price)) < 0.00 THEN 0.00 WHEN ((b_prod_qty * b_price ) - (a_prod_qty * a_price)) is null THEN 0.00 ELSE ((b_prod_qty * b_price ) - (a_prod_qty * a_price)) END as profit
+
+ from
+
+(select a.product_id as a_product_id,a.product_uom as a_uom,sum(a.product_qty) as a_prod_qty,a.location_dest_id as a_location,
+a.price_unit as a_price
+from stock_move a where a.move_type='out' and a.state='done'
+group by a.product_id,a.location_dest_id,a.product_uom,a.price_unit) as query1
+left outer join
+(select b_product_id,b_prod_qty,b_price from
+(select b.product_id as b_product_id,sum(b.product_qty) as b_prod_qty,b.price_unit as b_price
+from stock_move b where b.move_type='cons' and b.state='done'
+group by b.product_id,b.price_unit ) as query2) as query2 on query2.b_product_id = query1.a_product_id
+left join stock_location loc on (loc.id = query1.a_location)
+left join product_product pp on (pp.id = query1.a_product_id)
+left join product_uom uom on (uom.id = query1.a_uom)
+where loc.name = 'Sales location']]>
+		</queryString>
+		<field name="a_product_id" class="java.lang.Integer"/>
+		<field name="purchase_qty" class="java.math.BigDecimal"/>
+		<field name="sale_qty" class="java.math.BigDecimal"/>
+		<field name="product" class="java.lang.String"/>
+		<field name="uom" class="java.lang.String"/>
+		<field name="close_qty" class="java.math.BigDecimal"/>
+		<field name="purchase_cost" class="java.math.BigDecimal"/>
+		<field name="sale_cost" class="java.math.BigDecimal"/>
+		<field name="purchase_total" class="java.math.BigDecimal"/>
+		<field name="sale_total" class="java.math.BigDecimal"/>
+		<field name="profit" class="java.math.BigDecimal"/>
+	</subDataset>
+	<queryString>
+		<![CDATA[select
+sm.create_uid as user_id,
+sm.id as sm_id,
+comp.name as company_name,
+comp.logo_web as logo,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,
+
+to_char(sm.date::date,'dd-mm-YYYY') as sm_date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+user_part.name as user_name
+
+
+
+
+
+from stock_move sm
+
+left join res_users users on (users.id = sm.create_uid)
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = sm.company_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+limit 1]]>
+	</queryString>
+	<field name="user_id" class="java.lang.Integer"/>
+	<field name="sm_id" class="java.lang.Integer"/>
+	<field name="company_name" class="java.lang.String"/>
+	<field name="logo" class="java.lang.Object"/>
+	<field name="street1" class="java.lang.String"/>
+	<field name="street2" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="zip" class="java.lang.String"/>
+	<field name="phone" class="java.lang.String"/>
+	<field name="fax" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="sm_date" class="java.lang.String"/>
+	<field name="new_date" class="java.lang.String"/>
+	<field name="user_name" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="160" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="802" height="20"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="20" width="802" height="20"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{street1}+$F{street2}+$F{city}+"-"+$F{zip}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="51" width="802" height="20"/>
+				<box leftPadding="355"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Profit and Loss Report"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="83" width="179" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["Date  :"+" "+$F{sm_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="39" y="120" width="173" height="40"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Product"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="120" width="39" height="40"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["SI.No"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="212" y="120" width="38" height="40"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["UOM"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="120" width="137" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Quantity Details"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="140" width="52" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Opening"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="302" y="140" width="38" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Sales"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="340" y="140" width="47" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Closing"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="387" y="120" width="153" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Purchase Cost details"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="387" y="140" width="81" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Cost (Per no)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="468" y="140" width="72" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Cost (Total)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="540" y="120" width="158" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Sales Cost details"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="540" y="140" width="83" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Sales (Per no)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="623" y="140" width="75" height="20"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Sales (Total)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="698" y="120" width="104" height="40"/>
+				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["Profit (In Rs)"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="802" height="20"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="dataset4">
+						<datasetParameter name="user_id">
+							<datasetParameterExpression><![CDATA[$F{user_id}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="802">
+						<textField>
+							<reportElement x="0" y="0" width="39" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="39" y="0" width="173" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{product}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="212" y="0" width="38" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{uom}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="250" y="0" width="52" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{purchase_qty}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="302" y="0" width="38" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{sale_qty}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="340" y="0" width="47" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{close_qty}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="387" y="0" width="81" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{purchase_cost}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="468" y="0" width="72" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{purchase_total}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="540" y="0" width="83" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{sale_cost}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="623" y="0" width="75" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<textFieldExpression><![CDATA[$F{sale_total}]]></textFieldExpression>
+						</textField>
+						<staticText>
+							<reportElement x="698" y="0" width="104" height="20"/>
+							<box>
+								<topPen lineWidth="0.75"/>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.75"/>
+								<rightPen lineWidth="0.75"/>
+							</box>
+							<textElement/>
+							<text><![CDATA[profit]]></text>
+						</staticText>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

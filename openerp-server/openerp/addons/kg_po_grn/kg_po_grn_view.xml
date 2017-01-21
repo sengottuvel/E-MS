@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+          =====================
+          master Form view
+          =====================
+        -->
+
+        <record id="kg_po_grn_form" model="ir.ui.view">
+            <field name="name">kg.po.grn.form</field>
+            <field name="model">kg.po.grn</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            <form string="PO GRN" version="7.0">
+				
+				<header>
+					
+					
+					<button name="po_grn_confirm" string="Confirm" type="object" states="draft" 
+						class="oe_highlight"/>
+					<button name="kg_po_grn_approve" string="Approve" type="object" states="confirmed" 
+						class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="grn_register_scheduler_mail" string="GRN Register" type="object" class="oe_highlight" invisible="1"/>
+					<field name="state" widget="statusbar" statusbar_visible="item_load,draft,confirmed,done" statusbar_colors='{"draft":"red","confirmed":"red","done":"blue"}'/>
+				</header>
+	
+				<group string="GRN Details">
+					<group>
+						<field name="name"/>
+						<field name="dc_no"  class="aplhanum_expect"  />
+						<field name="inward_type" required='1'/>						
+						<field name="invoice_flag" invisible="1"/>
+                    </group>
+                    <group>
+						<field name="grn_date" on_change="onchange_grn_date(grn_date)"/>
+						<field name="dc_date"/>
+						<field name="payment_type" invisible='1'/>
+						<field name="billing_status"/>
+						<field name="approved_by" attrs="{'invisible': [('approve_flag','=',False)]}"/>
+						<field name="approved_date" attrs="{'invisible': [('approve_flag','=',False)]}"/>
+                    </group>
+                </group>
+                <group>
+					<group string="Type">
+						<field name="grn_type" />
+						<field name="grn_dc"/>
+                    </group>
+                    <group string="Supplier">
+						<field name="supplier_id" attrs="{'readonly': [('confirm_flag','=',True)]}"/>
+						<field name="sup_invoice_no" attrs="{'invisible': [('grn_dc','!=','dc_invoice')],'required': [('grn_dc','=','dc_invoice')]}"/>
+						<field name="sup_invoice_date"  attrs="{'invisible': [('grn_dc','!=','dc_invoice')],'required': [('grn_dc','=','dc_invoice')]}"/>
+                    </group>
+                </group>
+                
+                 <group string="PO Details" attrs="{'invisible': [('grn_type','!=','from_po')]}">
+					<group>
+						<field name="po_id" on_change="onchange_po_id(po_id)" invisible="1"/>
+						<field name="po_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
+						<field name="confirm_flag" invisible="1"/>
+						<field name="approve_flag" invisible="1"/>
+						<field name="po_date" invisible="1"/>
+						<field name="pos_date" invisible='1'/>
+                    </group>
+                </group>
+                <group string="SO Details" attrs="{'invisible': [('grn_type','!=','from_so')]}">
+					<group>
+						<field name="so_id" invisible="1"/>
+						<field name="so_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
+						<field name="so_date" invisible="1"/>
+						<field name="sos_date"/>
+                    </group>
+                </group>
+                <group string="Gate Pass Details" attrs="{'invisible': [('grn_type','!=','from_gp')]}">
+					<group>
+						<field name="gp_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
+						<field name="gp_date"/>
+                    </group>
+                </group>	                
+                <button name="update_potogrn" type="object" string="Load Items" 
+					      attrs="{'invisible': [('confirm_flag','=',True)]}"/>
+                
+                
+                
+                <notebook>
+					<page string="Products">
+						<field name="line_ids" nolabel="1" attrs="{'readonly':[('state','=','done')]}"/>
+						<group class="oe_subtotal_footer oe_right">
+							<field name="line_amount_total"/>
+							<field name="discount"/>
+							<field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+							<field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+							<div class="oe_subtotal_footer_separator oe_inline">
+							<label for="amount_total"/>
+							<button name="button_dummy"
+								states="draft" string="update" type="object"/>
+							</div>
+							<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+						</group>
+					</page>
+					
+			
+					
+					<page string="Remarks" invisible="1">
+						<field name="remark"/>
+					</page>
+
+
+					
+
+					<page string="Additional Charges" invisible='1'>
+						<field colspan="4" mode="tree" name="expense_line_id" nolabel="1" widget="one2many_list" >
+							<tree string="Expense Lines" editable="bottom"> 
+							<field name="description" required="1"/>
+							<field name="tax"/>
+							<field name="expense_amt" required="1"/>
+							</tree>
+						</field>
+					</page>
+					<page string="PO/SO Remarks">
+						<field name="po_so_remark" readonly='1'/>
+					</page>					
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>							
+                        <page string="Entry Info">
+							<group>
+							<group>
+								<field name="company_id"/>
+								<field name="active"/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="created_by" on_change="onchange_user_id(created_by)"/>
+									<field name="confirmed_by" attrs="{'invisible':[('state','in',['draft','item_load'])]}"/>
+									<field name="rej_user_id" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+									<field name="approved_by" attrs="{'invisible':[('state','in',['draft','item_load','reject','confirmed'])]}"/>
+									<field name="cancel_user_id" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+									<field name="update_user_id"/>
+								</group>
+									<group>
+										<field name="creation_date"/>
+										<field name="confirmed_date" attrs="{'invisible':[('state','in',['draft','item_load'])]}"/>
+										<field name="reject_date" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+										<field name="approved_date" attrs="{'invisible':[('state','in',['draft','item_load','reject','confirmed'])]}"/>
+										<field name="cancel_date" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+										<field name="update_date"/>
+									</group>
+							</group>
+                        </page>         
+				</notebook>
+				
+               </form>
+           </field>
+        </record>
+        
+        
+     
+
+        <!--
+        =====================
+        master Tree view
+        =====================
+        -->
+        <record id="kg_po_grn_tree" model="ir.ui.view">
+            <field name="name">kg.po.grn.tree</field>
+            <field name="model">kg.po.grn</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="PO GRN" colors="blue:state == 'draft';red:state == 'confirmed';black:state == 'done';gray:state in ('reject','cancel')">
+					<field name="name"/>
+					<field name="grn_date"/>
+					<field name="po_id" invisible="1"/>
+					<field name="order_no"/>
+					<field name="order_date"/>
+					<field name="po_date" invisible="1"/>
+					<field name="pos_date" invisible="1"/>
+					<field name="so_id" invisible="1"/>
+					
+					<field name="so_date" invisible="1"/>
+					<field name="sos_date" invisible="1"/>
+					<field name="supplier_id"/>
+                    <field name="inward_type"/>
+                    <field name="dc_no"/>
+					<field name="dc_date"/>
+					<field name="amount_total"/>         
+                   
+                    <field name="state"/>
+                </tree> 
+            </field>
+        </record>
+        
+        
+         <!--
+        =====================
+        Line Form view
+        =====================
+        -->
+        <record id="po_grn_line_form" model="ir.ui.view">
+            <field name="name">po.grn.line.form.view</field>
+            <field name="model">po.grn.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+				<form string="PO GRN Line" version="7.0">
+			
+				  <group string="Product Details">
+					  
+						<group>
+							<field name="product_id" on_change="onchange_product_id(product_id,uom_id)"/>
+							<field name="brand_id" attrs="{'readonly': [('billing_type','=','cost')]}"/>      
+							<field name="uom_id" readonly="1"/>
+							<field name="price_type" invisible="1"/>
+							<field name="length" invisible="1"/>
+							<field name="breadth" invisible="1"/>
+							<field name="tot_price"/>
+
+						</group> 
+						<group> 
+							<field name="po_grn_qty" on_change="onchange_qty(po_grn_qty,price_unit,tot_price,kg_discount_per)"/>
+							<field name="price_unit" attrs="{'readonly': [('billing_type','=','cost')]}"/>
+							<field name="billing_type" invisible = "1"/>
+							<field name="inward_type" required="1"/>
+						</group>
+					
+					</group>
+					<group>
+						<group string="PO Details" attrs="{'invisible': [('po_flag','!=',True)]}">
+							<field name="po_qty" readonly = "1"/>
+							<field name="po_pending_qty" readonly = "1"/>
+							<field name="po_flag" invisible = "1"/>
+						</group> 
+						
+						<group string="SO Details" attrs="{'invisible': [('so_flag','!=',True)]}">
+							<field name="so_qty" readonly = "1"/>
+							<field name="so_pending_qty" readonly = "1"/>
+							<field name="so_flag" invisible = "1"/>
+							<field name="ser_no"/>
+							<field name="serial_no"/>
+						</group> 
+						
+						<group string="GP Details" attrs="{'invisible': [('gp_flag','!=',True)]}">
+							<field name="gp_qty" readonly = "1"/>
+							<field name="gp_pending_qty" readonly = "1"/>
+							<field name="gp_flag" invisible = "1"/>
+							<field name="ser_no"/>
+							<field name="serial_no"/>
+						</group> 
+					</group>
+                  
+                  
+                  
+                 <group>
+					  
+					<group string="Discounts">
+						<field name="kg_discount_per" attrs="{'readonly': [('billing_type','=','cost')]}"/>
+						<field name="kg_discount" attrs="{'readonly': [('billing_type','=','cost')]}"/>
+					</group> 
+					
+					<group string="Taxes">
+						<field name="grn_tax_ids" attrs="{'readonly': [('billing_type','=','cost')]}" widget="many2many_tags"/>
+					</group> 
+       
+                  </group>
+                  
+                  <group>
+					  
+					<group string="Remarks" >
+						<field name="remark"/>
+					</group>
+					
+					<group>
+						<field name="state" invisible="1"/>
+                    </group> 
+       
+                  </group>
+                  
+                  
+                  <group string="S/N Details">
+                  
+					   <field name="po_exp_id" nolabel="1">
+						  <tree editable="bottom">
+							<field name="product_qty" required="1"/>
+							<field name="exp_date" required="1"/>               
+							<field name="batch_no" string = 'S/N' required="1"/>
+							
+							
+						  </tree>
+					  </field>
+					  
+				  </group>
+				  
+				  
+               
+                
+                </form> 
+            </field>
+        </record>
+        
+        
+         <record id="po_grn_line_tree" model="ir.ui.view">
+            <field name="name">po.grn.line.tree.view</field>
+            <field name="model">po.grn.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="PO GRN Line" create="false">
+				  
+						<field name="product_id"/>
+						<field name="brand_id"/>              
+						<field name="uom_id"/>
+						<field name="order_no"/>
+						
+						<field name="po_grn_qty"/>
+						<field name="po_pending_qty" readonly = "1" invisible="1"/>
+						<field name="price_unit"/>
+						<field name="grn_tax_ids" widget="many2many_tags"/>
+						<field name="kg_discount"/>
+						<field name="tot_price"/>
+						<field name="inward_type"/>
+						<field name="price_type"/>
+
+						<field name="state" invisible="1"/>
+						<field name="so_flag" invisible="1"/>
+						<field name="po_flag" invisible="1"/>
+						<field name="gp_flag" invisible="1"/>
+						
+						
+					
+                </tree> 
+            </field>
+        </record>
+        
+     <record id="po_grn_search_view" model="ir.ui.view">
+				<field name="name">PO GRN </field>
+				<field name="model">kg.po.grn</field>
+				<field name="arch" type="xml">
+					<search string="PO GRN">
+						<field name="name" string="GRN No" filter_domain="['|','|',('name','ilike',self),('product_id','ilike',self),('supplier_id','ilike',self)]"/>
+						<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+						<filter icon="terp-check" name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>
+						<filter icon="terp-check" name="done" string="Approved" domain="[('state','=','done')]"/>
+	             
+					<field name="name" string="GRN no"/>
+					<field name="supplier_id" string="Supplier"/>
+					<field name="product_id" string="Product"/> 
+					
+						<separator/>
+						<group expand="0" string="Group By...">
+							
+							<filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+						</group>
+					</search>
+				</field>
+		</record>		       
+        
+       <!--
+        =====================
+        master Form Action
+        ===================== -->
+
+
+	<record id="action_kg_po_grn" model="ir.actions.act_window">
+			<field name="name">PO/SO GRN</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.po.grn</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_po_grn_tree"/>
+            <field name="domain">[('state','!=','confirmed')]</field>
+	</record>
+	
+	<record id="action_po_qa_verify" model="ir.actions.act_window">
+			<field name="name">GRN QA</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.po.grn</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_po_grn_tree"/>
+            <field name="domain">[('state','=','confirmed')]</field>
+	</record>
+	
+	
+        <!--
+        =====================
+        master Menu Item
+        =====================
+        -->
+        
+	<menuitem id="kg_po_grn_menu_m" name="GRN" parent="kg_menus.menu_stock_warehouse_mgmt_m" sequence="2" action="action_kg_po_grn" />
+	<menuitem id="kg_po_grn_qa_menu_m" name="GRN QA" parent="kg_menus.menu_stock_warehouse_mgmt_m" sequence="3" action="action_po_qa_verify" />
+            
+   
+<!--
+		<record forcecreate="1" id="seq_kg_po_grn" model="ir.sequence.type"> 
+			<field name="name">KG PO GRN</field>
+			<field name="code">kg.po.grn</field>
+		</record>
+
+		<record forcecreate="1" id="seq_kg_po_grn_id" model="ir.sequence">
+			  <field name="name">KG PO GRN</field>
+			  <field name="code">kg.po.grn</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">POGRN/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>
+-->
+		   
+            
+	
+                  
+                  
+    </data>
+</openerp>

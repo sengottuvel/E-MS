@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MRN" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="New Dataset 1">
+		<parameter name="indent_id" class="java.lang.Integer"/>
+		<queryString>
+			<![CDATA[select
+
+indent_line.product_id as product_id,
+pro_temp.name as product_name,
+pro_uom.name as product_uom,
+indent_line.qty as req_qty,
+to_char(indent_line.required_date,'dd-mm-YYYY') as required_date,
+
+dep.dep_name as location,
+brand.name as brand_name
+
+
+from kg_depindent_line indent_line
+
+
+
+left join product_template pro_temp on (pro_temp.id = indent_line.product_id)
+
+left join product_uom pro_uom on (pro_uom.id = indent_line.uom)
+
+left join kg_depindent indent on (indent.id = indent_line.indent_id)
+
+left join kg_depmaster dep on (dep.id = indent.dep_name)
+
+
+left join kg_brand_master brand on (indent_line.brand_id = brand.id)
+
+
+where indent_line.indent_id = $P{indent_id}]]>
+		</queryString>
+		<field name="product_id" class="java.lang.Integer"/>
+		<field name="product_name" class="java.lang.String"/>
+		<field name="product_uom" class="java.lang.String"/>
+		<field name="req_qty" class="java.lang.Double"/>
+		<field name="required_date" class="java.lang.String"/>
+		<field name="location" class="java.lang.String"/>
+		<field name="brand_name" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="dataset1"/>
+	<parameter name="indent_id" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select
+
+indent.id as indent_id,
+part_user.name as requested_by,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+comp_state.name as state,
+comp_country.name as country,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,
+indent.name as mrn_name,
+to_char(indent.ind_date::date,'dd-mm-YYYY') as mrn_date,
+division.name as division,
+project.name as project
+
+from kg_depindent indent
+
+left join res_users users on (users.id = indent.user_id)
+
+left join res_company comp on (comp.id = users.company_id)
+
+left join res_partner comppart on (comppart.id = comp.partner_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner part_user on (part_user.id = users.partner_id)
+
+left join res_city comp_city on (comp_city.id = comppart.city_id)
+
+left join res_country_state comp_state on (comp_state.id = comppart.state_id)
+
+left join res_country comp_country on (comp_country.id = comppart.country_id)
+
+left join kg_division_master division on (division.id = indent.division)
+
+left join kg_project_master project on (project.id = indent.dep_project)
+
+where indent.id = $P{indent_id}]]>
+	</queryString>
+	<field name="indent_id" class="java.lang.Integer"/>
+	<field name="requested_by" class="java.lang.String"/>
+	<field name="company_name" class="java.lang.String"/>
+	<field name="street1" class="java.lang.String"/>
+	<field name="street2" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="state" class="java.lang.String"/>
+	<field name="country" class="java.lang.String"/>
+	<field name="zip" class="java.lang.String"/>
+	<field name="phone" class="java.lang.String"/>
+	<field name="fax" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="mrn_name" class="java.lang.String"/>
+	<field name="mrn_date" class="java.lang.String"/>
+	<field name="division" class="java.lang.String"/>
+	<field name="project" class="java.lang.String"/>
+	<group name="GRN Line Group">
+		<groupExpression><![CDATA[]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<componentElement>
+					<reportElement x="1" y="0" width="801" height="21"/>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="New Dataset 1">
+							<datasetParameter name="indent_id">
+								<datasetParameterExpression><![CDATA[$F{indent_id}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+						<jr:listContents height="21" width="801">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="40" height="20"/>
+								<box leftPadding="2">
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+							</textField>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement x="40" y="0" width="173" height="20"/>
+								<box leftPadding="2">
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{product_name}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="443" y="0" width="59" height="20"/>
+								<box rightPadding="2">
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{req_qty}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="310" y="0" width="68" height="20"/>
+								<box>
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{product_uom}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="502" y="0" width="63" height="20"/>
+								<box>
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{product_uom}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="635" y="0" width="79" height="20"/>
+								<box>
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{product_uom}]]></textFieldExpression>
+							</textField>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement x="213" y="0" width="97" height="20"/>
+								<box leftPadding="2">
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{brand_name}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="378" y="0" width="65" height="20"/>
+								<box leftPadding="2">
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="565" y="0" width="70" height="20"/>
+								<box rightPadding="2">
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{req_qty}]]></textFieldExpression>
+							</textField>
+							<textField isBlankWhenNull="true">
+								<reportElement x="714" y="0" width="87" height="20"/>
+								<box>
+									<leftPen lineWidth="0.25"/>
+									<bottomPen lineWidth="0.25"/>
+									<rightPen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{required_date}]]></textFieldExpression>
+							</textField>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="66" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="20" width="802" height="16" isRemoveLineWhenBlank="true"/>
+				<box bottomPadding="2">
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{street1}+" "+$F{street2}+" "+$F{city}+"-"+$F{zip}+"."]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="802" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="36" y="50" width="5" height="14"/>
+				<box>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="41" y="50" width="761" height="14" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="0" leftPadding="2">
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="41" y="36" width="314" height="14" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{phone}+ " Fax : "+$F{fax}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="36" width="37" height="14" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Phone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1" y="50" width="37" height="14" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Email]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="36" y="36" width="5" height="14"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="149" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="802" height="20"/>
+				<box topPadding="0">
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Material Requisition]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="20" width="132" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Division"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="130" width="40" height="19"/>
+				<box leftPadding="2" rightPadding="0">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["S. No."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="41" y="130" width="173" height="19"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Product / Service"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="214" y="130" width="97" height="19"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Brand"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="311" y="130" width="68" height="19"/>
+				<box leftPadding="0">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["UOM"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="379" y="130" width="65" height="19"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Location"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="444" y="130" width="59" height="19"/>
+				<box leftPadding="0" rightPadding="2">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Req.Qty"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="503" y="130" width="63" height="19"/>
+				<box leftPadding="0">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Req.UOM"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="566" y="130" width="70" height="19"/>
+				<box leftPadding="0" rightPadding="2">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["App.Qty"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="636" y="130" width="79" height="19"/>
+				<box leftPadding="0">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["App.UOM"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="715" y="130" width="87" height="19"/>
+				<box leftPadding="0">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Required Date"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="45" width="133" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Project"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="70" width="132" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Product / Service"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="95" width="132" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Requested By"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="444" y="45" width="95" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["MRN No"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="444" y="70" width="95" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="444" y="95" width="95" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Purpose"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="133" y="70" width="165" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"+"   "+"Product"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="133" y="95" width="165" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"+"   "+$F{requested_by}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="539" y="45" width="165" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"+"   "+$F{mrn_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="539" y="70" width="165" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"+"   "+$F{mrn_date}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="539" y="95" width="165" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"+"   "+"Consumables"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="133" y="20" width="13" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="133" y="45" width="13" height="25"/>
+				<box topPadding="2" leftPadding="0" bottomPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="146" y="20" width="152" height="25"/>
+				<box topPadding="8" leftPadding="2"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{division}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="146" y="45" width="152" height="25"/>
+				<box topPadding="8" leftPadding="2"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{project}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band height="50">
+			<textField>
+				<reportElement positionType="Float" x="349" y="35" width="70" height="15"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement positionType="Float" x="419" y="35" width="232" height="15"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="172" splitType="Stretch"/>
+	</summary>
+</jasperReport>

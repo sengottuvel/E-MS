@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>	
+		<!-- View Starts -->
+		
+        <record id="wf_v_name" model="ir.ui.view">
+            <field name="name">Report Name</field>
+            <field name="model">wiz.standards</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+             <form string="Report Name">
+                <separator string="Report Name" colspan="4"/>
+                    <notebook tabpos="up" colspan="4">
+						<page string="Filters" >
+							<group string="Date">
+								<field name="from_date" required="1"/>
+								<field name="to_date" required="1"/>
+								<field name="flag_footer" />
+							</group>
+						</page>
+                    </notebook>                
+				<separator colspan="4"/>
+					<group col="4" colspan="4">
+						<button icon="gtk-print" name="create_report" string="Generate" type="object" colspan="2" default_focus="1" />
+					</group>
+            </form>
+            </field>
+        </record>
+        
+		<!-- View Ends -->
+		
+		<!-- Action Menu Starts-->
+		
+        <record id="wam_name" model="ir.actions.act_window">  
+            <field name="name">Report Name</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wiz.standards</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <!--Action Menu Ends-->
+        
+        <!-- Menu item Starts-->
+        
+        <menuitem  name="menu name"   parent="wpm_menuname" action="wam_menuname" id="wma_menuname" sequence=' '/>
+        
+        <!-- Menu item Ends-->
+        
+
+    </data>
+</openerp>

@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="kg_po_register" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape"  whenNoDataType="NoDataSection" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="82"/>
+	<parameter name="date_from" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="date_to" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="wiz_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select trim(TO_CHAR((sum(split_totalll) OVER (PARTITION BY totals))::float, '999G999G99G999G99G99G990D99')) as grand_total,* from(
+
+SELECT
+  po.id AS po_id,
+  po.name AS po_no,
+  to_char(po.date_order,'yyyy-mm-dd') AS po_date,
+ to_char(po.date_order,'dd-mm-yyyy') AS pod_date,
+  po.date_order AS date,
+  to_char(pol.delivery_date,'dd-mm-yyyy') as delivery_date,
+  po.note AS remark,
+  to_char(po.amount_total,'99G99G990D99') as total,
+  po.add_text as address,
+  case when pol.product_tax_amt is null then '0.00' when pol.ed_tax_amt is null then to_char(pol.product_tax_amt,'99G99G990D99') else  to_char(pol.product_tax_amt,'99G99G990D99') end as taxamt,
+  pol.id as pol_id,
+ to_char(pol.price_subtotal,'99G99G990D99') as sub_total,
+  pol.product_qty AS qty,
+  pol.pending_qty AS pending_qty,
+  to_char(pol.price_unit,'99G99G990D99') as rate,
+TO_CHAR((case when (pol.kg_discount) is not null then pol.kg_discount  else '0'::float end+(pol.product_qty*pol.price_unit)*(case when (pol.kg_discount_per) is not null then pol.kg_discount_per  else '0'::float end/100)), '99G99G990D99') as discount_amt,
+  pol.kg_discount_per as disc1,
+  pol.kg_disc_amt_per as disc2,
+  case when pol.ed_tax_amt is null then '0.00' else to_char(pol.ed_tax_amt,'99G99G990D99') end as duty,
+  po_ad.advance_amt as po_ad_amt,
+  uom.name AS uom,
+  pt.name AS pro_name,
+  res.name AS su_name,
+  res.street AS str1,
+  res.zip as zip,
+  city.name as city,
+  state.name as state,
+  brand.name as brand_name,
+  po.quot_ref_no as quot_ref_no,
+ initcap(po.state) as status,
+  case when ROW_NUMBER() Over (Partition by po.name) > 1 then '' else 'PO No : '|| (select distinct(name) from purchase_order where id = po.id)||'  '||
+  (select date_order from purchase_order where id = po.id)||'                                                                                                                                   '||'Vendor : '||
+  res.name end as po_cal,
+case when ROW_NUMBER() Over (Partition by po.name) = sum(1) Over (Partition by po.name) then (select to_char(sum(pol.price_subtotal)+po.other_charge,'99G99G990D99') from purchase_order_line pol where pol.order_id=po.id) else '   '  end as split_total,
+    case when ROW_NUMBER() Over (Partition by po.name) = sum(1) Over (Partition by po.name) then
+  (select sum(pol.price_subtotal) from purchase_order_line pol where pol.order_id=po.id)
+  else '0'::int  end as split_totalll,
+ROW_NUMBER() Over (Partition by po.name) as num,
+   'total'::text as totals,
+case when ROW_NUMBER() Over (Partition by po.name) = sum(1) Over (Partition by po.name) then 'Total' else '   '  end as tex_total,
+(select to_char(date_from,'dd-mm-yyyy') from kg_po_register_wiz where id =$P{wiz_id} ) as from_date,
+(select to_char(date_to,'dd-mm-yyyy') from kg_po_register_wiz where id =$P{wiz_id} ) as to_date,
+(select login from res_users where id in (select user_id from kg_po_register_wiz where id =$P{wiz_id}  )) as user,
+(select to_char(create_date,'dd-mm-YYYY HH:MM:SS PM') from kg_po_register_wiz where id =$P{wiz_id}) as user_date,
+case when ROW_NUMBER() Over (Partition by po.name) = sum(1) Over (Partition by po.name) and (select po.other_charge
+from purchase_order where id=po.id)= '0.00' or ROW_NUMBER() Over (Partition by po.name) != sum(1) Over (Partition by po.name)  then ' ' else (select to_char(po.other_charge,'99G99G990D99')
+from purchase_order where id=po.id)  end as other_charges,
+case when ROW_NUMBER() Over (Partition by po.name) = sum(1) Over (Partition by po.name) and (select po.other_charge
+from purchase_order where id=po.id)= '0.00' or ROW_NUMBER() Over (Partition by po.name) != sum(1) Over (Partition by po.name)  then '  ' else 'Other Charges'  end as tex_otherchar,
+cmp_name.name as company_name
+
+
+
+  FROM  purchase_order po
+
+  JOIN res_partner res ON (res.id=po.partner_id)
+  left join res_city city on(city.id=res.city)
+  left join res_country_state state on(state.id=res.state_id)
+  JOIN purchase_order_line pol ON (pol.order_id=po.id)
+  JOIN product_product prd ON (prd.id=pol.product_id)
+  JOIN product_template pt ON (pt.id=prd.product_tmpl_id)
+  JOIN product_uom uom ON (uom.id=pol.product_uom)
+  left JOIN kg_brand_master brand ON (pol.brand_id = brand.id)
+  left JOIN kg_project_master project ON (po.dep_project = project.id)
+  left JOIN kg_supplier_advance po_ad ON (po_ad.po_id = po.id)
+  left JOIN res_company cmp_name on (cmp_name.id=po.company_id)
+
+  where CASE
+
+WHEN (select product_id from kg_po_stm_pro where order_id = $P{wiz_id} limit 1) > 0 THEN pol.product_id in
+
+(select product_id from kg_po_stm_pro where order_id =$P{wiz_id} )
+
+ELSE
+
+pol.product_id in (select id
+from product_product)
+
+end
+and
+CASE
+
+WHEN (select supplier_id from kg_po_stm_sup where order_id =$P{wiz_id}  limit 1) > 0 THEN pol.partner_id in
+
+(select supplier_id from kg_po_stm_sup where order_id =$P{wiz_id})
+
+ELSE
+
+pol.partner_id in (select id
+from res_partner)
+
+end
+and
+CASE
+
+WHEN (select po_no_id from kg_po_stm_pono where order_id =$P{wiz_id}  limit 1) > 0 THEN po.id in
+
+(select po_no_id from kg_po_stm_pono where order_id =$P{wiz_id})
+
+ELSE
+
+po.name in (select name
+from purchase_order)
+
+end
+and po.state !='draft' ) as a
+where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
+	</queryString>
+	<field name="grand_total" class="java.lang.String"/>
+	<field name="po_id" class="java.lang.Integer"/>
+	<field name="po_no" class="java.lang.String"/>
+	<field name="po_date" class="java.lang.String"/>
+	<field name="pod_date" class="java.lang.String"/>
+	<field name="date" class="java.sql.Date"/>
+	<field name="delivery_date" class="java.lang.String"/>
+	<field name="remark" class="java.lang.String"/>
+	<field name="total" class="java.lang.String"/>
+	<field name="address" class="java.lang.String"/>
+	<field name="taxamt" class="java.lang.String"/>
+	<field name="pol_id" class="java.lang.Integer"/>
+	<field name="sub_total" class="java.lang.String"/>
+	<field name="qty" class="java.lang.Double"/>
+	<field name="pending_qty" class="java.lang.Double"/>
+	<field name="rate" class="java.lang.String"/>
+	<field name="discount_amt" class="java.lang.String"/>
+	<field name="disc1" class="java.math.BigDecimal"/>
+	<field name="disc2" class="java.math.BigDecimal"/>
+	<field name="duty" class="java.lang.String"/>
+	<field name="po_ad_amt" class="java.lang.Double"/>
+	<field name="uom" class="java.lang.String"/>
+	<field name="pro_name" class="java.lang.String"/>
+	<field name="su_name" class="java.lang.String"/>
+	<field name="str1" class="java.lang.String"/>
+	<field name="zip" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="state" class="java.lang.String"/>
+	<field name="brand_name" class="java.lang.String"/>
+	<field name="quot_ref_no" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<field name="po_cal" class="java.lang.String"/>
+	<field name="split_total" class="java.lang.String"/>
+	<field name="split_totalll" class="java.math.BigDecimal"/>
+	<field name="num" class="java.lang.Long"/>
+	<field name="totals" class="java.lang.String"/>
+	<field name="tex_total" class="java.lang.String"/>
+	<field name="from_date" class="java.lang.String"/>
+	<field name="to_date" class="java.lang.String"/>
+	<field name="user" class="java.lang.String"/>
+	<field name="user_date" class="java.lang.String"/>
+	<field name="other_charges" class="java.lang.String"/>
+	<field name="tex_otherchar" class="java.lang.String"/>
+	<field name="company_name" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="50" splitType="Stretch">
+			<textField>
+				<reportElement x="304" y="18" width="163" height="14"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Purchase Order Register"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="475" y="30" width="82" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date Range : "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="565" y="30" width="67" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{from_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="632" y="30" width="19" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["to"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="651" y="30" width="53" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{to_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="209" y="0" width="351" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="33" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="1" width="22" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["S.No"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="22" y="1" width="164" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Product"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="186" y="1" width="61" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Delivery Date"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="478" y="1" width="55" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["VAT/CST"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="247" y="1" width="40" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["UOM"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="287" y="1" width="42" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Qty"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="438" y="1" width="40" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Duty"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="533" y="1" width="56" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Discount"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="589" y="1" width="62" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total Amount"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="383" y="1" width="55" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Rate"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="651" y="1" width="45" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["State"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="696" y="1" width="56" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Remarks"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="329" y="1" width="54" height="32"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pending Qty"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="66" splitType="Stretch">
+			<textField>
+				<reportElement x="247" y="17" width="40" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{uom}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="186" y="17" width="61" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{delivery_date}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="538" y="17" width="51" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{discount_amt}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="438" y="17" width="40" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{duty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="651" y="17" width="45" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="17" width="22" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="589" y="17" width="62" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sub_total}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="696" y="17" width="56" height="18"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{remark}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="22" y="17" width="164" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pro_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="287" y="17" width="42" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="478" y="17" width="60" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{taxamt}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="329" y="17" width="54" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pending_qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="383" y="17" width="55" height="18"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="22" y="3" width="730" height="12" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$F{po_cal}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Bottom">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{po_cal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="589" y="51" width="62" height="12" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$F{split_total}!=null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{split_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="22" y="51" width="100" height="12" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$F{tex_total}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tex_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="589" y="37" width="62" height="11" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$F{other_charges}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{other_charges}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="22" y="37" width="100" height="11" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$F{tex_otherchar}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tex_otherchar}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement mode="Transparent" x="214" y="0" width="169" height="15"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of  "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="214" height="15"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{user}+" / "+$F{user_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="0" width="362" height="15"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="382" y="0" width="8" height="15"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="27">
+			<textField>
+				<reportElement x="0" y="6" width="505" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Grand Total    "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="505" y="6" width="247" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grand_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+	<noData>
+		<band height="50">
+			<textField>
+				<reportElement x="331" y="13" width="227" height="37"/>
+				<textElement>
+					<font size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA["No Records Found"]]></textFieldExpression>
+			</textField>
+		</band>
+	</noData>		
+</jasperReport>

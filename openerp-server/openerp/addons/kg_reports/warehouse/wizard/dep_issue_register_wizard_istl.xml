@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        
+        <record id="dep_issue_jasper_wiz_form" model="ir.ui.view">
+            <field name="name">Department Issue Register</field>
+            <field name="model">dep.issue.register.wizard.istl</field>
+            <field name="type">form</field>            
+            <field name="arch" type="xml">
+				<form string="Department Issue Register">
+					 <separator string="Department Issue Register" colspan="4"/>
+                   
+						<notebook tabpos="up" colspan="4">
+							<page string="Filters" name="filter">
+							  <group>
+								<group string="Issue Date">
+									<field name="filter" invisible="1"/>
+									<field name="from_date" required="1"/>
+									<field name="to_date" required="1"/>
+									
+								</group>
+<!--
+								<group string="Status">
+									<field name="issue_status" />
+								</group>
+-->
+
+
+							   </group>
+							</page>
+							
+
+							
+
+							<page string="Department" name="dep_id">
+								<group colspan="2" col="2">
+									<separator string="Department Name" colspan="2" col="2" />
+									<field name = "dep_id"/>
+								</group>
+							</page>
+
+
+							
+
+							<page string="Product" name="product">
+								<group colspan="2" col="2">
+									<separator string="Product" colspan="2" col="2" />
+									<field name = "product"/>
+								</group>
+							</page>
+
+							<!--<page string="Product Type" name="product_type">
+								<group colspan="2" col="2">
+									<separator string="Product Type" colspan="2" col="2" />
+									<field name = "product_type"/>
+								</group>
+							</page>-->
+
+																			 
+						</notebook>                
+                    <separator colspan="4"/>
+						<group col="4" colspan="4">
+						<button type="object" name="create_report" icon="gtk-go-forward" string="Generate Report"/>
+						<button icon="gtk-cancel" special="cancel" string="Cancel" colspan="2"/>
+					</group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_dep_issue_register11" model="ir.actions.act_window">
+            <field name="name">Department Issue Register</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dep.issue.register.wizard.istl</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>        
+
+        <report string="Department Issue Register"
+		model="dep.issue.register.wizard.istl"
+		auto="True"
+		name="jasper_kg_dep_issue"
+		rml="kg_reports/warehouse/report/kg_dep_issue.jrxml"
+		id="dep_issue_jasper_register_id"
+		menu="False"
+		/>               
+        
+      
+
+    </data>
+</openerp>

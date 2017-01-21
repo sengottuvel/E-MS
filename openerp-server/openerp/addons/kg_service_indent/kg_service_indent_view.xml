@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+          =====================
+          master Form view
+          =====================
+        -->
+
+        <record id="view_kg_serviceindent_form" model="ir.ui.view">
+            <field name="name">view.kg.serviceindent.form</field>
+            <field name="model">kg.service.indent</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Service Indent" version="7.0">
+		<header>
+                <button name="confirm_indent" states="draft" string="Confirm" type="object" />
+                <button name="approve_indent" states="confirm" string="Approve" type="object" confirm="Are you sure want to proceed!!"/>
+                <button name="reject_indent" states="confirm" string="Reject" type="object" confirm="Are you sure want to proceed!!" class="oe_highlight"/>
+                <button name="cancel_indent" states="approved" string="Cancel" type="object"  confirm="Are you sure want to proceed!!" class="oe_highlight"/>
+
+                <field name="state" widget="statusbar" statusbar_visible="draft,confirm,approved,cancel,reject" statusbar_colors='{"draft":"blue"}'/>
+
+		</header>
+              <sheet>		
+				<group>
+					<group>
+						<field name="name"/>
+						<field name="dep_name"/>
+                    </group>
+                    <group>
+						<field name="date" readonly='1'/>
+						<field name="origin" class="aplhanum_expect"  invisible='1'/>
+						<field name="gate_pass" invisible="1"/>
+                    </group>
+				</group>
+				<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">
+					<group>	
+						<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+					</group>
+					<group>												
+						<field name="cancel_remark" attrs="{'invisible':[('state','in',['draft','reject','confirm'])], 'readonly': [('state','in',['cancel'])]}"/>												
+					</group>
+				</group>				
+				<notebook>
+					<page string = "Item Details">
+					<field colspan="4" mode="tree" name="service_indent_line" nolabel="1" widget="one2many_list">
+						<tree string="Service Indent Line" editable="bottom"> 
+							<field name="product_id" on_change="onchange_product_id(product_id,uom)"/>
+							<field name="uom"/>
+							<field name="brand_id"/>
+							<field name="qty" on_change="onchange_qty(qty,pending_qty,issue_pending_qty)"/>
+							<field name="serial_no"/>
+							<field name="ser_no"/>
+							<field name="note"/>
+							<field name="pending_qty" invisible="1"/>
+							<field name="issue_pending_qty" invisible="1"/>
+							<field name="gate_pending_qty" invisible="1"/>
+						</tree>
+						<form string="Indent Line">
+							<group>
+								<field name="product_id" on_change="onchange_product_id(product_id,uom)"/>
+								<field name="uom"/>
+								<field name="qty" on_change="onchange_qty(qty,pending_qty,issue_pending_qty)"/>
+								<field name="serial_no"/>				
+								<field name="ser_no" attrs="{'required': [('serial_no','=',False)]}"/>				
+							</group>
+							<group>
+								<field name="pending_qty" invisible="1"/>
+								<field name="issue_pending_qty" invisible="1"/>
+								<field name="brand_id"/>		
+								<field name="note"/>
+							</group>
+						</form>
+                    </field>
+                    </page>
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>	  
+				<page string="Entry Info">
+					<group>
+						<field name="company_id"/>
+						<field name="active"/>
+					</group>
+					<group>
+					<group>
+						<field name="user_id"/>
+						<field name="confirmed_by" attrs="{'invisible':[('state','in',['draft'])]}"/>
+						<field name="approved_by" attrs="{'invisible':[('state','in',['draft', 'reject','confirmed'])]}"/>
+						<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft', 'confirmed','reject','approved'])]}"/>
+						<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirmed','approved','cancel'])]}"/>
+						<field name="update_user_id"/>
+					</group>
+					<group>
+						<field name="creation_date"/>
+						<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+						<field name="approved_date" attrs="{'invisible':[('state','in',['draft','reject', 'confirmed'])]}"/>
+						<field name="cancel_date" attrs="{'invisible':[('state','in',['draft', 'confirmed','reject','approved'])]}"/>
+						<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirmed','approved','cancel'])]}"/>
+						<field name="update_date"/>
+					</group>
+					</group>
+				</page>
+				</notebook>
+				</sheet>	
+               </form>
+           </field>
+        </record>
+
+        <!--
+        =====================
+        master Tree view
+        =====================
+        -->
+        <record id="view_kg_serviceindent_tree" model="ir.ui.view">
+            <field name="name">kg.serviceindent.tree.view</field>
+            <field name="model">kg.service.indent</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree colors="red:state == 'confirm';blue:state == 'draft';black:state == 'approved'" 
+							string="Service Indent" toolbar="1" >
+                    <field name="name"/>
+					<field name="date"/>
+                    <field name="dep_name"/>
+                    <field name="origin"/>
+                    <field name="user_id"/>
+					<field name="state"/>
+
+                </tree> 
+            </field>
+        </record>
+
+        <record id="si_search_view" model="ir.ui.view">
+            <field name="name">Service Indent</field>
+            <field name="model">kg.service.indent</field>
+            <field name="arch" type="xml">
+                <search string="Service Indent">
+					<field name="name" string="Indent" filter_domain="['|',('name','ilike',self),('dep_id','ilike',self)"/> 
+					<filter icon="terp-check" name="call" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="confirm" string="Confirmed" domain="[('state','=','confirm')]"/>
+					<filter icon="terp-check" name="approved" string="Approved" domain="[('state','=','approved')]"/>					
+					<separator/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Department" icon="terp-personal" domain="[]" context="{'group_by':'dep_name'}"/>
+                        <filter string="Date" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'date'}"/>
+                        <filter string="Created By" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+					</group>
+                </search>
+			</field>
+		</record>	
+       
+       <!--
+        =====================
+        master Form Action
+        ===================== -->
+
+
+	<record id="action_kg_serviceindent_form" model="ir.actions.act_window">
+			<field name="name">Service Indent</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.service.indent</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="view_kg_serviceindent_tree"/>
+			<field name="context">{}</field>
+			<field name="search_view_id" ref="si_search_view"/>
+	</record>
+	
+	
+	
+	<!-- Service indent line tree view -->
+	
+	<record id="view_kg_serviceindent_line_tree" model="ir.ui.view">
+            <field name="name">kg.depindent.line.tree</field>
+            <field name="model">kg.service.indent.line</field>
+            <field name="type">tree</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <tree string="Service Indent Line">
+                    <field name="service_id"/>
+                    <field name="line_date"/>
+                    <field name="product_id"/>
+                    <field name="uom"/>
+                    <field name="qty"/>
+                    <field name="pending_qty"/>                  
+                    
+                </tree>
+            </field>
+        </record>
+
+        <record id="si_line_search_view" model="ir.ui.view">
+            <field name="name">Indent</field>
+            <field name="model">kg.service.indent.line</field>
+            <field name="arch" type="xml">
+                <search string="Indent">
+					<field name="product_id" string="Product"/>
+					<separator/>                    
+                </search>
+			</field>
+		</record>
+	
+        <!--
+        =====================
+        master Menu Item
+        =====================
+        -->
+        
+<!--
+        
+		<record forcecreate="1" id="seq_kg_service_indent" model="ir.sequence.type"> 
+			<field name="name">Service Indent</field>
+			<field name="code">kg.service.indent</field>
+		</record>
+
+		<record forcecreate="1" id="kg_service_indent_id" model="ir.sequence">
+			  <field name="name">Service Indent</field>
+			  <field name="code">kg.service.indent</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">DI/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>        
+-->
+        
+	
+    </data>
+</openerp>

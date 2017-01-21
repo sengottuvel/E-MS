@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="151"/>
+	<parameter name="voucher_id" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select
+
+cash.name as expense_no,
+partner.name as user_name,
+cash.narration as details,
+pm.name as project,
+cash.paid_to as paid_no,
+to_char(cash.date::date,'dd-mm-YYYY') as cash_date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+trim(TO_CHAR( cash.amount ::float, '999G999G99G999G99G99G990D99')) as amount,
+f_amount_to_words(round(cash.amount::numeric, 2),use.company_id) as amount_in_words,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+comp_state.name as state,
+part.zip as zip
+
+from kg_cash_voucher cash
+
+left join res_users use on (use.id = cash.created_by)
+
+left join res_company comp on (comp.id = use.company_id)
+
+left join res_partner partner on (partner.id = use.partner_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city partner_city on (partner_city.id = partner.city)
+
+left join kg_project_master pm on (pm.id = cash.project)
+
+left join res_country_state comp_state on (comp_state.id = comp.state_id)
+
+
+
+where cash.id = $P{voucher_id}]]>
+	</queryString>
+	<field name="expense_no" class="java.lang.String"/>
+	<field name="user_name" class="java.lang.String"/>
+	<field name="details" class="java.lang.String"/>
+	<field name="project" class="java.lang.String"/>
+	<field name="paid_no" class="java.lang.String"/>
+	<field name="cash_date" class="java.lang.String"/>
+	<field name="new_date" class="java.lang.String"/>
+	<field name="amount" class="java.lang.String"/>
+	<field name="amount_in_words" class="java.lang.String"/>
+	<field name="company_name" class="java.lang.String"/>
+	<field name="street1" class="java.lang.String"/>
+	<field name="street2" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="state" class="java.lang.String"/>
+	<field name="zip" class="java.lang.String"/>
+	<group name="Detail Group">
+		<groupExpression><![CDATA[$F{expense_no}]]></groupExpression>
+		<groupHeader>
+			<band height="331">
+				<textField>
+					<reportElement stretchType="RelativeToTallestObject" x="143" y="43" width="412" height="137"/>
+					<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="2">
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{details}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement stretchType="RelativeToTallestObject" x="143" y="180" width="412" height="21"/>
+					<box topPadding="3" leftPadding="3">
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="19" width="143" height="24"/>
+					<box topPadding="3" leftPadding="3">
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Paid to:"]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" x="143" y="19" width="412" height="24"/>
+					<box topPadding="3" leftPadding="3">
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="220" width="555" height="20"/>
+					<box topPadding="3" leftPadding="3"/>
+					<textElement textAlignment="Justified">
+						<font size="10" isBold="true" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Amount in words:"+" "+$F{amount_in_words}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Transparent" x="0" y="263" width="129" height="17"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Signature of Claimant]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="143" y="263" width="129" height="17"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Senior Manager]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="143" y="280" width="129" height="17"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Facilities]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="282" y="280" width="129" height="17"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Infrastructures]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="282" y="263" width="129" height="17"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Vice President]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Transparent" x="426" y="265" width="129" height="17"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Director]]></text>
+				</staticText>
+				<textField>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="43" width="143" height="137"/>
+					<box topPadding="3" leftPadding="3">
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Details of Expense:"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="310" width="219" height="21"/>
+					<box topPadding="3" leftPadding="3">
+						<topPen lineWidth="0.5"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{user_name}+" "+"/"+" "+$F{new_date}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="143" y="19" width="412" height="23"/>
+					<box topPadding="3" leftPadding="3"/>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{paid_no}]]></textFieldExpression>
+				</textField>
+				<elementGroup>
+					<textField>
+						<reportElement stretchType="RelativeToTallestObject" x="0" y="180" width="143" height="21"/>
+						<box topPadding="3" leftPadding="3">
+							<topPen lineWidth="0.5"/>
+							<leftPen lineWidth="0.5"/>
+							<bottomPen lineWidth="0.5"/>
+							<rightPen lineWidth="0.5"/>
+						</box>
+						<textElement textAlignment="Justified">
+							<font size="8"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Expense Amount (Rs):"]]></textFieldExpression>
+					</textField>
+				</elementGroup>
+				<textField>
+					<reportElement x="219" y="310" width="336" height="21"/>
+					<box topPadding="3" leftPadding="44">
+						<topPen lineWidth="0.5"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" "+"of"+" "+$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="45" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="0" y="20" width="555" height="16" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{street1}+$F{street2}+$F{city}+"-"+$F{zip}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="555" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="20"/>
+				<box topPadding="2"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["EXPENSE STATEMENT"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="331" y="18" width="224" height="22"/>
+				<box topPadding="3" leftPadding="3"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Expense No:"+$F{expense_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="331" y="40" width="224" height="20"/>
+				<box topPadding="3" leftPadding="3"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Expense Date:"+$F{cash_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="40" width="272" height="20"/>
+				<box topPadding="3" leftPadding="3"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Project :"+" "+$F{project}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+</jasperReport>

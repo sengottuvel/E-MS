@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_company_inherit_form">
+            <field name="name">res.company.form.inherit</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="model">res.company</field>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Overdue Payments" position="inside">
+                        <separator string="Overdue Payments Message" colspan="4"/>
+                        <field name="overdue_msg" nolabel="1" colspan ="4" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+                    </page>
+					<page string="Internal Notes">
+						<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+					</page>	                    
+					<page string="Entry Info">
+						<group>
+							<group>
+								<field name="active"/>
+							</group>
+						</group>							
+					<group>
+						<group>
+							<field name="us_id"/>
+							<field name="conf_user_id" attrs="{'invisible': [('state','=', 'draft')]}"/>
+							<field name="app_user_id" attrs="{'invisible': [('state','in', ('draft','waiting','reject'))]}"/>
+							<field name="rej_user_id" attrs="{'invisible': [('state','in', ('draft','waiting','approved','cancel'))]}"/>
+							<field name="cancel_user_id" attrs="{'invisible': [('state','in', ('draft','waiting','approved','reject'))]}"/>
+							<field name="updated_by"/>
+						</group>
+						<group>
+							<field name="creation_date"/>
+							<field name="confirm_date" attrs="{'invisible': [('state','=', 'draft')]}"/>
+							<field name="approve_date" attrs="{'invisible': [('state','in', ('draft','waiting','reject'))]}"/>
+							<field name="reject_date" attrs="{'invisible': [('state','in', ('draft','waiting','approved','cancel'))]}"/>							
+							<field name="cancel_date" attrs="{'invisible': [('state','in', ('draft','waiting','approved','reject'))]}"/>							
+							<field name="updated_date"/>													
+						</group>
+						</group>												   													 
+					</page>                    
+                </notebook>
+            </field>
+        </record>
+
+    </data>
+</openerp>

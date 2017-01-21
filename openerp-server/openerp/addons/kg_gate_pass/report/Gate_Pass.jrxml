@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Gate_Pass" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="240"/>
+	<subDataset name="New Dataset 1">
+		<parameter name="pass_id" class="java.lang.Integer"/>
+		<queryString>
+			<![CDATA[select
+
+pass_line.product_id as product_id,
+pro_temp.name as product_name,
+pro_uom.name as product_uom,
+pass_line.qty as qty,
+out.name as remarks,
+brand.name as brand_name,
+pass_line.ser_no as serial_no
+
+
+
+from kg_gate_pass_line pass_line
+
+
+
+left join product_template pro_temp on (pro_temp.id = pass_line.product_id)
+
+left join product_uom pro_uom on (pro_uom.id = pass_line.uom)
+
+left join kg_gate_pass pass on (pass.id = pass_line.gate_id)
+
+
+left join kg_outwardmaster out on (out.id = pass.out_type)
+
+left join kg_brand_master brand on (pass_line.brand_id = brand.id)
+
+
+where pass_line.gate_id = $P{pass_id} order by pass_line.id]]>
+		</queryString>
+		<field name="product_id" class="java.lang.Integer"/>
+		<field name="product_name" class="java.lang.String"/>
+		<field name="product_uom" class="java.lang.String"/>
+		<field name="qty" class="java.lang.Double"/>
+		<field name="remarks" class="java.lang.String"/>
+		<field name="brand_name" class="java.lang.String"/>
+		<field name="serial_no" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="dataset1"/>
+	<parameter name="pass_id" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select
+
+pass.id as pass_id,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+comp_state.name as state,
+comp_country.name as country,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,
+pass.name as pass_name,
+pass.division as division,
+pass.state as status,
+pass.project as project,
+pass.transport as transport,
+pass.taken_by as taken_by,
+pass.received_by as received_by,
+pass.note as notes,
+to_char(pass.date::date,'dd-mm-YYYY')  as pass_date,
+
+partner.name as supplier_name,
+partner.street as sup_street1,
+partner.street2 as sup_street2,
+partner.contact_person as contact_person,
+partner.phone as sup_phone,
+partner.fax as sup_fax,
+partner.email as sup_email,
+partner_city.name as sup_city,
+partner_state.name as sup_state,
+partner_country.name as sup_country,
+partner.zip as sup_zip
+
+
+
+from kg_gate_pass pass
+
+left join res_users users on (users.id = pass.user_id)
+
+left join res_company comp on (comp.id = users.company_id)
+left join res_partner part on (part.id = comp.partner_id)
+left join res_city comp_city on (comp_city.id = comp.city)
+left join res_country_state comp_state on (comp_state.id = comp.state_id)
+left join res_country comp_country on (comp_country.id = comp.country_id)
+
+left join res_partner partner on (partner.id = pass.partner_id)
+left join res_city partner_city on (partner_city.id = partner.city)
+left join res_country_state partner_state on (partner_state.id = partner.state_id)
+left join res_country partner_country on (partner_country.id = partner.country_id)
+
+
+
+where pass.id = $P{pass_id}]]>
+	</queryString>
+	<field name="pass_id" class="java.lang.Integer"/>
+	<field name="company_name" class="java.lang.String"/>
+	<field name="street1" class="java.lang.String"/>
+	<field name="street2" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="state" class="java.lang.String"/>
+	<field name="country" class="java.lang.String"/>
+	<field name="zip" class="java.lang.String"/>
+	<field name="phone" class="java.lang.String"/>
+	<field name="fax" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="pass_name" class="java.lang.String"/>
+	<field name="division" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<field name="project" class="java.lang.String"/>
+	<field name="transport" class="java.lang.String"/>
+	<field name="taken_by" class="java.lang.String"/>
+	<field name="received_by" class="java.lang.String"/>
+	<field name="notes" class="java.lang.String"/>
+	<field name="pass_date" class="java.lang.String"/>
+	<field name="supplier_name" class="java.lang.String"/>
+	<field name="sup_street1" class="java.lang.String"/>
+	<field name="sup_street2" class="java.lang.String"/>
+	<field name="contact_person" class="java.lang.String"/>
+	<field name="sup_phone" class="java.lang.String"/>
+	<field name="sup_fax" class="java.lang.String"/>
+	<field name="sup_email" class="java.lang.String"/>
+	<field name="sup_city" class="java.lang.String"/>
+	<field name="sup_state" class="java.lang.String"/>
+	<field name="sup_country" class="java.lang.String"/>
+	<field name="sup_zip" class="java.lang.String"/>
+	<group name="Gate Pass Line Group">
+		<groupExpression><![CDATA[$F{pass_id}]]></groupExpression>
+		<groupHeader>
+			<band height="34">
+				<componentElement>
+					<reportElement x="0" y="0" width="555" height="34"/>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="New Dataset 1">
+							<datasetParameter name="pass_id">
+								<datasetParameterExpression><![CDATA[$F{pass_id}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+						<jr:listContents height="34" width="555">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="1" y="0" width="31" height="34"/>
+								<box topPadding="2">
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement textAlignment="Center">
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+							</textField>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="32" y="0" width="204" height="34"/>
+								<box topPadding="2">
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{product_name}]]></textFieldExpression>
+							</textField>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="372" y="0" width="77" height="34"/>
+								<box topPadding="2">
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{remarks}]]></textFieldExpression>
+							</textField>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="449" y="0" width="39" height="34"/>
+								<box topPadding="2">
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
+							</textField>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="488" y="0" width="66" height="34"/>
+								<box topPadding="2">
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{product_uom}]]></textFieldExpression>
+							</textField>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="236" y="0" width="77" height="34"/>
+								<box topPadding="2">
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{brand_name}]]></textFieldExpression>
+							</textField>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement stretchType="RelativeToTallestObject" x="313" y="0" width="59" height="34"/>
+								<box>
+									<bottomPen lineWidth="0.25"/>
+								</box>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{serial_no}]]></textFieldExpression>
+							</textField>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Sign Group">
+		<groupExpression><![CDATA[$F{pass_id}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<textField>
+					<reportElement x="2" y="8" width="95" height="15"/>
+					<box leftPadding="2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Delivery Note No : "]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="107" y="8" width="66" height="15"/>
+					<box leftPadding="0">
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA["-"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="2" y="23" width="95" height="15"/>
+					<box leftPadding="2"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Notes : "]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="107" y="23" width="448" height="15" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="0">
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{notes}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="554" height="802">
+					<printWhenExpression><![CDATA[new Boolean(($F{status}.equals("draft"))) || new Boolean(($F{status}.equals("confirmed")))]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["/home/dinesh/OpenERP_Projects/ellen_machineshop/openerp-server/openerp/addons/kg_gate_pass/report/Draft.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<pageHeader>
+		<band height="77" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="2" y="1" width="553" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="43" y="51" width="511" height="14" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="0" leftPadding="2">
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="38" y="51" width="5" height="14"/>
+				<box>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="3" y="51" width="37" height="14" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Email]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="2" y="21" width="552" height="16" isRemoveLineWhenBlank="true"/>
+				<box bottomPadding="2">
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{street1}+$F{street2}+","+$F{city}+"-"+$F{zip}+"."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="38" y="37" width="5" height="14"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="3" y="37" width="37" height="14" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Phone]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="43" y="37" width="314" height="14" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{phone}+ " Fax : "+$F{fax}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="144" splitType="Stretch">
+			<staticText>
+				<reportElement x="2" y="0" width="553" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gate Pass]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="282" y="30" width="273" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date : "+$F{pass_date}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="282" y="15" width="273" height="15"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Gate Pass No. : "+$F{pass_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToTallestObject" x="372" y="48" width="167" height="67"/>
+				<box topPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{supplier_name}+", \n"+$F{sup_street1}+"\n"+$F{sup_street2}+",\n"+$F{sup_city}+"-"+$F{sup_zip}+",\n"+$F{sup_state}+",\n"+$F{sup_country}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="48" width="19" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[To,]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="2" y="30" width="51" height="15"/>
+				<box topPadding="0" leftPadding="2">
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Project : "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="23" y="63" width="128" height="15"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[The Security Officer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="196" y="48" width="166" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Please allow the following, To,]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="2" y="15" width="81" height="15"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Division Name : "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="449" y="129" width="39" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["QTY"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="488" y="129" width="67" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["UOM"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="32" y="129" width="204" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PRODUCT"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="129" width="32" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["S.No. "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="372" y="129" width="77" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["REMARKS"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="83" y="15" width="199" height="15"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{division}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="53" y="30" width="229" height="15"/>
+				<box topPadding="0" leftPadding="2">
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{project}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="236" y="129" width="77" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Brand"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="313" y="129" width="59" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Serial No"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="194" splitType="Stretch">
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="208" y="55" width="75" height="20"/>
+				<box topPadding="2" leftPadding="4">
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="html">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Taken By : "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="35" width="208" height="89"/>
+				<box topPadding="2" leftPadding="4">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Received the above items in good condition"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="208" y="35" width="75" height="20"/>
+				<box topPadding="2" leftPadding="4">
+					<topPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="html">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Transport : "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="420" y="35" width="135" height="89" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="2" leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="283" y="35" width="137" height="20"/>
+				<box topPadding="2" leftPadding="4">
+					<topPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="html">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transport}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="283" y="55" width="137" height="20"/>
+				<box topPadding="2" leftPadding="4">
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="html">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{taken_by}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="124" width="208" height="42" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="2" leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Signature of Receiver"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="420" y="124" width="135" height="42" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="2" leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Authorized Signatory"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="208" y="75" width="75" height="49"/>
+				<box topPadding="2" leftPadding="4">
+					<leftPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="html">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Received By : "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="283" y="75" width="137" height="49"/>
+				<box topPadding="2" leftPadding="4">
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top" markup="html">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{received_by}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="208" y="124" width="105" height="42" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="2" leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Prepared By"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="313" y="124" width="107" height="42" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="2" leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Checked By"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<!--Form View Starts -->
+		
+        <record id="xl_form_v_name" model="ir.ui.view">
+            <field name="name">Report Name</field>
+            <field name="model">rpt.xl.name</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+			<form string="Report Name" version="7.0">             			 
+				<separator string="Report Name" colspan="4"/>
+                    <notebook tabpos="up" colspan="4">
+						<page string="Filters">
+							<separator string="Date" colspan="2" col="2" />
+								<div> 
+									<label for ="from_date"/>
+									<field name="from_date" string ="Start Date"  />
+									<label for="to_date"/>
+									<field name="to_date" string ="End Date" />
+								</div>
+							<separator string="Download" colspan="2" col="2" />
+								<field name="rep_data" readonly="1" />
+						</page>                                                 
+                    </notebook>                
+				<separator colspan="4"/>
+					<group col="4" colspan="4">
+						<field name="flag_footer" />
+						<button icon="gtk-print" name="produce_xls" string="Click to Download" type="object" colspan="2" default_focus="1" />
+					</group>
+            </form>
+            </field>
+        </record>
+        
+       <!--Form View Ends -->        
+        
+        <!--Action Menu Starts-->
+        
+        <record id="xam_name" model="ir.actions.act_window">
+			<field name="name">Report Name</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">rpt.xl.name</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="xl_form_v_name"/>
+		</record>
+		
+		<!--Action Menu Ends-->
+		
+		<!--Menu Item Starts-->
+		
+         <menuitem name="Menu Name" parent="xpm_menuname" sequence = "1" action="xam_name"  
+												id="xma_menuname"/>
+
+        <!--Menu Item Ends-->
+        
+    </data>
+</openerp>

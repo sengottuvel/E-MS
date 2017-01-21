@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	<!-- Payment Masters -->
+	
+	
+	<record id="kg_payment_master_form_view" model="ir.ui.view">
+			<field name="name">kg.payment.master.form</field>
+			<field name="model">kg.payment.master</field>
+			<field name="arch" type="xml">
+				<form string="Payment Master" version="7.0">
+				<header>
+						<button name="entry_approve" type="object" string="Approve" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
+						<button name="entry_cancel" type="object" string="Cancel" attrs="{'invisible':[('modify','=','no')]}" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_draft" class="oe_highlight" type="object" string="Set To Draft" attrs = "{'invisible':[('state','not in',('cancel'))]}"/> 						
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,cancel,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>
+				 </header>	
+				 <sheet>
+					<group>
+						<group>
+							<field name="name" class="aplhanum_expect" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+							<field name="code" class="aplhanum_expect" required='1' attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+							<field name="discount" invisible='1'/>							
+						</group>
+						<group>
+							<field name="modify" invisible='1'/>
+							<field name="term_category" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+						</group>																																	
+					</group>
+                 		<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">
+							<group>	
+								<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+							</group>
+							<group>												
+								<field name="cancel_remark" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))] , 'readonly': [('state','in',['cancel'])]}"/>												
+							</group>
+						</group>					
+					<notebook>
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>							
+						<page string="Entry Info">
+							<group>
+							<group>
+								<field name="company_id" readonly='1'/>
+								<field name="active"/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="user_id"/>
+									<field name="conf_user_id" attrs="{'invisible': [('state','=', 'draft')]}"/>
+									<field name="app_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))]}"/>
+									<field name="rej_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','approved','cancel'))]}"/>
+									<field name="cancel_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','approved','reject'))]}"/>
+									<field name="updated_by"/>
+								</group>
+								<group>
+									<field name="creation_date"/>
+									<field name="confirm_date" attrs="{'invisible': [('state','=', 'draft')]}"/>
+									<field name="approve_date" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))]}"/>
+									<field name="reject_date" attrs="{'invisible': [('state','in', ('draft','confirm','approved','cancel'))]}"/>							
+									<field name="cancel_date" attrs="{'invisible': [('state','in', ('draft','confirm','approved','reject'))]}"/>							
+									<field name="updated_date"/>	
+								</group>
+							</group>
+                        </page>                 						
+					</notebook>
+					</sheet>							   
+				</form>
+			</field> 
+		</record>
+		
+		<record id="kg_payment_master_tree_view" model="ir.ui.view">
+			<field name="name">kg.payment.master.tree</field>
+			<field name="model">kg.payment.master</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Payment Master" colors="blue:state == 'draft';red:state == 'confirm';black:state == 'approved';grey:state == 'reject'">
+					<field name="name"/>
+					<field name="code"/>
+					<field name="term_category"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="payment_master_action_form" model="ir.actions.act_window">
+			<field name="name">Payment Terms</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.payment.master</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_payment_master_tree_view"/>
+		</record>
+		
+<!--
+			search view
+			
+-->
+		
+        <record id="view_loc_search" model="ir.ui.view">
+            <field name="name">kg.payment.master.search</field>
+            <field name="model">kg.payment.master</field>
+            <field name="arch" type="xml">
+                <search string="Payment type">
+                    <field name="name" string="Payment type"/>
+                    <field name="code" string="Payment Code"/>
+					<group expand="0" string="Group By...">
+						<filter string="Status" context="{'group_by': 'state'}"/>
+					</group>                    
+                </search>
+            </field>
+        </record>			
+		
+		
+		<!-- Delivery Masters -->
+	
+	
+		<record id="kg_delivery_master_form_view" model="ir.ui.view">
+			<field name="name">kg.delivery.master.form</field>
+			<field name="model">kg.delivery.master</field>
+			<field name="arch" type="xml">
+				<form string="Delivery Master" version="7.0">
+					<header> 
+						<button name="entry_approve" type="object" string="Approve" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
+						<button name="entry_cancel" type="object" string="Cancel" attrs="{'invisible':[('modify','=','no')]}" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_draft" class="oe_highlight" type="object" string="Set To Draft" attrs = "{'invisible':[('state','not in',('cancel'))]}"/> 						
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,cancel,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>
+					 </header>	
+					<sheet>
+					<group>
+						<group>
+							<field name="name" class="aplhanum_expect" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+						</group>
+						<group>
+							<field name="code" class="aplhanum_expect" required='1' attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+							<field name="modify" invisible='1'/>
+						</group>						
+					</group>
+                 		<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">
+							<group>	
+								<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+							</group>
+							<group>												
+								<field name="cancel_remark" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))] , 'readonly': [('state','in',['cancel'])]}"/>												
+							</group>
+						</group>					
+					<notebook>
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>								
+                        <page string="Entry Info">
+							<group>
+							<group>
+								<field name="company_id" readonly='1'/>
+								<field name="active"/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="user_id"/>
+									<field name="conf_user_id" attrs="{'invisible': [('state','=', 'draft')]}"/>
+									<field name="app_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))]}"/>
+									<field name="rej_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','approved','cancel'))]}"/>
+									<field name="cancel_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','approved','reject'))]}"/>
+									<field name="updated_by"/>
+								</group>
+								<group>
+									<field name="creation_date"/>
+									<field name="confirm_date" attrs="{'invisible': [('state','=', 'draft')]}"/>
+									<field name="approve_date" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))]}"/>
+									<field name="reject_date" attrs="{'invisible': [('state','in', ('draft','confirm','approved','cancel'))]}"/>							
+									<field name="cancel_date" attrs="{'invisible': [('state','in', ('draft','confirm','approved','reject'))]}"/>							
+									<field name="updated_date"/>	
+								</group>
+							</group>
+                        </page>                        
+                    </notebook>						
+					</sheet>								   
+				</form>
+			</field> 
+		</record>
+
+		<record id="kg_delivery_master_tree_view" model="ir.ui.view">
+			<field name="name">kg.delivery.master.tree</field>
+			<field name="model">kg.delivery.master</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Delivery Master" colors="blue:state == 'draft';red:state == 'confirm';black:state == 'approved';grey:state == 'reject'">
+					<field name="name"/>
+					<field name="code"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		 <record id="delivery_master_action_form" model="ir.actions.act_window">
+			<field name="name">Delivery Terms</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.delivery.master</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_delivery_master_tree_view"/>
+		</record>
+		
+		
+<!--
+			search view
+			
+-->
+		
+        <record id="view_delivery_search" model="ir.ui.view">
+            <field name="name">kg.delivery.master.search</field>
+            <field name="model">kg.delivery.master</field>
+            <field name="arch" type="xml">
+                <search string="Delivery type">
+                    <field name="name" string="Delivery type"/>
+                    <field name="code" string="Delivery Code"/>
+					<group expand="0" string="Group By...">
+						<filter string="Status" context="{'group_by': 'state'}"/>
+					</group>                    
+                </search>
+            </field>
+        </record>		
+		
+		<!-- Brand Master -->
+		
+		
+		<record id="kg_brand_master_form_view" model="ir.ui.view">
+			<field name="name">kg.brand.master.form</field>
+			<field name="model">kg.brand.master</field>
+			<field name="arch" type="xml">
+				<form string="Brand Master" version="7.0">
+					<header> 
+						<button name="entry_approve" type="object" string="Approve" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
+						<button name="entry_cancel" type="object" string="Cancel" attrs="{'invisible':[('modify','=','no')]}" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_draft" class="oe_highlight" type="object" string="Set To Draft" attrs = "{'invisible':[('state','not in',('cancel'))]}"/> 						
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,cancel,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>
+					</header>	
+					<sheet>
+					<group>
+						<group>
+							<field name="name" class="aplhanum_expect" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+						</group>
+						<group>
+							<field name="code" class="aplhanum_expect" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+							<field name="modify" invisible='1'/>
+						</group>						
+					</group>	
+                 		<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">
+							<group>	
+								<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+							</group>
+							<group>												
+								<field name="cancel_remark" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))] , 'readonly': [('state','in',['cancel'])]}"/>												
+							</group>
+						</group>					
+					<notebook>
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>								
+                        <page string="Entry Info">
+							<group>
+							<group>
+								<field name="company_id" readonly='1'/>
+								<field name="active"/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="user_id"/>
+									<field name="conf_user_id" attrs="{'invisible': [('state','=', 'draft')]}"/>
+									<field name="app_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))]}"/>
+									<field name="rej_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','approved','cancel'))]}"/>
+									<field name="cancel_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','approved','reject'))]}"/>
+									<field name="updated_by"/>
+								</group>
+								<group>
+									<field name="creation_date"/>
+									<field name="confirm_date" attrs="{'invisible': [('state','=', 'draft')]}"/>
+									<field name="approve_date" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))]}"/>
+									<field name="reject_date" attrs="{'invisible': [('state','in', ('draft','confirm','approved','cancel'))]}"/>							
+									<field name="cancel_date" attrs="{'invisible': [('state','in', ('draft','confirm','approved','reject'))]}"/>							
+									<field name="updated_date"/>	
+								</group>
+							</group>
+                        </page>                        
+                    </notebook>						
+					</sheet>
+				</form>
+			</field> 
+		</record>
+
+		<record id="kg_brand_master_tree_view" model="ir.ui.view">
+			<field name="name">kg.brand.master.tree</field>
+			<field name="model">kg.brand.master</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Brand Master" colors="blue:state == 'draft';red:state == 'confirm';black:state == 'approved';grey:state == 'reject'">
+					<field name="name"/>
+					<field name="code"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		 <record id="brand_master_action_form" model="ir.actions.act_window">
+			<field name="name">Brand Master</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.brand.master</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_brand_master_tree_view"/>
+		</record>
+		
+<!--
+			search view
+			
+-->
+		
+        <record id="view_brand_search" model="ir.ui.view">
+            <field name="name">kg.brand.master.search</field>
+            <field name="model">kg.brand.master</field>
+            <field name="arch" type="xml">
+                <search string="Brand type">
+                    <field name="name" string="Brand type"/>
+                    <field name="code" string="Brand Code"/>
+					<group expand="0" string="Group By...">
+						<filter string="Status" context="{'group_by': 'state'}"/>
+					</group>                    
+                </search>
+            </field>
+        </record>	
+	
+
+</data>
+	</openerp>

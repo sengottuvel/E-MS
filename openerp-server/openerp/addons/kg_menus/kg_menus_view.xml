@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		
+		
+		<!-- Manual Closing -->
+				<menuitem id="mpm_manual_closing_menu" name="Manual Closing" parent="stock.menu_stock_root" sequence="6"/>
+                
+                <!--PO Manual Closing Transaction Menu -->
+				<menuitem action="kg_po_manual_closing.po_close_form_action" id="mam_po_manual_closing" name="Purchase Order" parent="mpm_manual_closing_menu" sequence="1"/>
+				
+                <!--SO Manual Closing Transaction Menu -->
+				<menuitem action="kg_so_manual_closing.so_close_form_action" id="mam_so_manual_closing" name="Service Order" parent="mpm_manual_closing_menu" sequence="2"/>
+					
+		
+	<!-- Other menu Changes -->
+				
+	<menuitem id="menu_others" name= "Others" sequence="12" groups="base.group_no_one"/>
+	<menuitem id="purchase.menu_procurement_management_inventory" name="Incoming Products"
+		parent="menu_others" sequence="1" groups="base.group_no_one"/>
+	<menuitem id="purchase.menu_procurement_management_invoice" name="Invoice Control"
+			parent="menu_others" sequence="5" groups="base.group_no_one"/>
+			
+	<menuitem id="stock.menu_stock_products_moves" name="Receive/Deliver Products" parent="menu_others" sequence="9"/>
+	<menuitem id="menu_traceability" name="Traceability" parent="menu_others" sequence="11"/>
+	<menuitem action="stock.action_tracking_form" id="stock.menu_action_tracking_form" groups="product.group_stock_packaging"
+				sequence="13" parent="menu_others"/>
+	<menuitem action="stock.action_production_lot_form" id="stock.menu_action_production_lot_form"
+		parent="kg_menus.menu_traceability" groups="stock.group_production_lot" sequence="1"/>
+	
+	<menuitem action="stock.action_move_form2" id="stock.menu_action_move_form2" parent="kg_menus.menu_traceability" sequence="2" 
+							groups="stock.group_locations"/>
+							
+	<menuitem id="menu_stock_inventory_control" name="Inventory Control" parent="menu_others" sequence="19"/>
+	<menuitem action="stock.action_inventory_form" id="stock.menu_action_inventory_form" parent="kg_menus.menu_stock_inventory_control" sequence="1"/>
+	<menuitem action="stock.action_location_tree" id="stock.menu_action_location_tree" parent="kg_menus.menu_stock_inventory_control" 
+		   groups="stock.group_locations" sequence="2"/>
+		   
+	<menuitem id="menu_stock_sched" name="Schedulers" parent="menu_others" sequence="24" 
+			groups="stock.group_stock_manager"/>
+	<menuitem action="procurement.action_compute_schedulers" id="procurement.menu_stock_proc_schedulers" parent="kg_menus.menu_stock_sched" 
+			sequence="2" groups="stock.group_stock_manager"/>
+	<menuitem action="procurement.procurement_exceptions" id="procurement.menu_stock_procurement_action" parent="kg_menus.menu_stock_sched" 
+			sequence="4" groups="stock.group_stock_manager"/>
+			
+	<menuitem id="menu_stock_warehouse_mgmt_m" name="GRN AND ISSUE" parent="stock.menu_stock_root" sequence="1"/>
+
+				<!-- General GRN Transaction Menu -->
+				<menuitem action="kg_general_grn.action_kg_general_grn" id="gam_general_grn" name="General GRN" parent="menu_stock_warehouse_mgmt_m" sequence="0"/>
+
+	
+	<menuitem id="kg_stock_view_menus" name="Stock View" parent="stock.menu_stock_root" sequence="3"/>
+	<menuitem id="kg_stock_view_menus_submenu" name="Stock View" parent="kg_stock_view_menus" action="stock.action_production_lot_form" sequence="1"/>
+	
+	
+    <menuitem id="stock.menu_dept_issue" name="Issue" parent="stock.menu_stock_root" sequence="50"/>
+	
+				<!-- PO Item Details  --> 
+				<menuitem action="kg_purchase_order.kg_poline_confirmed_action" id="pam_purchase_order_line" name="PO Item Details" parent="purchase.menu_procurement_management" sequence="9"/>
+ 
+
+	<!-- Master Menus-->
+	
+		<menuitem id="kg_projection_menu" name="Projection" sequence="70" groups="base.group_no_one"/>
+		
+<!--
+			<menuitem id="kg_bom_parent_menu" parent="kg_projection_menu" name="Bill Of Materials" sequence="3"/>	
+-->
+<!--
+				<menuitem id="kg_bom_menu" parent="kg_bom_parent_menu" action="mrp.mrp_bom_form_action" sequence="1"/>
+-->
+				
+		
+			<!-- Advance Menu -->
+				<menuitem id="apm_advance_menu" name="Advance" parent="base.menu_purchase_root" sequence="4"/>
+			
+				
+				<menuitem id="kg_depmaster_parent_menu" name="Masters" sequence="50" />
+			    
+<!--
+user rights
+-->
+<!--
+			<menuitem id="menu_user_access_rights" parent="kg_depmaster_parent_menu" name = "User Access Rights" sequence="5" groups="base.group_no_one"/>
+-->
+
+	<!-- Master Menus-->
+	
+		
+		
+		
+		
+		<!-- PO Master -->
+			<menuitem id="menu_po_master" parent="kg_depmaster_parent_menu" name = "PO Master" sequence="1"/>
+				
+				<menuitem id="kg_supplier_master" parent="menu_po_master" name="Suppliers" action="base.action_partner_supplier_form" sequence="1"/>
+			
+			            
+		<!-- Store Master -->
+			<menuitem id="menu_store_master" parent="kg_depmaster_parent_menu" name = "Store Master" sequence="2"/>
+				
+				
+				<menuitem id="kg_location_master" parent="menu_store_master"
+						 action="stock.action_location_form" name="Stock Location" sequence="2"/>
+				 <menuitem id="kg_product_master" parent="menu_store_master"
+				 action="product.product_normal_action" name="Product Master" sequence="3"/>
+				<menuitem id="kg_product_catg_master" parent="menu_store_master"
+						 action="product.product_category_action_form" name="Product Category" sequence="4"/>
+				
+						 
+			    <menuitem id="kg_uom_master" parent="menu_store_master"
+							 action="product.product_uom_form_action" sequence="5"/>
+							 
+				<menuitem action="kg_inwardmaster.inwardmaster_action_form" id="kg_inward_master" 
+				      parent="menu_store_master" sequence="6"/>
+						
+						
+				<menuitem action="kg_outwardmaster.outwardmaster_action_form" id="menu_kg_brandmaster_action_form" 
+						parent="menu_store_master" sequence="7"/>
+						
+						
+				<menuitem action="kg_po_masters.payment_master_action_form" id="menu_kg_payment_master" 
+						parent="menu_store_master" name="Payment Terms" sequence="8"/>
+						
+				<menuitem action="kg_po_masters.delivery_master_action_form" id="menu_kg_delivery_master" 
+						parent="menu_store_master" name="Delivery Terms" sequence="9"/>
+						
+						
+				<menuitem action="kg_po_masters.brand_master_action_form" id="menu_kg_brand_master" 
+						parent="menu_store_master" sequence="10"/>
+		
+						
+						
+						
+			
+						 
+				
+				
+		<!-- General Master -->
+			<menuitem id="menu_general_masters" parent="kg_depmaster_parent_menu" name = "General Master" sequence="3"/>
+			
+			     <menuitem action="base.action_res_company_form" id="kg_company_master" name="Company"
+			                        parent="menu_general_masters" sequence="1" groups="base.group_no_one"/>
+				
+				<menuitem action="kg_depmaster.kg_depmaster_action_form" name="Department Master" id="menu_depmaster_action_form" 
+				                             parent="menu_general_masters" sequence="2"/>
+			                         
+			                           
+				                                                        
+				<menuitem id="kg_country_master" parent="menu_general_masters" name="Country" action="base.action_country" sequence="4" groups="base.group_no_one"/>
+				<menuitem id="kg_state_master" parent="menu_general_masters" name="State" action="base.action_country_state" sequence="5" groups="base.group_no_one"/>
+				<menuitem id="kg_city_master" parent="menu_general_masters" action="base.action_city" sequence="6" groups="base.group_no_one"/>
+				
+				
+		<!-- Statutory Menu -->			
+						
+			<menuitem id="menu_statutory_masters" parent="kg_depmaster_parent_menu" name = "Statutory Masters" sequence="4"/>
+		
+					
+				<menuitem action="account.action_tax_form" id="menu_action_tax_form" 
+						parent="menu_statutory_masters" sequence="2"/>
+			
+				
+				
+				
+				
+		<menuitem id="kg_accounts_parent_menu" name="Accounts" sequence="70" groups="base.group_no_one"/>
+		
+			<!-- Cash Voucher -->
+			
+				<menuitem id="kg_cash_voucher_menu" name="Cash Voucher"
+						parent="kg_accounts_parent_menu" sequence="1" groups="base.group_no_one"/>
+          
+			
+		
+		
+				
+		<!-- Reports -->
+		
+		
+		 <menuitem id="main_report_menu" name="Reports" sequence="80" />
+	    
+		  <!-- Store Reports -->
+			
+			<menuitem id="dummy_dash_board" parent = "main_report_menu" name="Dashboard" sequence="1"/>
+			
+			<menuitem id="main_store_report_menu" parent = "main_report_menu" name="Store Reports" sequence="3" />
+			  
+			  
+
+			  <menuitem
+					parent="dummy_dash_board" sequence = "1" 
+					action="board.open_board_my_dash_action"
+					id="kg_dash_board_action"
+					/>
+					
+			
+				<menuitem
+				icon="STOCK_PRINT"
+				name="GRN Register"
+				parent="main_store_report_menu" sequence = "6" 
+				action="kg_reports.action_grn_report"
+				id="kg_rep_grn_register_report"
+				/>
+				
+
+				<menuitem
+				icon="STOCK_PRINT"
+				name="Issue Register"
+				parent="main_store_report_menu" sequence = "7" 
+				action="kg_reports.action_dep_issue_register11"
+				id="kg_rep_dep_issue_report"
+				/>	
+				
+            
+				<menuitem
+				icon="STOCK_PRINT"
+				name="Closing Stock"
+				parent="main_store_report_menu" sequence = "10" 
+				action="kg_reports.action_main_close_stock"
+				id="kg_rep_main_close_stock_report"
+				/>
+				
+				
+				<!-- PO Reports -->
+				
+			<menuitem id="main_sale_report_menus" parent = "main_report_menu" name="Sale Reports" sequence="3" groups="base.group_no_one"/>
+				
+				
+				
+			<!-- PO Reports -->
+				
+			<menuitem id="main_po_report_menus" parent = "main_report_menu" name="PO Reports" sequence="2" />
+			 
+				
+				
+			<menuitem action="kg_reports.action_po_stm_report" name="PO Register" id="menu_po_report" parent="main_po_report_menus" sequence="6" />
+			<menuitem action="kg_reports.action_so_stm_report" name="SO Register" id="menu_so_report" parent="main_po_report_menus" sequence="8" />
+		
+
+		<!-- Entry Count -->
+				
+			<menuitem id="main_entry_count_menus" parent = "main_report_menu" name="Entry Count" sequence="3" groups="base.group_no_one"/>
+	
+				
+				
+	    <!-- Indent -->
+	    
+			 <menuitem id="main_indent_menu" name="Indents" sequence="51"/>
+			 
+				<menuitem id="kg_dep_indent_menu" name="Department Indent" parent="main_indent_menu" sequence="2"/>
+
+					<menuitem 
+							id="menu_kg_depindent" 
+							name="Department Indent" 
+							parent="kg_dep_indent_menu"
+							sequence="1"
+							action="kg_depindent.action_kg_depindent_form"
+							/>
+							
+				<menuitem 
+							id="mtm_kg_depindent" 
+							name="Item Details" 
+							parent="kg_dep_indent_menu"
+							sequence="2"
+							action="kg_depindent.action_kg_depindent_line_form"
+							/>							
+							
+							
+				<menuitem id="kg_pi_indent_menu" name="Purchase Indent" parent="main_indent_menu" sequence="3"/>
+
+					<menuitem
+						id="kg_purchase_indent_menu"
+						sequence="1"
+						parent="kg_pi_indent_menu"
+						action="purchase_requisition.action_purchase_requisition" name="Purchase Indent"/>
+					<menuitem
+						id="mtm_kg_purchase_indent"
+						sequence="2"
+						parent="kg_pi_indent_menu"
+						action="kg_purchase_indent.kg_piline_confirmed_action" name="Item Details"/>						
+							
+							
+				<menuitem id="kg_so_indent" parent="main_indent_menu" name="Service Entry" sequence="4" />        
+					
+					<menuitem 
+							id="menu_kg_serviceindent" 
+							name="Service Indent" 
+							parent="kg_so_indent"
+							sequence="1"
+							action="kg_service_indent.action_kg_serviceindent_form"/>
+							
+							
+							
+							
+							
+            <!-- Service -->
+            
+            
+                    <menuitem id="kg_service_menu" name="Service"
+						parent="base.menu_purchase_root" sequence="3" />
+            
+						 <menuitem 
+							id="menu_kg_serviceorder" 
+							name="Service Order" 
+							parent="kg_service_menu"
+							sequence="2"
+							action="kg_service_order.action_kg_serviceorder_form"/>
+							
+							
+						<menuitem 
+							id="menu_kg_serviceamendment" 
+							name="Service Amendment" 
+							parent="kg_service_menu"
+							sequence="3"
+							action="kg_so_amendment.so_amendment_sample_form_action1"/>
+							
+							
+							
+			 <!-- PO Bill -->
+    
+				<menuitem id="kg_po_bill" parent="base.menu_purchase_root" name="Bills" 
+										sequence="52" groups="base.group_no_one"/>
+					
+					<menuitem action="account.action_invoice_tree2" id="account.menu_action_invoice_tree2" 
+						parent="kg_po_bill" name="PO Bill'S" sequence="1" groups="base.group_no_one"/>
+						
+						
+					<menuitem 
+						id="menu_kg_serviceinvoice" 
+						name="Service Bill" 
+						parent="kg_po_bill"
+						sequence="2"
+						action="kg_service_invoice.action_kg_serviceinv_form" groups="base.group_no_one"/>
+						
+						
+						
+			<!-- Gate Pass Entry -->
+			
+			
+			<menuitem 
+				id="kg_gate_pass_menu" 
+				name="Gate Pass"
+				parent="stock.menu_stock_root"
+				sequence="4	"/>
+				
+			
+			<menuitem 
+				id="kg_gate_pass" 
+				name="Gate Pass Entry" 
+				parent="kg_gate_pass_menu"
+				sequence="3"
+				action="kg_gate_pass.action_gate_pass"/>
+				
+				
+				
+			<!-- Inward -->
+	
+				
+				<!-- Stock Movement -->
+				<menuitem id="mam_stock_movement" name="Stock Movement" parent="stock.menu_stock_root" sequence="2"/>
+				
+				<!-- Excess Return Transaction Menu -->
+				<menuitem action="kg_stock_movement.tma_stock_movement" id="tmi_stock_movement" name="Excess Return" parent="mam_stock_movement" sequence="1"/>
+				
+				<!-- Demage Return From SS Transaction Menu -->
+				<menuitem action="kg_stock_movement.tma_sm_damage_fromsub" id="tmi_sm_damage_fromsub" name="Damage Return SS" parent="mam_stock_movement" sequence="2"/>
+				
+				<!-- Purchase Return From SS Transaction Menu -->
+				<menuitem action="kg_stock_movement.tma_sm_purchase_fromsub" id="tmi_sm_purchase_fromsub" name="Purchase Return SS" parent="mam_stock_movement" sequence="3" groups="base.group_no_one"/>
+				
+				<!-- Gate Pass From SS Transaction Menu -->
+				<menuitem action="kg_stock_movement.tma_sm_gatepass_fromsub" id="tmi_sm_gatepass_fromsub" name="Gate Pass SS" parent="mam_stock_movement" sequence="4" groups="base.group_no_one"/>
+				
+				<!-- Stock Transfer Transaction Menu -->
+				<menuitem action="kg_stock_movement.tma_sm_stock_transfer" id="tmi_sm_stock_transfer" name="Stock Transfer" parent="mam_stock_movement" sequence="5"/>
+				
+				<!-- Damage Return From MS Transaction Menu -->
+				<menuitem action="kg_stock_movement.tma_stock_movement_main" id="tmi_sm_damage_frommain" name="Damage Return MS" parent="mam_stock_movement" sequence="6"/>
+				
+				<!-- Purchase Return From MS Transaction Menu -->
+				<menuitem action="kg_stock_movement.tma_stock_movement_purchase_main" id="tmi_sm_purchase_frommain" name="Purchase Return MS" parent="mam_stock_movement" sequence="7" groups="base.group_no_one"/>
+				
+				<!-- Gate Pass Return From MS Transaction Menu -->
+				<menuitem action="kg_stock_movement.tma_stock_movement_gp_main" id="tmi_sm_gp_frommain" name="Gate Pass MS" parent="mam_stock_movement" sequence="8" groups="base.group_no_one"/>
+				    
+   
+				<!-- Purchase Invoice -->
+				<menuitem id="ppm_purchase_invoice_menu" name="Invoice" parent="stock.menu_stock_root" sequence="6"/>
+                
+            
+    
+    </data>
+</openerp>

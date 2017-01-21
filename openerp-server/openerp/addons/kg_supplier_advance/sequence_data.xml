@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	<!-- PO Advance start here-->
+		
+<!--
+	<record forcecreate="1" id="seq_sup_po_advance" model="ir.sequence.type">	
+			<field name="name">Supplier PO Advance</field>
+			<field name="code">kg.supplier.advance</field>
+		</record>
+
+		<record forcecreate="1" id="sup_po_advance_id" model="ir.sequence">
+		  <field name="name">Supplier PO Advance</field>
+		  <field name="code">kg.supplier.advance</field>
+		  <field name="padding" eval="4"/>
+		  <field name="prefix">POA/%(year)s/</field>
+		  <field name="reset_sequence">fiscal_reset</field>
+		</record>
+-->
+		
+	<!-- PO Advance end here-->
+	
+	<!-- SO Advance start here-->
+		
+<!--
+	<record forcecreate="1" id="seq_sup_so1_advance" model="ir.sequence.type">	
+			<field name="name">Supplier SO Advance</field>
+			<field name="code">ch.advance.line</field>
+		</record>
+
+		<record forcecreate="1" id="sup_so1_advance_id" model="ir.sequence">
+		  <field name="name">Supplier SO Advance</field>
+		  <field name="code">ch.advance.line</field>
+		  <field name="padding" eval="4"/>
+		  <field name="prefix">SOA/%(year)s/</field>
+		  <field name="reset_sequence">fiscal_reset</field>
+		</record>
+-->
+		
+	<!-- SO Advance end here-->
+		
+</data>
+	</openerp>

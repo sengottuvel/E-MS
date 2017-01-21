@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+          =====================
+          master Form view
+          =====================
+        -->
+
+        <record id="kg_item_ledger_form" model="ir.ui.view">
+            <field name="name">kg.item.ledger.form</field>
+            <field name="model">kg.item.ledger</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            <form string="Item Ledger View" version="7.0">
+				
+			<header>
+                <button name="item_load" string="Load Details" type="object" class="oe_highlight"/>
+         
+			</header>
+				<sheet>
+										
+	
+				<group>
+					<group>
+						<field name="product_id" on_change="onchange_product_uom(product_id, uom_id)"/>
+						<field name="date"/>
+        
+                    </group>
+                    <group>
+						<field name="uom_id" readonly="1"/>
+						<field name="dep_name"/>
+						
+                    </group>
+                </group>
+                
+               
+				
+					<group string = "Receipt Details">
+				
+						<field name="receipt_ledger_line" nolabel="1" readonly="True"/>
+						
+						
+						
+						
+					</group>
+					
+					
+					<group>
+						<group>
+								<field name="grn_qty"/>
+								
+						</group>
+						
+						<group>
+								
+								<field name="grn_value"/>
+						</group>
+					
+					</group>
+					
+					<group string = "Issue Summary">
+				
+						<field name="out_ledger_line" nolabel="1" readonly="True"/>
+						
+						
+					</group>
+					
+					
+					<group>
+						<group>
+								<field name="out_qty"/>
+								
+						</group>
+						
+						<group>
+								
+								<field name="out_value"/>
+						</group>
+					</group>	
+					
+					
+					
+					<group string = "Closing Summary">
+				
+						<field name="close_ledger_line" nolabel="1" readonly="True"/>
+						
+					</group>
+					
+					<group>
+						<group>
+							<field name="total"/>
+						</group>
+						<group>
+							<field name="receipt_qty"/>
+						</group>
+						<group>
+							<field name="issue_qty"/>
+						</group>
+						<group>
+							<field name="closing_qty"/>
+						</group>
+						<group>
+							<field name="closing_value"/>
+						</group>
+					
+					</group>
+					
+					
+					
+					
+				
+				
+				
+				</sheet>
+
+               </form>
+           </field>
+        </record>
+        
+        
+        
+
+        <!--
+        =====================
+        master Tree view
+        =====================
+        -->
+        <record id="kg_item_ledger_tree" model="ir.ui.view">
+            <field name="name">kg.item.ledger.view</field>
+            <field name="model">kg.item.ledger</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="Item Ledger View">
+					<field name="date"/>               
+                    <field name="product_id"/>
+                    <field name="dep_name"/>
+                </tree> 
+            </field>
+        </record>
+        
+        
+         <record id="kg_close_item_ledger_line_tree" model="ir.ui.view">
+            <field name="name">kg.close.item.ledger.line.view</field>
+            <field name="model">kg.close.item.ledger.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="Item Ledger View Line" editable = "bottom">                
+                  
+					<field name="date"/>
+					
+					<field name="qty"/>
+					<field name="tot_amt"/>
+                </tree> 
+            </field>
+        </record>
+        
+       
+       
+        <record id="kg_out_item_ledger_line_tree" model="ir.ui.view">
+            <field name="name">kg.out.item.ledger.line.view</field>
+            <field name="model">kg.out.item.ledger.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="Item Ledger View Line" editable = "bottom">                
+                  
+					<field name="date"/>
+					
+					<field name="qty"/>
+					<field name="unit_price"/>
+					<field name="tot_amt"/>
+                </tree> 
+            </field>
+        </record>
+        
+         <record id="kg_receipt_item_ledger_line_tree" model="ir.ui.view">
+            <field name="name">kg.receipt.item.ledger.line.view</field>
+            <field name="model">kg.receipt.item.ledger.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="Item Ledger View Line" editable = "bottom">                
+                  
+					<field name="date"/>
+					<field name="particulars" string="GRN NO"/>
+					<field name="supplier_id"/>
+					<field name="qty"/>
+					<field name="unit_price"/>
+					<field name="tot_amt"/>
+                </tree> 
+            </field>
+        </record>
+        
+        
+       <!--
+        =====================
+        master Form Action
+        ===================== -->
+
+
+	<record id="action_kg_item_ledger" model="ir.actions.act_window">
+			<field name="name">Item Ledger View</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.item.ledger</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_item_ledger_tree"/>
+	</record>
+	
+
+	
+	
+	
+        <!--
+        =====================
+        master Menu Item
+        =====================
+        -->
+        
+	<menuitem id="kg_item_ledger_menu" name="Item Ledger" parent="stock.menu_stock_root" sequence="12" groups="base.group_no_one"/>
+
+	<menuitem 
+            id="menu_kg_item_ledger_view" 
+           
+            parent="kg_item_ledger_menu"
+            sequence="0"
+            action="action_kg_item_ledger" groups="base.group_no_one"/>
+            
+   
+	
+                  
+                  
+    </data>
+</openerp>

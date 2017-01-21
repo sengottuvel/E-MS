@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    
+
+		<report string="GRN Slip"
+        model="kg.general.grn"
+        auto="True"
+        name="onscreen_general_grn_report"
+        rml="kg_general_grn/report/Genereal_GRN_Slip.jrxml"
+        id="general_grn_jasper_report" 
+        menu="True"
+        header="False"
+        />
+
+
+    </data>
+</openerp>

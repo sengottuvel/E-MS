@@ -1,0 +1,1069 @@
+7347860094 [XML-RPC-1] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_sale_summary_1463639722615_250354: 849: unexpected token: } @ line 849, column 101.
+1 error
+
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_sale_summary_1463639722615_250354: 849: unexpected token: } @ line 849, column 101.
+1 error
+
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.JRException: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_sale_summary_1463639722615_250354: 849: unexpected token: } @ line 849, column 101.
+1 error
+
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:101)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:188)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by: org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_sale_summary_1463639722615_250354: 849: unexpected token: } @ line 849, column 101.
+1 error
+
+	at org.codehaus.groovy.control.ErrorCollector.failIfErrors(ErrorCollector.java:296)
+	at org.codehaus.groovy.control.ErrorCollector.addFatalError(ErrorCollector.java:143)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:113)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:125)
+	at org.codehaus.groovy.control.SourceUnit.addError(SourceUnit.java:337)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.transformCSTIntoAST(AntlrParserPlugin.java:104)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.parseCST(AntlrParserPlugin.java:71)
+	at org.codehaus.groovy.control.SourceUnit.parse(SourceUnit.java:236)
+	at org.codehaus.groovy.control.CompilationUnit$1.call(CompilationUnit.java:158)
+	at org.codehaus.groovy.control.CompilationUnit.applyToSourceUnits(CompilationUnit.java:814)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:511)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:487)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:464)
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:97)
+	... 17 more
+Caused by:
+net.sf.jasperreports.engine.JRException: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_sale_summary_1463639722615_250354: 849: unexpected token: } @ line 849, column 101.
+1 error
+
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:101)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:188)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_sale_summary_1463639722615_250354: 849: unexpected token: } @ line 849, column 101.
+1 error
+
+	at org.codehaus.groovy.control.ErrorCollector.failIfErrors(ErrorCollector.java:296)
+	at org.codehaus.groovy.control.ErrorCollector.addFatalError(ErrorCollector.java:143)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:113)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:125)
+	at org.codehaus.groovy.control.SourceUnit.addError(SourceUnit.java:337)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.transformCSTIntoAST(AntlrParserPlugin.java:104)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.parseCST(AntlrParserPlugin.java:71)
+	at org.codehaus.groovy.control.SourceUnit.parse(SourceUnit.java:236)
+	at org.codehaus.groovy.control.CompilationUnit$1.call(CompilationUnit.java:158)
+	at org.codehaus.groovy.control.CompilationUnit.applyToSourceUnits(CompilationUnit.java:814)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:511)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:487)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:464)
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:97)
+	... 17 more
+7357962625 [XML-RPC-1] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+7357972845 [XML-RPC-1] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+7358035988 [XML-RPC-1] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+7358048188 [XML-RPC-1] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : stores_name
+	 2. Field not found : sno
+	 3. Field not found : champ_amt
+	 4. Field not found : accounts_amt
+	 5. Field not found : cash_amt
+	 6. Field not found : kgfsl_amt
+	 7. Field not found : row_tot
+	 8. Field not found : digital_amt
+	 9. Field not found : kgisl_amt
+	 10. Field not found : kt_amt
+	 11. Field not found : kgistl_amt
+	 12. Field not found : counter_name
+	 13. Field not found : sno
+	 14. Field not found : kgds_amt
+	 15. Field not found : prepaid_amt
+	 16. Field not found : company_name
+	 17. Field not found : sno
+	 18. Field not found : cash_overall_tot
+	 19. Field not found : sno
+	 20. Field not found : kgisl_overall_tot
+	 21. Field not found : sno
+	 22. Field not found : kgfsl_overall_tot
+	 23. Field not found : sno
+	 24. Field not found : digital_overall_tot
+	 25. Field not found : sno
+	 26. Field not found : sno
+	 27. Field not found : grand_tot
+	 28. Field not found : sno
+	 29. Field not found : accounts_overall_tot
+	 30. Field not found : sno
+	 31. Field not found : champ_overall_tot
+	 32. Field not found : sno
+	 33. Field not found : kt_overall_tot
+	 34. Field not found : sno
+	 35. Field not found : kgistl_overall_tot
+	 36. Field not found : sno
+	 37. Field not found : kgds_overall_tot
+	 38. Field not found : sno
+	 39. Field not found : prepaid_overall_tot
+	 40. Field not found : sno
+	 41. Field not found : sno
+	 42. Field not found : user_name
+	 43. Field not found : stores_name
+	 44. Field not found : street1
+	 45. Field not found : street2
+	 46. Field not found : city
+	 47. Field not found : zip
+	 48. Field not found : company_name
+	 49. Field not found : user_name
+	 50. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)

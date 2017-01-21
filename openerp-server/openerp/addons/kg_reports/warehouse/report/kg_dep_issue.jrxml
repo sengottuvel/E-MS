@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="kg_dep_issue" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="374"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="dataset1">
+		<parameter name="dep_issue_id" class="java.lang.Integer"/>
+		<queryString>
+			<![CDATA[select sum(issue_qty*price_unit) from kg_department_issue_line  where issue_id =$P{dep_issue_id}]]>
+		</queryString>
+		<field name="sum" class="java.lang.Double"/>
+	</subDataset>
+	<parameter name="from_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="to_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="wiz_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+
+trim(TO_CHAR((sum(amount_total) OVER (PARTITION BY total))::float, '999G999G99G999G99G99G990D99')) as granddd_total,* from (
+select
+res_cmpny.name as company_name,
+dep_mas.dep_name as department_name,
+pro_mas.name_template as product_name,
+to_char(kg_issue.issue_date::date,'YYYY-mm-dd') as issue_date,
+to_char(kg_issue.issue_date::date,'dd-mm-YYYY')  as issue_dates,
+kg_issue.name as req_no,
+uom_mas.name as req_uom,
+case when
+trim(TO_CHAR(kg_issue_line.price_unit::float, '999G999G99G999G99G99G990D99')) is not null  then trim(TO_CHAR(kg_issue_line.price_unit::float, '999G999G99G999G99G99G990D99'))
+else '0.00' end  as rate,
+kg_issue_line.indent_qty as req_qty,
+kg_issue_line.issue_qty as issued_qty,
+case when
+trim(TO_CHAR((kg_issue_line.issue_qty*kg_issue_line.price_unit)::float, '999G999G99G999G99G99G990D99')) is not null  then trim(TO_CHAR((kg_issue_line.issue_qty*kg_issue_line.price_unit)::float, '999G999G99G999G99G99G990D99'))
+else '0.00' end  as amount,
+(kg_issue_line.issue_qty*kg_issue_line.price_unit) as amount_total,
+issued_stock.issue_qty as qty,
+case when
+uom_mast.name = '' then '-'
+else uom_mast.name  end  as issued_uom,
+case when
+kg_issue.issue_type = 'material' then  dep_indent_mas.name else serv_indent_mas.name end as issue_no,
+case when
+kg_issue.issue_type = 'material' then  'Purchase' else 'Service' end as stock_group,
+kg_issue.id as issue_identity,
+'total'::text as total,
+ROW_NUMBER() Over (Partition by kg_issue.name) as num,
+(select to_char(from_date::date,'dd-mm-YYYY') from dep_issue_register_wizard_istl where id = $P{wiz_id}) as from_date,
+(select to_char(to_date::date,'dd-mm-YYYY') from dep_issue_register_wizard_istl where id = $P{wiz_id}) as to_date,
+(select login from res_users where id in (select user_id from dep_issue_register_wizard_istl where id =$P{wiz_id} )) as user,
+(select to_char(create_date,'dd-mm-YYYY HH:MM:SS PM') from dep_issue_register_wizard_istl where id =$P{wiz_id}) as user_date
+
+
+
+from kg_department_issue kg_issue
+
+left join kg_depmaster dep_mas on(dep_mas.id=kg_issue.department_id)
+left join kg_department_issue_line kg_issue_line on(kg_issue_line.issue_id= kg_issue.id)
+left join product_uom uom_mas on(uom_mas.id= kg_issue_line.uom_id)
+left join kg_item_wise_dept_issue issued_stock on(issued_stock.issue_line_id= kg_issue_line.id)
+left join product_uom uom_mast on(uom_mast.id= issued_stock.uom_id)
+
+
+left join kg_depindent_line dep_indent on(dep_indent.id= kg_issue_line.indent_line_id)
+left join kg_depindent dep_indent_mas on(dep_indent_mas.id= dep_indent.indent_id)
+left join product_product pro_mas on (pro_mas.id=kg_issue_line.product_id)
+
+
+left join kg_service_indent_line serv_indent on(serv_indent.id= kg_issue_line.service_indent_line_id)
+left join kg_service_indent serv_indent_mas on(serv_indent_mas.id= serv_indent.service_id)
+left join res_company res_cmpny on (res_cmpny.id=kg_issue.company_id)
+
+
+
+where
+
+CASE
+
+WHEN (select product_dep_id from dep_issue_product1 where product_wiz_id = $P{wiz_id} limit 1) > 0 THEN kg_issue_line.product_id in
+
+(select product_dep_id from dep_issue_product1 where product_wiz_id = $P{wiz_id})
+
+ELSE
+
+kg_issue_line.product_id in (select id
+from product_product)
+
+end
+and
+
+
+CASE
+
+WHEN (select dep_id from dep_issue_register1 where wiz_id = $P{wiz_id} limit 1) > 0 THEN kg_issue.department_id in
+
+(select dep_id from dep_issue_register1 where wiz_id =$P{wiz_id} )
+
+ELSE
+
+kg_issue.department_id in (select id
+from kg_depmaster)
+
+end
+
+and
+kg_issue.state ='done'
+
+
+
+
+ group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17 order by kg_issue.issue_date
+) as a
+
+
+
+where issue_date >=$P{from_date} and issue_date <= $P{to_date}]]>
+	</queryString>
+	<field name="granddd_total" class="java.lang.String"/>
+	<field name="company_name" class="java.lang.String"/>
+	<field name="department_name" class="java.lang.String"/>
+	<field name="product_name" class="java.lang.String"/>
+	<field name="issue_date" class="java.lang.String"/>
+	<field name="issue_dates" class="java.lang.String"/>
+	<field name="req_no" class="java.lang.String"/>
+	<field name="req_uom" class="java.lang.String"/>
+	<field name="rate" class="java.lang.String"/>
+	<field name="req_qty" class="java.lang.Double"/>
+	<field name="issued_qty" class="java.lang.Double"/>
+	<field name="amount" class="java.lang.String"/>
+	<field name="amount_total" class="java.lang.Double"/>
+	<field name="qty" class="java.lang.Integer"/>
+	<field name="issued_uom" class="java.lang.String"/>
+	<field name="issue_no" class="java.lang.String"/>
+	<field name="stock_group" class="java.lang.String"/>
+	<field name="issue_identity" class="java.lang.Integer"/>
+	<field name="total" class="java.lang.String"/>
+	<field name="num" class="java.lang.Long"/>
+	<field name="from_date" class="java.lang.String"/>
+	<field name="to_date" class="java.lang.String"/>
+	<field name="user" class="java.lang.String"/>
+	<field name="user_date" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="41" splitType="Stretch">
+			<textField>
+				<reportElement x="558" y="26" width="67" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{from_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="644" y="26" width="90" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{to_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="486" y="26" width="72" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date Range :"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="624" y="26" width="20" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["to"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="196" y="0" width="362" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="276" y="16" width="204" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Item Issue Register"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="33" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="1" width="22" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["S.No"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="22" y="1" width="20" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["No"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="42" y="1" width="39" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Dep"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="1" width="140" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Product"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="221" y="1" width="61" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="282" y="1" width="82" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Reqt No"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="398" y="1" width="44" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Reqt Qty"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="442" y="1" width="82" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Issue No"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="524" y="1" width="34" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Issued UOM"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="591" y="1" width="54" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Rate"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="645" y="1" width="57" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Value"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="702" y="1" width="50" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Stock Group"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="558" y="1" width="33" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Issued Qty"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="364" y="1" width="35" height="32"/>
+				<box>
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Reqt UOM"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="38" splitType="Stretch">
+			<textField>
+				<reportElement x="364" y="0" width="35" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{req_uom}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="221" y="0" width="61" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{issue_dates}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="524" y="0" width="34" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{issued_uom}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="442" y="0" width="82" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{issue_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="398" y="0" width="44" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{req_qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="645" y="0" width="57" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="282" y="0" width="82" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{req_no}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="22" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="42" y="0" width="39" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{department_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="558" y="0" width="33" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{issued_qty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="702" y="0" width="50" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{stock_group}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="591" y="0" width="54" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="0" width="140" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{product_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="22" y="0" width="20" height="38"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="21" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="374" y="1" width="378" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="262" y="1" width="105" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of  "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="1" width="262" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{user}+" / "+$F{user_date}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="366" y="1" width="8" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="50">
+			<textField>
+				<reportElement x="0" y="14" width="609" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Grand Total     "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="609" y="14" width="143" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{granddd_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+	<noData>
+		<band height="50">
+			<textField>
+				<reportElement x="331" y="13" width="227" height="37"/>
+				<textElement>
+					<font size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA["No Records Found"]]></textFieldExpression>
+			</textField>
+		</band>
+	</noData>
+</jasperReport>

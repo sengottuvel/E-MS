@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Purchase_Order" language="groovy" pageWidth="594" pageHeight="842" columnWidth="554" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="96"/>
+	<subDataset name="dataset1"/>
+	<subDataset name="New Dataset 1">
+		<parameter name="order_id" class="java.lang.Integer"/>
+		<queryString>
+			<![CDATA[select
+
+pro_temp.name ||
+(CASE 	WHEN brand.name!=''
+THEN  ' | ' || brand.name
+ELSE ''
+END ) as product_name,
+pro_uom.name as product_uom,
+po_line.product_qty as po_qty,
+trim(TO_CHAR(po_line.price_unit::float, '999G999G99G999G99G99G990D99'))  as po_rate,
+trim(TO_CHAR((po_line.product_qty * po_line.price_unit)::float, '999G999G99G999G99G99G990D99'))  as value,
+po_line.kg_discount_per as disc_per,
+case when po_line.id is not null then
+(SELECT CAST(string_agg(description, ',') AS text)
+FROM account_tax where id in (select tax_id from purchase_order_taxe where ord_id=po_line.id))
+end as tax_name
+
+from purchase_order_line po_line
+
+left join product_template pro_temp on (pro_temp.id = po_line.product_id)
+
+left join product_uom pro_uom on (pro_uom.id = po_line.product_uom)
+
+left join kg_brand_master brand on (brand.id = po_line.brand_id)
+
+
+where po_line.order_id = $P{order_id} order by po_line.id]]>
+		</queryString>
+		<field name="product_name" class="java.lang.String"/>
+		<field name="product_uom" class="java.lang.String"/>
+		<field name="po_qty" class="java.lang.Double"/>
+		<field name="po_rate" class="java.lang.String"/>
+		<field name="value" class="java.lang.String"/>
+		<field name="tax_name" class="java.lang.String"/>
+		<field name="disc_per" class="java.math.BigDecimal"/>
+	</subDataset>
+	<subDataset name="dataset2"/>
+	<subDataset name="dataset3"/>
+	<parameter name="po_id" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select po.id as id,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+comp_state.name as state,
+comp_country.name as country,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,
+
+CASE WHEN comp.cin_no != '' THEN 'CIN NO :'
+ELSE ''
+END as cin_label,
+CASE WHEN comp.tin_no != '' THEN 'TIN NO :'
+ELSE ''
+END as tin_label,
+comp.cin_no as cin_no,
+comp.tin_no as tin_no,
+part.website as website,
+
+po.name as po_name,
+to_char(po.date_order::date,'dd-mm-YYYY') as po_date,
+
+partner.name as supplier_name,
+partner.street as sup_street1,
+partner.street2 as sup_street2,
+partner.contact_person as contact_person,
+partner.phone as sup_phone,
+partner.fax as sup_fax,
+partner.email as sup_email,
+CASE WHEN partner_city.name = null THEN ''
+ELSE partner_city.name
+END as sup_city,
+CASE WHEN partner_state.name = null THEN ''
+ELSE partner_state.name
+END as sup_state,
+CASE WHEN partner_country.name = null THEN ''
+ELSE partner_country.name
+END as sup_country,
+CASE WHEN partner.zip = null THEN ''
+ELSE partner.zip
+END as sup_zip,
+CASE WHEN partner.mobile = null THEN ''
+ELSE partner.mobile
+END as sup_mobile,
+
+po.quot_ref_no as quot_ref_no,
+po.dep_project_name as project_name,
+trim(TO_CHAR(po.amount_untaxed::float, '999G999G99G999G99G99G990D99'))  as total_amt,
+trim(TO_CHAR(po.discount::float, '999G999G99G999G99G99G990D99'))  as discount,
+po.line_amount_total as net_amount,
+po.amount_tax as tax,
+trim(TO_CHAR(po.amount_total::float, '999G999G99G999G99G99G990D99'))   as po_amt,
+trim(TO_CHAR((po.value1 + po.value2)::float, '999G999G99G999G99G99G990D99'))  as other_charge,
+
+payment.name as payment,
+delivery.name as delivery,
+po.term_freight as frieght,
+CASE WHEN po.bill_type='cash' THEN 'Cash'
+ELSE 'Credit'
+END as bill,
+po.term_warranty as warranty,
+po.version as version,
+CASE WHEN po.term_price='inclusive' THEN 'Inclusive of all taxes and duties'
+ELSE '-'
+END as price,
+f_amount_to_words(po.amount_total,po.company_id) as amount_in_words,
+CASE WHEN comp.rml_header1 = null THEN null
+ELSE comp.rml_header1
+END as tagline,
+po.note as specification,
+po.state as status
+
+
+
+
+from purchase_order po
+
+left join res_company comp on (comp.id = po.company_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner partner on (partner.id = po.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city partner_city on (partner_city.id = partner.city)
+
+left join res_country_state comp_state on (comp_state.id = comp.state_id)
+
+left join res_country_state partner_state on (partner_state.id = partner.state_id)
+
+left join res_country comp_country on (comp_country.id = comp.country_id)
+
+left join res_country partner_country on (partner_country.id = partner.country_id)
+
+left join kg_payment_master payment on (payment.id = po.payment_mode)
+
+left join kg_delivery_master delivery on (delivery.id = po.delivery_mode)
+
+
+where po.id = $P{po_id}]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="company_name" class="java.lang.String"/>
+	<field name="street1" class="java.lang.String"/>
+	<field name="street2" class="java.lang.String"/>
+	<field name="city" class="java.lang.String"/>
+	<field name="state" class="java.lang.String"/>
+	<field name="country" class="java.lang.String"/>
+	<field name="zip" class="java.lang.String"/>
+	<field name="phone" class="java.lang.String"/>
+	<field name="fax" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="cin_label" class="java.lang.String"/>
+	<field name="tin_label" class="java.lang.String"/>
+	<field name="cin_no" class="java.lang.String"/>
+	<field name="tin_no" class="java.lang.String"/>
+	<field name="website" class="java.lang.String"/>
+	<field name="po_name" class="java.lang.String"/>
+	<field name="po_date" class="java.lang.String"/>
+	<field name="supplier_name" class="java.lang.String"/>
+	<field name="sup_street1" class="java.lang.String"/>
+	<field name="sup_street2" class="java.lang.String"/>
+	<field name="contact_person" class="java.lang.String"/>
+	<field name="sup_phone" class="java.lang.String"/>
+	<field name="sup_fax" class="java.lang.String"/>
+	<field name="sup_email" class="java.lang.String"/>
+	<field name="sup_city" class="java.lang.String"/>
+	<field name="sup_state" class="java.lang.String"/>
+	<field name="sup_country" class="java.lang.String"/>
+	<field name="sup_zip" class="java.lang.String"/>
+	<field name="sup_mobile" class="java.lang.String"/>
+	<field name="quot_ref_no" class="java.lang.String"/>
+	<field name="project_name" class="java.lang.String"/>
+	<field name="total_amt" class="java.lang.String"/>
+	<field name="discount" class="java.lang.String"/>
+	<field name="net_amount" class="java.math.BigDecimal"/>
+	<field name="tax" class="java.math.BigDecimal"/>
+	<field name="po_amt" class="java.lang.String"/>
+	<field name="other_charge" class="java.lang.String"/>
+	<field name="payment" class="java.lang.String"/>
+	<field name="delivery" class="java.lang.String"/>
+	<field name="frieght" class="java.lang.String"/>
+	<field name="bill" class="java.lang.String"/>
+	<field name="warranty" class="java.lang.String"/>
+	<field name="version" class="java.lang.String"/>
+	<field name="price" class="java.lang.String"/>
+	<field name="amount_in_words" class="java.lang.String"/>
+	<field name="tagline" class="java.lang.String"/>
+	<field name="specification" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<group name="Line_Group">
+		<groupExpression><![CDATA[$F{id}]]></groupExpression>
+		<groupHeader>
+			<band height="61">
+				<rectangle radius="10">
+					<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="1" y="0" width="551" height="55"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="2" y="5" width="40" height="14"/>
+					<box bottomPadding="1">
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[ SL NO.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="42" y="5" width="211" height="14"/>
+					<box bottomPadding="1">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[ ITEM DESCRIPTION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="253" y="5" width="34" height="14"/>
+					<box bottomPadding="1">
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[ UNIT]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="287" y="5" width="33" height="14"/>
+					<box bottomPadding="1">
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[ QTY]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="314" y="5" width="62" height="14"/>
+					<box bottomPadding="1">
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[ RATE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="380" y="5" width="61" height="14"/>
+					<box bottomPadding="1">
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[DISCOUNT(%)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="441" y="5" width="55" height="15"/>
+					<box bottomPadding="1">
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[TAX(%)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="494" y="5" width="61" height="14"/>
+					<box bottomPadding="1">
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[ VALUE]]></text>
+				</staticText>
+				<line>
+					<reportElement x="2" y="19" width="550" height="1"/>
+				</line>
+				<componentElement>
+					<reportElement x="2" y="20" width="551" height="16"/>
+					<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="New Dataset 1">
+							<datasetParameter name="order_id">
+								<datasetParameterExpression><![CDATA[$F{id}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+						<jr:listContents height="16" width="551">
+							<textField>
+								<reportElement x="2" y="3" width="40" height="10"/>
+								<textElement>
+									<font size="8" isBold="false"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement x="42" y="3" width="211" height="10"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{product_name}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement x="254" y="3" width="35" height="10"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{product_uom}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement x="289" y="3" width="28" height="10"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{po_qty}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement x="316" y="3" width="62" height="10"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{po_rate}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement x="377" y="3" width="61" height="10"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{disc_per}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement x="440" y="3" width="55" height="10"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{tax_name}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement x="496" y="3" width="49" height="10"/>
+								<textElement>
+									<font size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+							</textField>
+							<line>
+								<reportElement x="0" y="15" width="549" height="1"/>
+							</line>
+							<line>
+								<reportElement x="39" y="0" width="1" height="15"/>
+							</line>
+							<line>
+								<reportElement x="249" y="0" width="1" height="15"/>
+							</line>
+							<line>
+								<reportElement x="285" y="0" width="1" height="15"/>
+							</line>
+							<line>
+								<reportElement x="313" y="0" width="1" height="15"/>
+							</line>
+							<line>
+								<reportElement x="375" y="0" width="1" height="15"/>
+							</line>
+							<line>
+								<reportElement x="437" y="0" width="1" height="15"/>
+							</line>
+							<line>
+								<reportElement x="492" y="0" width="1" height="15"/>
+							</line>
+						</jr:listContents>
+					</jr:list>
+				</componentElement>
+				<line>
+					<reportElement x="41" y="0" width="1" height="19"/>
+				</line>
+				<line>
+					<reportElement x="251" y="1" width="1" height="19"/>
+				</line>
+				<line>
+					<reportElement x="287" y="1" width="1" height="19"/>
+				</line>
+				<line>
+					<reportElement x="315" y="1" width="1" height="19"/>
+				</line>
+				<line>
+					<reportElement x="377" y="1" width="1" height="19"/>
+				</line>
+				<line>
+					<reportElement x="439" y="0" width="1" height="19"/>
+				</line>
+				<line>
+					<reportElement x="494" y="0" width="1" height="19"/>
+				</line>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Main_Header">
+		<groupExpression><![CDATA[$F{id}]]></groupExpression>
+		<groupHeader>
+			<band height="29">
+				<rectangle radius="10">
+					<reportElement x="-2" y="0" width="554" height="21"/>
+				</rectangle>
+				<textField>
+					<reportElement x="6" y="6" width="233" height="15"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{amount_in_words}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="496" y="6" width="57" height="15"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{po_amt}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="420" y="6" width="68" height="15"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total Amount :]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="7"/>
+		</groupFooter>
+	</group>
+	<group name="Terms_Group">
+		<groupExpression><![CDATA[$F{id}]]></groupExpression>
+		<groupHeader>
+			<band height="6">
+				<printWhenExpression><![CDATA[$F{specification} != null]]></printWhenExpression>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Terms_GROUP_Header2">
+		<groupExpression><![CDATA[$F{id}]]></groupExpression>
+		<groupHeader>
+			<band height="97">
+				<rectangle radius="10">
+					<reportElement x="0" y="0" width="320" height="93"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="85" y="0" width="141" height="12"/>
+					<textElement>
+						<font size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[DESPATCH INSTRUCTIONS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="4" y="16" width="104" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[1. To be dispatched by :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="3" y="30" width="111" height="12"/>
+					<textElement>
+						<font size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[2. Documents to be sent :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="3" y="44" width="130" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[3. To be Supplied on or before :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="3" y="57" width="155" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[4. Goods to be sent to Arasur Factory.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="4" y="71" width="98" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[5. With test Certificate.]]></text>
+				</staticText>
+				<rectangle radius="10">
+					<reportElement x="326" y="0" width="225" height="93"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="332" y="5" width="23" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[For]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="351" y="5" width="171" height="11"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="465" y="17" width="29" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Unit-I]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="364" y="79" width="153" height="12"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+					<text><![CDATA[Managing Director/General Manager]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image>
+				<reportElement x="-1" y="0" width="554" height="802">
+					<printWhenExpression><![CDATA[(new Boolean(($F{status}.equals("draft"))) || new Boolean(($F{status}.equals("sent"))) || new Boolean(($F{status}.equals("confirmed"))))]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["/home/dinesh/OpenERP_Projects/ellen_machineshop/openerp-server/openerp/addons/kg_purchase_order/report/Draft.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<pageHeader>
+		<band height="86" splitType="Stretch">
+			<image>
+				<reportElement x="672" y="83" width="496" height="0"/>
+				<imageExpression><![CDATA[]]></imageExpression>
+			</image>
+			<rectangle radius="10">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="-1" y="0" width="554" height="83" backcolor="#A11D1D"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="108" y="2" width="402" height="27" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="178" y="28" width="179" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AN ISO 9001 Certified Company]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="391" y="29" width="100" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Unit-I]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="196" y="42" width="240" height="10"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{street1}+$F{street2}+$F{city}+"-"+$F{zip}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="108" y="41" width="26" height="14" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Phone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="134" y="41" width="5" height="14"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="139" y="42" width="74" height="14" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{phone}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="109" y="55" width="21" height="14" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Fax]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="134" y="55" width="5" height="14"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="142" y="56" width="64" height="14" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fax}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="55" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sup_email}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="315" y="55" width="37" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[E-mail]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="245" y="19" width="12" height="20"/>
+				<textElement/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="353" y="55" width="7" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<image>
+				<reportElement x="9" y="14" width="77" height="55"/>
+				<imageExpression><![CDATA["/home/dinesh/OpenERP_Projects/ellen_machineshop/openerp-server/openerp/addons/web/static/src/img/ellen_logo.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="137" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="359" y="0" width="194" height="74"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="360" y="1" width="192" height="20" backcolor="#FAFFFF"/>
+				<box bottomPadding="1">
+					<pen lineColor="#000000"/>
+					<topPen lineColor="#000000"/>
+					<leftPen lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					<rightPen lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[   PURCHASE ORDER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="359" y="51" width="193" height="12"/>
+				<box topPadding="1">
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[   Our Order No. must appear on all Packing]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="369" y="63" width="153" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[slips, Delivery Challans and Invoices.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="366" y="23" width="149" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NO :"+" "+$F{po_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="365" y="37" width="149" height="16"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Date:"+" "+ $F{po_date}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="10">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="1" width="355" height="74"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="6" y="9" width="17" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[To]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="42" y="17" width="171" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{supplier_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="42" y="28" width="171" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sup_street1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="42" y="41" width="170" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sup_street2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="42" y="51" width="171" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sup_city}+"-"+$F{sup_zip}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="10">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="2" y="80" width="551" height="27"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="9" y="88" width="63" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Record Code :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="171" y="87" width="49" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Our Ref :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="312" y="88" width="45" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Your Ref :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="451" y="88" width="34" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Date :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="88" width="38" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[QR741A2]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="219" y="87" width="93" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quot_ref_no}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="10">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="2" y="112" width="552" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="179" y="117" width="196" height="10"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Please arrange to supply us the following]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band height="14">
+			<textField evaluationTime="Report">
+				<reportElement mode="Transparent" x="270" y="0" width="40" height="14"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="225" y="0" width="47" height="14"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

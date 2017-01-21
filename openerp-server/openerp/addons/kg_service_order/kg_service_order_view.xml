@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+          =====================
+          Form view
+          =====================
+        -->
+
+        <record id="view_kg_serviceorder_form" model="ir.ui.view">
+		<field name="name">view.kg.serviceorder.form</field>
+		<field name="model">kg.service.order</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+		<form string="Service order" version="7.0">
+			<header>
+				<button name="draft_order" states="cancel" string="Draft" type="object" class="oe_highlight"/>
+                <button name="confirm_order" states="draft" string="Confirm" type="object" />
+                <button name="approve_order" states="confirm" string="Approve" type="object" confirm="Are you sure to proceed ?"/>
+                <button name="cancel_order" states="approved" string="Cancel" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+                <button name="reject_order" states="confirm" string="Reject" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+                <button name="so_register_scheduler" states="approved" string="SO Register" type="object"  invisible="1"/>
+				<button name="kg_email_attachment" states="approved" string="Send by Mail" type="object" class="oe_highlight" invisible="1"/>
+
+                <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done,cancel" statusbar_colors='{"draft":"blue"}'/>
+			</header>
+                <group>
+                    <group> 
+                    <field name="pricelist_id" invisible="1"/>                    
+                    <field name="name"/>
+                    <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
+                    <field name="payment_mode"/>
+                    <field name="freight_charges"/>
+                    <field name="so_type" required="1" on_change="onchange_type(so_type,so_flag)" attrs="{'readonly': [('so_reonly_flag', '=', True)]}"/>
+                    <field name="amc_from" attrs="{'invisible': [('so_type','!=','amc')],'required':[('so_type','=','amc')]}"/>
+                    <field name="amc_to" attrs="{'invisible': [('so_type','!=','amc')],'required':[('so_type','=','amc')]}"/>
+                    <field name="gp_id" attrs="{'invisible': [('so_type','!=','service')],'required':[('so_type','=','service')]}"/>
+					<field name="delivery_mode"/>
+                    <field name="so_bill" invisible="1"/>
+                    <field name="so_reonly_flag" invisible="1"/>
+                    <field name="so_flag" id = "so_flag" invisible="1"/> 
+                    <field name="amend_flag" invisible="1"/> 
+                    <field name="button_flag" invisible="1"/> 
+					<field name="payment_type" attrs="{'invisible': [('so_type','=','service')],'required':[('so_type','!=','service')]}"/>
+                    </group> 
+                    <group>					
+					<field name="date"/>
+					<field name="partner_address"  class="aplhanum_expect"  />
+					<field name="quot_ref_no" class="aplhanum_expect"  />
+					<field name="dep_name"/>
+					<field name="price"/>
+					<field name="warranty"  class="aplhanum_expect"  />
+					<field name="currency_id" invisible="1"/>
+					<field name="origin" invisible="1"/>
+                    </group>
+				</group>
+				
+				<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">
+					<group>	
+						<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+					</group>
+					<group>												
+						<field name="cancel_remark" attrs="{'invisible':[('state','in',['draft','reject','confirm'])], 'readonly': [('state','in',['cancel'])]}"/>												
+					</group>
+				</group>					
+				<notebook>
+				<page string="Item Details" attrs="{'invisible': [('so_flag', '=', False)]}">
+				<field colspan="4" mode="tree" name="service_order_line" nolabel="1" widget="one2many_list" >
+				  <tree string="Service order Line" delete="true"> 
+						<field name="product_id"/>
+						<field name="brand_id"/>
+						<field name="product_uom"/>
+						<field name="product_qty" required = "1" />
+						<field name="price_unit"/>
+						<field name="tot_price"/>
+						<field name="kg_discount"/>
+						<field name="kg_discount_per" invisible='1'/>
+						<field name="taxes_id"/>
+						<field name="price_subtotal"/>
+						<field name="kg_discount_per_value" invisible="1"/>
+					</tree>										
+				</field>
+				<group>
+					<group>
+					<field name="po_expenses_type1" invisible="1"/>
+					<field name="value1" attrs="{'readonly':[('po_expenses_type1','=',False)]}" invisible="1"/>
+					</group>
+					<group>
+					<field name="po_expenses_type2" invisible="1"/>
+					<field name="value2" attrs="{'readonly':[('po_expenses_type2','=',False)]}" invisible="1"/>
+					</group>					
+				</group>
+				</page>
+			   <page string="Select Service Indent" attrs="{'invisible':[('so_type','!=','service')]}">
+					<field name="kg_serindent_lines" >
+						<tree string="Service Indent Line" editable="bottom">
+						<field name="service_id" readonly="1"/>
+						<field name="product_id" readonly="1"/>
+						<field name="uom" readonly="1"/>
+						<field name="pending_qty" readonly="1"/>
+						</tree>
+					</field>
+					<button name="update_soindent" type='object' string="Save Record"/>					
+				</page>
+				<page string="Additonal Charges">
+					<field colspan="4" mode="tree" name="expense_line_id" nolabel="1" widget="one2many_list" >
+						<tree string="Expense Lines" editable="bottom"> 
+						<field name="description"  class="aplhanum_expect"  required="1"/>
+						<field name="expense_amt" required="1"/>
+						</tree>
+						</field>
+				</page>
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>	  				
+				<page string="Entry Info">
+					<group>
+						<field name="company_id"/>
+					<field name="active"/>
+					</group>
+					<group>
+						<group>
+							<field name="user_id"/>
+							<field name="confirmed_by" attrs="{'invisible':[('state','in',['draft'])]}"/>
+							<field name="approved_by" attrs="{'invisible':[('state','in',['draft','confirm'])]}"/>
+							<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft','confirm','approved'])]}"/>
+							<field name="update_user_id"/>
+						</group>
+						<group>
+							<field name="creation_date"/>
+							<field name="confirmed_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+							<field name="approved_date" attrs="{'invisible':[('state','in',['draft','confirm'])]}"/>
+							<field name="cancel_date" attrs="{'invisible':[('state','in',['draft','confirm','approved'])]}"/>
+							<field name="update_date"/>
+						</group>
+					</group>
+				</page>
+				</notebook>
+				<group class="oe_subtotal_footer oe_right">
+					<field name="line_amount_total"/>
+					<field name="discount"/>
+					<field name="other_charge"/>
+					<field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<div class="oe_subtotal_footer_separator oe_inline">
+					<label for="amount_total"/>
+					</div>
+					<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<button name="button_dummy"
+						states="draft" string="Update" type="object" class="oe_highlight"/>
+				</group>				
+			</form>
+		</field>
+		</record>
+        
+        <!-- Service Order Line Form  View -->
+        
+        <record id="view_kg_serviceorder_line_form" model="ir.ui.view">
+            <field name="name">view.kg.serviceorder.line.form</field>
+            <field name="model">kg.service.order.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Service Order Line" version="7.0">
+				<group>
+					<group>
+					<field name="product_id" required="1"  attrs = "{'readonly':[('service_flag','=',True)]}" on_change="onchange_product_id(product_id,product_uom)"/>
+					<field name="product_qty" required="1" on_change="onchange_qty(product_qty,soindent_qty,pending_qty,service_flag,price_unit)"/>
+					<field name="price_unit" attrs = "{'readonly':[('so_type_flag','=',True)]}" required="1" on_change="onchange_unit_price(price_unit,product_qty)"/>
+					<field name="soindent_line_id" invisible="1"/>
+					<field name="service_flag" invisible="1"/>
+					<field name="so_type_flag" invisible="1"/>
+					<field name="serial_number"/>
+					<field name="note"/>
+					</group>
+					<group>
+					<field name="taxes_id" widget="many2many_tags" attrs = "{'readonly':[('so_type_flag','=',True)]}"
+                        domain="[('parent_id','=',False),('type_tax_use','!=','sale')]"/>
+					<field name="tot_price"/>
+					<field name="product_uom" required="1" attrs = "{'readonly':[('so_type_flag','=',True)]}"/>
+					<field name="brand_id" attrs = "{'readonly':[('so_type_flag','=',True)]}"/>
+					<field name="soindent_qty" readonly="1"/>
+					<field name="kg_discount" attrs = "{'readonly':[('so_type_flag','=',True)]}" on_change="onchange_disc_amt(kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price)"/>
+					<field name="kg_discount_per" attrs = "{'readonly':[('so_type_flag','=',True)]}" on_change="onchange_discount_value_calc(kg_discount_per, product_qty, price_unit,tot_price)"/>
+					<field name="kg_discount_per_value" invisible="1"/>
+					<field name="kg_disc_amt_per" invisible="1"/>
+					<field name="pending_qty" invisible="1"/>
+					</group>
+				</group>
+				</form>
+			</field>
+		</record>
+        
+        <!--
+        =====================
+        Tree view
+        =====================
+        -->
+        <record id="view_kg_serviceorder_tree" model="ir.ui.view">
+            <field name="name">kg.serviceorder.tree.view</field>
+            <field name="model">kg.service.order</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:state=='confirm';blue:state=='draft';black:state=='approved';gray:state=='cancel'" 
+							string="Service Order" toolbar="1" >
+                    <field name="name"/>
+					<field name="date"/>
+					<field name="so_type"/>
+					<field name="partner_id"/>
+                    <field name="origin"/>
+                    <field name="amount_tax"/>
+                    <field name="amount_total"/>
+                    <field name="amend_flag" invisible="0"/> 
+					<field name="state"/>
+                </tree> 
+            </field>
+        </record>
+       
+       <!-- Search View Start -->
+
+		<record id="t_search_v_service_order" model="ir.ui.view">
+            <field name="name">Service Order Search</field>
+            <field name="model">kg.service.order</field>
+            <field name="arch" type="xml">
+                <search string="Service Order Search">
+					<field name="name" string="SO No" filter_domain="[('name','ilike',self)]" />
+					<field name="partner_id" string="Supplier" filter_domain="[('partner_id','ilike',self)]" />
+					<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="confirm" string="WFA" domain="[('state','=','confirm')]"/>					
+					<filter icon="terp-check" name="approved" string="Approved" domain="[('state','=','approved')]"/>					
+					<filter icon="terp-check" name="inv" string="Invoiced" domain="[('state','=','inv')]"/>					
+					<filter icon="terp-check" name="cancel" string="Cancelled" domain="[('state','=','cancel')]"/>					
+					<separator/>
+                    <group expand="0" string="Group By...">
+						<filter string="Supplier" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Amendment Date" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'date'}"/>
+					</group>
+                </search>
+			</field>
+		</record>
+		
+		<!--
+        =====================
+        Form Action
+        ===================== -->
+
+		<record id="action_kg_serviceorder_form" model="ir.actions.act_window">
+				<field name="name">Service order</field>
+				<field name="type">ir.actions.act_window</field>
+				<field name="res_model">kg.service.order</field>
+				<field name="view_type">form</field>
+				<field name="view_id" ref="view_kg_serviceorder_tree"/>
+				<field name="search_view_id" ref="t_search_v_service_order"/>
+		</record>
+	
+		<!-- Service order line tree view -->
+	
+		<record id="view_kg_serviceorder_line_tree" model="ir.ui.view">
+            <field name="name">kg.deporder.line.tree</field>
+            <field name="model">kg.service.order.line</field>
+            <field name="type">tree</field>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                <tree string="Service order Line">
+                    <field name="service_id"/>
+                    <field name="product_id"/>
+                    <field name="product_qty"/>
+                    <field name="pending_qty"/>           
+                </tree>
+            </field>
+        </record>
+        
+        
+<!--
+		<record forcecreate="1" id="seq_kg_service_order" model="ir.sequence.type"> 
+			<field name="name">Service Order</field>
+			<field name="code">kg.service.order</field>
+		</record>
+
+		<record forcecreate="1" id="seq_kg_service_order_id" model="ir.sequence">
+			  <field name="name">Service Order</field>
+			  <field name="code">kg.service.order</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">SO/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>        
+-->
+	
+    </data>
+</openerp>

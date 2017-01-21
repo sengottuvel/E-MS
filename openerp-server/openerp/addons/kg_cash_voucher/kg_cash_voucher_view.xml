@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	<record id="kg_cash_voucher_form_view" model="ir.ui.view">
+			<field name="name">kg.cash.voucher.form</field>
+			<field name="model">kg.cash.voucher</field>
+			<field name="arch" type="xml">
+				<form string="Cash Voucher" version="7.0">
+					
+					<header>
+						
+						
+						<button name="confirm_entry" string="Confirm" type="object" states="draft" 
+						class="oe_highlight"/>
+						
+						<button name="approve_entry" string="Approve" type="object" states="confirmed" 
+						class="oe_highlight"/>
+						
+			
+					</header>
+				
+				<group>
+					<group>
+						<field name="created_by"/>
+						
+						<field name="name"/>
+						
+						
+						<field name="paid_to"/>
+						<field name="state"/>
+
+					</group>
+					<group>
+						<field name="creation_date"/>
+						<field name="date" required="1"/>
+						<field name="partner_id"/>
+						<field name="amount"/>
+						
+						
+						<field name="dummy_field" invisible="1"/>
+						<field name="dummy_int" invisible="1"/>
+						<field name="payment_type" invisible="1"/>
+					</group>
+					
+				</group>
+				<separator string="Narration" colspan="2" col="2" />
+				<field name="narration" placeholder="Narration..."/>
+				   
+					</form>
+			</field> 
+	  
+
+		</record>
+		
+		<record id="kg_cash_voucher_tree_view" model="ir.ui.view">
+			<field name="name">kg.cash.voucher.tree</field>
+			<field name="model">kg.cash.voucher</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Cash Voucher">
+					<field name="name"/>
+					<field name="date"/>
+					<field name="narration"/>
+					<field name="amount"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="cash_voucher_action_form" model="ir.actions.act_window">
+			<field name="name">Cash Voucher</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.cash.voucher</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_cash_voucher_tree_view"/>
+		</record>
+
+</data>
+	</openerp>

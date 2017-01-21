@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	<!-- Form View -->
+	
+		<record id="kg_purchaseindent_close_form_view" model="ir.ui.view">
+				<field name="name">Purchase Indent Manual Closing</field>
+				<field name="model">kg.purchaseindent.manual.closing</field>
+				<field name="arch" type="xml">
+				<form string="Purchase Indent Manual Closing Form" version="7.0">
+				<header>
+					<button name="entry_approve" type="object" string="Approve" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="entry_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
+
+					<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,cancel,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>					
+				</header>			
+					<group>
+						<group>
+							<field name="name" invisible='1'/>
+							<field name="department_id" invisible="1"/>
+							<field name="purchaseindent_id"/>
+						</group>											
+						<group>
+							<field name="trans_date"/>							
+														
+						</group>					
+					</group>
+                 		<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">
+							<group>	
+								<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+							</group>
+							<group>												
+								<field name="cancel_remark" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))] , 'readonly': [('state','in',['cancel'])]}"/>												
+							</group>
+						</group>						
+					<button name="load_item" type="object" string="Load Item" states="draft" class="oe_highlight"/>				   
+					<notebook>
+						<page string="Line Details">
+						<field colspan="4" mode="tree" name="line_ids" nolabel="1" widget="one2many_list" >
+							<tree string="Department Indent Manual Closing Line" editable="botttom" delete="false"> 
+								<field name="purchaseindent_id" readonly="1"/>								
+														
+								<field name="product_id" readonly="1"/>								
+								<field name="brand_id" readonly="1"/>								
+								<field name="uom_id" readonly="1"/>								
+								<field name="quantity" readonly="1"/>								
+								<field name="pen_qty" readonly="1"/>								
+													
+															
+														
+								<field name="close_state"/>								
+								<field name="remark" attrs="{'required': [('close_state','=','close')]}"/>								
+							</tree>					
+							<form string="Department Indent Manual Closing Line">
+								<group>
+									<group>
+										<field name="product_id"/>		
+														
+										<field name="uom_id"/>										
+										<field name="quantity"/>										
+										<field name="pen_qty"/>										
+																			
+									</group>
+									<group>
+										<field name="discount"/>										
+						
+										<field name="remark"/>
+									</group>
+								</group>
+							</form>
+						</field>
+					</page>		
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>								
+					<page string="Entry Info">
+						<group>
+							<field name="company_id"/>
+							<field name="active"/>							
+						</group>
+						<group>
+							<group>
+								<field name="user_id"/>
+								<field name="conf_user_id" attrs="{'invisible':[('state','in',['draft'])]}"/>
+								<field name="rej_user_id" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+								<field name="app_user_id" attrs="{'invisible':[('state','in',['draft','confirm','reject'])]}"/>
+								<field name="can_user_id" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+								<field name="update_user_id"/>
+							</group>
+							<group>
+								<field name="date"/>
+								<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+								<field name="reject_date" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+								<field name="approve_date" attrs="{'invisible':[('state','in',['draft','confirm','reject'])]}"/>
+								<field name="cancel_date" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+								<field name="update_date"/>
+							</group>
+						</group>
+					</page>	
+					</notebook>					
+				</form>
+			</field>
+		</record>
+
+	<!-- Tree View -->
+		
+		<record id="kg_purchaseindent_close_tree_view" model="ir.ui.view">
+			<field name="name">Purchase Indent Manual Closing</field>
+			<field name="model">kg.purchaseindent.manual.closing</field>
+			<field eval="8" name="priority"/>
+			<field name="arch" type="xml" >
+				<tree colors="blue:state == 'draft';red:state == 'confirm'
+						;black:state == 'approved';gray:state == 'reject'" 
+								toolbar="True" string="Purchase Indent Manual Closing">				
+					<field name="c_date"/>
+					<field name="name" invisible="1"/>
+					<field name="trans_date"/>
+			
+				
+					<field name="state"/>					
+					<field name="user_id"/>					
+				</tree>
+			</field>
+		</record>
+		
+	<!-- Search View -->
+		
+		<record id="kg_purchaseindent_close_search_view" model="ir.ui.view">
+            <field name="name">Purchase Indent Manual Closing</field>
+            <field name="model">kg.purchaseindent.manual.closing</field>
+            <field name="arch" type="xml">
+                <search string="Department Indent Manual Closing">
+					<field name="name" string="Department Indent Manual Closing" filter_domain="['|',('name','ilike',self)]"/>
+					<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="confirm" string="Confirmed" domain="[('state','=','confirm')]"/>
+					<filter icon="terp-check" name="approved" string="Approved" domain="[('state','=','approved')]"/>
+					<filter icon="terp-check" name="rejected" string="Rejected" domain="[('state','=','reject')]"/>
+					<filter icon="terp-check" name="cancel" string="Cancel" domain="[('state','=','cancel')]"/>
+					<separator/>
+                    <group expand="0" string="Group By...">
+          
+                        <filter string="Date" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'trans_date'}"/>
+                        <filter string="Created By" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+					</group>
+                </search>
+			</field>
+		</record>		
+			
+    <record forcecreate="1" id="purchaseindent_manualclosing_note_seq" model="ir.sequence.type">	
+		<field name="name">Purchase Indent Manual Closing</field>
+		<field name="code">kg.purchaseindent.manual.closing</field>
+	</record>
+
+	<record forcecreate="1" id="seq_purchaseindent_manualclosing_note" model="ir.sequence">
+	  <field name="name">Purchase Indent Manual Closing</field>
+	  <field name="code">kg.purchaseindent.manual.closing</field>
+	  <field name="padding" eval="4"/>
+	  <field name="prefix">PIMC/%(year)s/</field>
+	  <field name="reset_sequence">yearly_reset</field>
+	</record>
+	
+    
+	<!-- Menu Action -->			
+		
+		 <record id="purchaseindent_close_form_action" model="ir.actions.act_window">
+			<field name="name">Purchase Indent Manual Closing</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.purchaseindent.manual.closing</field>
+			<field name="view_type">form</field>
+			<field name="context">{}</field>
+			<field name="view_id" ref="kg_purchaseindent_close_tree_view"/>
+			<field name="search_view_id" ref="kg_purchaseindent_close_search_view"/>
+		</record>	
+		
+	<!-- Menu Items -->
+	
+				
+		<menuitem action="purchaseindent_close_form_action" id="kg_purchaseindent_close_action_menu" name="Purchase Indent" parent="kg_menus.mpm_manual_closing_menu" sequence="4"/>
+
+		
+	
+	</data>
+</openerp>

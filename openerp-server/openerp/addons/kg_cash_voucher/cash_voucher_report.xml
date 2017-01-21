@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    
+
+		<report string="Cash Voucher Copy"
+        model="kg.cash.voucher"
+        auto="True"
+        name="onscreen_cash_voucher_report"
+        rml="kg_cash_voucher/report/Cash_Voucher.jrxml"
+        id="po_jasper_report_menu" 
+        menu="True"
+        header="False"
+        />
+
+
+    </data>
+</openerp>

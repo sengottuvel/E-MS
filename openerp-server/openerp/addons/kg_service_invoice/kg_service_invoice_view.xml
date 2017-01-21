@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+          =====================
+          Form view
+          =====================
+        -->
+
+        <record id="view_kg_serviccinv_form" model="ir.ui.view">
+		<field name="name">view.kg.serviceinvoice.form</field>
+		<field name="model">kg.service.invoice</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+		<form string="Service Invoice" version="7.0">
+			<header>
+				<button name="draft_order" states="cancel" string="Draft" type="object" class="oe_highlight"/>
+                <button name="confirm_order" states="draft" string="Confirm" type="object"/>
+                <button name="approve_order" states="confirm" string="Approve" type="object"/>
+                <button name="cancel_order" states="done" string="Cancle" type="object" class="oe_highlight"/>
+                <button name="so_direct_print" states="done" string="Print SO" type="object" class="oe_highlight"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done,cancel" statusbar_colors='{"draft":"blue"}'/>
+			</header>
+                <group>
+                    <group>
+					<field name="name" readonly="1"/>
+					<field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
+                    <field name="user_id" on_change="onchange_user_id(user_id)" invisible="1"/>
+                    <field name="service_order_id"/>
+                    <field name="service_order_date"/>
+                    <field name="pricelist_id" invisible="1"/>
+                    <field name="payment_mode"/>
+                    <field name="state" readonly="1"/>
+                    <field name="active"/>
+                    </group> 
+                    <group>					
+					<field name="date"/>
+					<field name="partner_address"/>
+					<field name="supplier_invoice_no"/>
+					<field name="supplier_invoice_date"/>
+					<field name="dep_name"/>
+					<field name="payment_type"/>
+                    </group>
+				</group>
+					
+				<notebook>
+				<page string="Service Invoice">
+				<field colspan="4" mode="tree" name="service_invoice_line" nolabel="1" widget="one2many_list" attrs = "{'readonly':[('state','=','approved')]}">
+				  <tree string="Service Invoice Line">
+					    <field name="product_id"/> 
+						<field name="product_qty"/>
+						<field name="price_unit"/>
+						<field name="kg_discount"/>
+						<field name="kg_discount_per"/>
+						<field name="taxes_id"/>
+						<field name="price_subtotal"/>
+						<field name="kg_discount_per_value" invisible="1"/>
+					</tree>										
+				</field>
+                    
+				<group>
+					<group>
+					<field name="po_expenses_type1" invisible="1"/>
+					<field name="value1" attrs="{'readonly':[('po_expenses_type1','=',False)]}" invisible="1"/>
+					</group>
+					<group>
+					<field name="po_expenses_type2" invisible="1"/>
+					<field name="value2" attrs="{'readonly':[('po_expenses_type2','=',False)]}" invisible="1"/>
+					</group>					
+				</group>
+
+				<group class="oe_subtotal_footer oe_right">
+					<field name="discount"/>
+					<field name="other_charge"/>
+					<field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<div class="oe_subtotal_footer_separator oe_inline">
+					<label for="amount_total"/>
+					<button name="button_dummy"
+						states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+					</div>
+					<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+				</group>
+				</page>
+           
+			   <page string="Additonal Charges">
+					<field colspan="4" mode="tree" name="expense_line_id" nolabel="1" widget="one2many_list" >
+						<tree string="Expense Lines" editable="bottom"> 
+						<field name="description" required="1"/>
+						<field name="expense_amt" required="1"/>
+						</tree>
+						</field>
+				</page>
+					
+				<page string="Remarks">
+					<field name="remark"/>				
+				</page>
+				<page string="Entry Info">
+					<group>
+						<field name="company_id"/>
+					</group>
+					<group>
+						<group>
+							<field name="user_id"/>
+							<field name="conf_user_id" attrs="{'invisible':[('state','in',['draft'])]}"/>
+							<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','approved','cancel'])]}"/>
+							<field name="app_user_id" attrs="{'invisible':[('state','in',['draft','confirm'])]}"/>
+							<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>
+							<field name="update_user_id"/>
+						</group>
+						<group>
+							<field name="creation_date"/>
+							<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+							<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirm','approved','cancel'])]}"/>
+							<field name="approved_date" attrs="{'invisible':[('state','in',['draft','confirm'])]}"/>
+							<field name="cancel_date" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>
+							<field name="update_date"/>
+						</group>
+					</group>
+				</page>
+				</notebook>		
+			</form>
+		</field>
+		</record>
+        
+        <!-- Service Invoice Line Form  View -->
+        
+        <record id="view_kg_serviceinv_line_form" model="ir.ui.view">
+            <field name="name">view.kg.inv.line.form</field>
+            <field name="model">kg.service.invoice.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Service Invoice Line" version="7.0">
+				<group>
+					
+					<group>
+					 <field name="product_id"/>
+					 <field name="product_uom"/>
+					<field name="product_qty"/>
+					<field name="price_unit" required="1"/>
+					<field name="kg_discount_per" on_change="onchange_discount_value_calc(kg_discount_per, product_qty, price_unit)"/>
+					<field name="note"/>
+					</group>
+					
+					<group>
+					<field name="kg_discount" on_change="onchange_disc_amt(kg_discount,product_qty,price_unit,kg_disc_amt_per)"/>
+					<field name="kg_discount_per_value" invisible="1"/>
+					<field name="kg_disc_amt_per" invisible="1"/>					
+					<field name="taxes_id" widget="many2many_tags"
+                        domain="[('parent_id','=',False),('type_tax_use','!=','sale')]"/>
+					</group>
+					
+				</group>
+				</form>
+			</field>
+		</record>
+        
+
+        <!--
+        =====================
+        Tree view
+        =====================
+        -->
+        <record id="view_kg_serviceinv_tree" model="ir.ui.view">
+            <field name="name">kg.serviceinv.tree.view</field>
+            <field name="model">kg.service.invoice</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Service Invoice">
+                    <field name="name"/>
+					<field name="date"/>
+                    <field name="dep_name"/>
+                    <field name="user_id"/>
+					<field name="state"/>
+                </tree> 
+            </field>
+        </record>
+       
+       <!--
+        =====================
+        Form Action
+        ===================== -->
+
+	<record id="action_kg_serviceinv_form" model="ir.actions.act_window">
+			<field name="name">Direct Service Bill</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.service.invoice</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="view_kg_serviceinv_tree"/>
+	</record>
+	
+	
+    </data>
+</openerp>

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		
+        <record model="ir.ui.view" id="kg_partner_form_view">
+        <field name="name">kg_partner_form_view</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">	
+			<xpath expr="//sheet" position="before">
+			<header>
+			<button name="entry_cancel" type="object" string="Cancel" attrs="{'invisible':[('modify','=','no')]}" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+				<button name="entry_draft" class="oe_highlight" type="object" string="Set To Draft" attrs = "{'invisible':[('sup_state','not in',('cancel'))]}"/> 
+				<field name="sup_state" widget="statusbar" statusbar_visible="draft,approve,confirm,cancel,reject" statusbar_colors='{"draft":"blue","approve":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>									
+			</header>
+			</xpath>
+			
+		<field name="city" position="after">
+		<field name="city_id" on_change="onchange_city(city_id)" style="width: 40%%" placeholder="City" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		</field>
+		
+		<field name="name" position="before">
+		<field name="company_type" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}" required='1'/>
+		</field>
+		
+		<field name="is_company" position="replace">
+		<field name="is_company" invisible="1"/>
+		<field name="tin_no" class="aplhanum_expect" attrs = "{'readonly':[('sup_state','in',('approved','reject','cancel'))]}" placeholder="TIN Number"/>
+
+		</field>
+		
+		<field name="zip" position="replace">
+			<field name="zip" class="aplhanum_expect" on_change="onchange_zip(zip)" placeholder="ZIP" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+			<field name="language" invisible="1"/>
+		</field>
+		
+		<field name="birthdate" position="replace">
+		<field name="supply_type" attrs = "{'invisible':['|',('customer','=',True),('dealer','=',True)],'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<field name="tds" attrs = "{'required':[('company_type','=','individual')],'invisible':[('customer','=',True)],'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<field name="tan_no" class="aplhanum_expect" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<field name="cst_no" class="aplhanum_expect" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<field name="vat_no" class="aplhanum_expect" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<field name="cheque_in_favour" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}" invisible='1'/>
+		<field name="economic_category" invisible='1'/>
+		<field name="dealer_id" invisible='1'/>
+		<field name="gst_no" class="aplhanum_expect" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		</field>
+		
+		<field name="ean13" position="replace">
+		<field name="grade" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<field name="pan_no" class="aplhanum_expect" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<field name="adhar_id" class="aplhanum_expect" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<field name="sector" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}" invisible='1'/>
+		<field name="user_ref_id" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}" invisible='1'/>
+		</field>
+		
+		<field name="ref" position="replace">
+		<field name="payment_id" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		<div >
+			<label for="advance_limit"  string="Advance"  attrs="{'invisible': [('customer','=',True)],'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+			<label for="advance_limit" string="Credit" attrs="{'invisible': [('supplier','=',True)],'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		</div>
+		<field name="advance_limit" nolabel="1" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		</field>		
+				
+		<field name="mobile" position="after">
+		<field name="mobile_2" class="aplhanum_expect" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		</field>
+		
+		<field name="color" position="replace">
+		<field name="delivery_id" attrs = "{'invisible':[('dealer','=',True)],'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		</field>
+
+		<field name="function" position="replace">
+		<field name="contact_person" class="aplhanum_expect" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		</field>
+		
+		<field name="title" position="replace">
+		<field name="group_flag" invisible="1"/>
+		<field name="contractor" invisible="1"/>
+		<field name="tin_flag" invisible="1"/>
+		</field>
+		
+		<field name="city" position="replace">
+		<field name="city" invisible="1"/>
+		<field name="landmark"  class="aplhanum_expect" placeholder="Landmark" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+		</field>
+		
+		<field name="category_id" position="replace">
+		<field name="category_id" invisible="1"/>
+		<field name="con_designation" invisible="1"/>
+		<field name="con_whatsapp" invisible="1"/>
+		<field name="partner_state" invisible="1"/> 
+		<field name="dealer" invisible="1"/> 
+		<field name="modify" invisible="1"/> 
+		</field>		
+		
+		<xpath expr = "//page[@string='Additional Contacts']" position="after">
+				<page string="Delivery Address" invisible='1'>
+				<field colspan="4" mode="tree" name="delivery_ids" nolabel="1" widget="one2many_list" >
+					<tree string="Delivery Address"> 
+						<field name="landmark"/>
+						<field name="street" string="Street1"/>
+						<field name="street1" string="Street2"/>
+						<field name="city_id"/>
+						<field name="contact_no"/>
+						<field name="default"/>
+					</tree>
+					<form string="Delivery Address"	>
+						<group>
+							<group>
+								<field name="landmark" placeholder="Landmark"/>
+								<field name="street" string="Street1"/>
+								<field name="street1" string="Street2"/>
+								<field name="city_id"/>
+								<field name="state_id"/>
+								<field name="country_id"/>
+							</group>
+							<group>
+								<field name="contact_no"/>
+								<field name="zip"/>
+								<field name="default"/>
+							</group>
+						</group>
+					</form>
+				</field>
+				</page>
+				</xpath>
+				
+		<xpath expr = "//page[@string='Delivery Address']" position="after">
+				<page string="Billing Address" invisible='1'>
+				<field colspan="4" mode="tree" name="billing_ids" nolabel="1" widget="one2many_list" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}">
+					<tree string="Billing Address" editable='bottom'> 
+						<field name="landmark"/>
+						<field name="street" string="Street1"/>
+						<field name="street1" string="Street2"/>
+						<field name="city_id"/>
+						<field name="contact_no"/>
+						<field name="default"/>
+					</tree>
+					<form string="Billing Address"	attrs="{'readonly': [('sup_state','!=', 'draft')]}">
+						<group>
+							<group>
+								<field name="landmark" placeholder="Landmark"/>
+								<field name="street" string="Street1"/>
+								<field name="street1" string="Street2"/>
+								<field name="city_id"/>
+								<field name="state_id"/>
+								<field name="country_id"/>
+							</group>
+							<group>
+								<field name="contact_no"/>
+								<field name="zip"/>
+								<field name="default"/>
+							</group>
+						</group>
+					</form>
+				</field>
+				</page>
+			</xpath>
+		
+		<!-- Bank Tab Menu -->
+		
+		<xpath expr = "//page[@string='Billing Address']" position="after">
+				<page string="Bank Details" attrs="{'readonly': [('sup_state','!=', 'draft')]}" invisible='1'>
+					<group>
+				<field name="bank_ids" nolabel="1" context="{'default_partner_id': active_id, 'form_view_ref': 'base.view_partner_bank_form'}" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}">
+				<form string="Bank" version="7.0">
+				<sheet>
+				<group>
+						<field name="acc_number" colspan="4"/>
+					<group string="Bank Account Owner">
+						<field name="owner_name"/>
+						<field name="street"/>
+						<field name="city"/>
+						<field name="state_id" string="State"/>
+						<field name="country_id"/>
+						<field name="zip"/>
+					</group>
+					<group string="Information About The Bank">
+						<field name="bank"/>
+						<field name="bank_name"/>
+						<field name="bank_bic"/>
+					</group>
+				</group>	
+				</sheet>
+			</form>
+			</field>
+			</group>
+			</page>	
+		</xpath>
+		
+		<xpath expr = "//page[@string='Bank Details']" position="after">
+				<page string="Consultant Fee" attrs="{'invisible':[('dealer','!=',True)]}">
+				<field colspan="4" mode="tree" name="consult_ids" nolabel="1" widget="one2many_list" >
+					<tree string="Consult Fee" editable="bottom"> 
+						<field name="effective_date" attrs="{'readonly':[('read_flag','=',True)]}"/>
+						<field name="value" attrs="{'readonly':[('read_flag','=',True)]}"/>
+						<field name="state" readonly="1"/>
+						<field name="read_flag" readonly="1" invisible="1"/>
+					</tree>
+					<form string="Billing Address" >
+						<group>
+							<group>
+								<field name="effective_date"/>
+								<field name="value"/>
+							</group>
+							<group>
+								<field name="state" readonly="1"/>
+								<field name="read_flag" invisible="1"/>
+							</group>
+						</group>
+					</form>
+				</field>
+			</page>	
+		</xpath>
+		</field>
+	</record>
+	
+	
+	<record model="ir.ui.view" id="kg_partner_tree">
+		<field name="name">res.partner.form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_tree"/>
+		<field name="arch" type="xml">
+			<field name="phone" position="replace"> 
+			<field name="phone" invisible="1"/> 
+			</field>					
+		</field>
+	</record>
+	
+	<!-- Audit Log Xml Data End-->
+	
+	<record id="kg_action_customer_form" model="ir.actions.act_window">
+		<field name="name">Customer</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form,kanban</field>
+		<field name="context">{'default_customer': True,'default_supplier': False,'default_contractor': False,'default_dealer': False,'default_group_flag': False}</field>
+		<field name="domain">[('customer','=',True),('contact','=',False)]</field>
+	</record>
+	
+        
+	<record id="kg_action_dealer_form" model="ir.actions.act_window">
+		<field name="name">Dealer</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form,kanban</field>
+		<field name="context">{'default_dealer': True,'default_customer': False,'default_supplier': False,'default_contractor': False,'default_group_flag': False}</field>
+		<field name="domain">[('dealer','=',True),('contact','=',False)]</field>
+	</record>
+	
+	<record id="kg_action_contractor_form" model="ir.actions.act_window">
+		<field name="name">Contractor</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form,kanban</field>
+		<field name="context">{'default_contractor': True,'default_dealer': False,'default_customer': False,'default_supplier': False,'default_group_flag': False,'default_tin_flag': True}</field>
+		<field name="domain">[('contractor','=',True),('contact','=',False)]</field>
+	</record>
+	
+        
+	<record id="kg_action_group_form" model="ir.actions.act_window">
+		<field name="name">Groups</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form,kanban</field>
+		<field name="context">{'default_group_flag': True,'default_dealer': False,'default_customer': False,'default_supplier': False,'default_contractor': False}</field>
+		<field name="domain">[('dealer','=',True),('contact','=',False)]</field>
+	</record>
+        
+    </data>
+</openerp>

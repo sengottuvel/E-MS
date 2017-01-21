@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>	
+
+	<!-- Form View Start -->
+	
+		<record id="m_form_v_expense" model="ir.ui.view">
+			<field name="name">Expense Master Form</field>
+			<field name="model">kg.expense.master</field>
+			<field name="arch" type="xml">
+				<form string="Expense Master" version="7.0">					
+					<header>
+						<button name="entry_approve" type="object" string="Approve" states="confirmed" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_reject" type="object" string="Reject" states="confirmed" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_cancel" type="object" states="approved"  string="Cancel" attrs="{'invisible':[('modify','=','no')]}" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>	
+						<button name="entry_draft" type="object" states="cancel" string="Set To Draft" class="oe_highlight"/>	
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirmed,cancel,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>
+					</header>
+					<sheet>
+						<group>
+							<group>						
+								<field name="name" class="aplhanum_expect" attrs="{'readonly': [('state','in',['approved','reject','cancel'])]}"/>								
+								<field name="category" required="1" attrs="{'readonly': [('state','in',['approved','reject','cancel'])]}"/>				
+							</group>
+							<group>
+								<field name="code" class="aplhanum_expect" attrs="{'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+								<field name="ledger_id" attrs="{'readonly': [('state','in',['approved','reject','cancel'])]}" invisible='1'/>
+								<field name="modify" invisible="1"/>
+							</group>
+						</group>						
+						<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">
+							<group>	
+								<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+							</group>
+							<group>												
+								<field name="cancel_remark" attrs="{'invisible':[('state','in',['draft','confirmed'])], 'readonly': [('state','in',['cancel'])]}"/>	
+							</group>
+						</group>
+						<notebook>
+							<page string="Internal Notes">
+								<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+							</page>													
+							<page string="Entry Info">
+									<group>
+										<field name="company_id"/>
+										<field name="active"/>
+									</group>
+									<group>
+									<group>
+										<field name="user_id"/>
+										<field name="confirm_user_id" attrs="{'invisible':[('state','in',['draft'])]}"/>
+										<field name="ap_rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirmed'])]}"/>
+										<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft', 'confirmed','reject','approved'])]}"/>
+										<field name="update_user_id"/>
+									</group>
+									<group>
+										<field name="crt_date"/>
+										<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+										<field name="ap_rej_date" attrs="{'invisible':[('state','in',['draft', 'confirmed'])]}"/>
+										<field name="cancel_date" attrs="{'invisible':[('state','in',['draft', 'confirmed','reject','approved'])]}"/>
+										<field name="update_date"/>
+									</group>
+								</group>
+							</page>
+						</notebook>															
+					</sheet>
+				</form>
+			</field> 
+		</record>
+		
+		<!-- Form View End -->
+
+		<!-- Tree View Start -->
+		
+		<record id="m_tree_v_expense" model="ir.ui.view">
+			<field name="name">Expense Master Tree</field>
+			<field name="model">kg.expense.master</field>
+			<field name="arch" type="xml">
+				<tree colors="blue:state == 'draft';red:state == 'confirmed'
+						;black:state == 'approved';gray:state == 'reject';gray:state == 'cancel'" 
+								toolbar="True" string="Expense Master Tree">				
+					<field name="name"/>
+					<field name="code"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		
+		<!-- Tree View End -->
+
+		<!-- Search View Start -->
+
+		<record id="m_search_v_expense" model="ir.ui.view">
+            <field name="name">Expense Master Search</field>
+            <field name="model">kg.expense.master</field>
+            <field name="arch" type="xml">
+                <search string="Expense Master Template">
+					<field name="name" string="Expense Name"  filter_domain="['|', ('name','ilike',self), ('code','ilike',self)]" />
+					<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>				
+					<filter icon="terp-check" name="approve" string="Approved" domain="[('state','=','approved')]"/>				
+					<filter icon="terp-check" name="reject" string="Rejected" domain="[('state','=','reject')]"/>				
+					<separator/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Expense Name" icon="terp-personal" domain="[]" context="{'group_by':'name'}"/> 
+                        <filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+					</group>
+                </search>
+			</field>
+		</record>
+		
+		<!-- Search View End -->
+
+		<!-- Menu Action Start-->
+		
+		 <record id="mma_expense_master" model="ir.actions.act_window">
+			<field name="name">Expense Master</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.expense.master</field>
+			<field name="view_type">form</field>
+			<field name="context">{}</field>
+			<field name="view_id" ref="m_tree_v_expense"/>
+			<field name="search_view_id" ref="m_search_v_expense"/>
+		</record>	
+		
+		<!-- Menu Action End-->
+		
+		
+		<menuitem action="mma_expense_master" id="kg_expense_master" 
+				      parent="kg_menus.menu_store_master" sequence="7"/>
+		
+
+	</data>
+</openerp>

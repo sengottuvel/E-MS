@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_po_stm_report" model="ir.ui.view">
+            <field name="name">Purchase Order Register</field>
+            <field name="model">kg.po.register.wiz</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+             <form string="Purchase Order Register">
+<!--
+					<group>
+						<group string="Date">
+							<field name="date_from" required="1"/>
+							<field name="date_to" required="1"/>
+						</group>
+						<group string='Product Name'>
+							<field name="product_id"/>
+						</group>			
+						<group string='Supplier'>
+							<field name="supplier"/>
+						</group>
+						<group string='PO No'>
+							<field name="po_no"/>
+						</group>						
+					</group>
+-->
+                <separator string="Purchase Order Register" colspan="4"/>
+                   
+                    <notebook tabpos="up" colspan="4">
+						<page string="Filters" name="filters">
+						  <group>
+							<group string="PO Date">
+								<field name="date_from" required="1"/>
+								<field name="date_to" required="1"/>
+							</group>
+<!--
+							<group string="Status">
+								<field name="status"/>
+							</group>
+-->
+						   </group>
+						</page>
+                        
+                        <page string="Supplier" name="supplier">
+                            <group colspan="2" col="2">
+								<separator string="Supplier" colspan="2" col="2" />
+								<field name = "supplier" domain="[('supplier','=',True)]"/>
+							</group>
+                        </page>
+                        <page string="Product Name" name="product_id">
+                            <group colspan="2" col="2">
+								<separator string="Product Name" colspan="2" col="2" />
+								<field name = "product_id"/>
+							</group>
+                        </page>
+                        <page string="PO No" name="po_no">
+                            <group>
+								<group string="PO No">
+									<field name = "po_no"  widget="many2many_tags" domain="[('state','=','approved')]"/>
+									
+								</group>
+							</group>
+                        </page>
+                                                                         
+                    </notebook>                
+                    <separator colspan="4"/>
+						<group col="4" colspan="4">
+							<button icon="gtk-print" name="create_report" string="Generate" type="object" colspan="2" default_focus="1" />
+							<button icon="gtk-cancel" special="cancel" string="Cancel" colspan="2"/>
+						</group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_po_stm_report" model="ir.actions.act_window">  
+            <field name="name">Purchase Order Register</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kg.po.register.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <report string="PO Register"
+		model="kg.po.register.wiz"
+		auto="True"
+		name="jasper_kg_po_register"
+		rml="kg_reports/purchase/report/kg_po_register.jrxml"
+		id="po_jasper_register_id"
+		menu="False"
+		/>     
+           
+	
+
+    </data>
+</openerp>

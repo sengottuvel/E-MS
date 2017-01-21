@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	<record id="kg_production_order_form" model="ir.ui.view">
+			<field name="name">Production Order Form</field>
+			<field name="model">kg.production.order</field>
+			<field name="arch" type="xml">
+				<form string="Production Order" version="7.0">
+				<header>
+						<button name="entry_approve" type="object" string="Approve" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>
+				</header>
+				<sheet>
+					<group>
+						<group>
+							<field name="name" readonly='1'/>						
+						</group>
+						<group>
+							<field name="date" readonly='1'/>
+						</group>					
+					</group>
+                 		<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">
+							<group>	
+								<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject'])]}"/>
+							</group>
+						</group>					
+					<notebook>
+						<page string="Order Lines">
+							<field colspan="4" mode="tree" name="order_lines" nolabel="1" widget="one2many_list" attrs="{'readonly':[('state','in',('approved','rejected'))]}">
+							  <tree string="Order Lines" editable='bottom'> 
+									<field name="product_id" on_change="onchange_product_id(product_id,uom)"/>
+									<field name="uom" readonly='1'/>
+									<field name="qty"/>
+									<field name="remarks"/>
+								</tree>
+							</field>
+						</page>						
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>						
+                        <page string="Entry Info">
+							<group>
+							<group>
+								<field name="company_id" readonly='1'/>
+								<field name="active"/>
+							</group>
+							</group>							
+							<group>
+								<group>
+									<field name="user_id"/>
+									<field name="conf_user_id" attrs="{'invisible': [('state','=', 'draft')]}"/>
+									<field name="app_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))]}"/>
+									<field name="rej_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','approved','cancel'))]}"/>
+									<field name="updated_by"/>
+								</group>
+								<group>
+									<field name="creation_date"/>
+									<field name="confirm_date" attrs="{'invisible': [('state','=', 'draft')]}"/>
+									<field name="approve_date" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))]}"/>
+									<field name="reject_date" attrs="{'invisible': [('state','in', ('draft','confirm','approved','cancel'))]}"/>							
+									<field name="updated_date"/>	
+								</group>
+							</group>
+                        </page>                        
+                    </notebook>					
+					</sheet>
+				</form>
+			</field> 
+		</record>
+		
+<!--
+			search view
+			
+-->
+		
+        <record id="kg_production_order_search" model="ir.ui.view">
+            <field name="name">Production Order Search</field>
+            <field name="model">kg.production.order</field>
+            <field name="arch" type="xml">
+                <search string="Inward type">
+                    <field name="name" string="Order Number"/>
+					<group expand="0" string="Group By...">
+						<filter string="Status" context="{'group_by': 'state'}"/>
+					</group>                    
+                </search>
+            </field>
+        </record>		
+		
+		
+		<record id="kg_production_order_tree" model="ir.ui.view">
+			<field name="name">Production Order Tree</field>
+			<field name="model">kg.production.order</field>
+			<field name="arch" type="xml">
+				<tree toolbar="True" string="Production Order" colors="blue:state == 'draft';red:state == 'confirm';black:state == 'approved';grey:state == 'reject'">
+					<field name="name"/>
+					<field name="date"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		
+		 <record id="kg_production_order_action" model="ir.actions.act_window">
+			<field name="name">Production Order</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.production.order</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_production_order_tree"/>
+		</record>
+		
+		
+				<menuitem id="kg_production_order_id" name="Production" parent="kg_menus.main_indent_menu" sequence="1"/>
+
+					<menuitem 
+							id="menu_production_order" 
+							name="Production Order" 
+							parent="kg_production_order_id"
+							sequence="1"
+							action="kg_production_order_action"
+							/>
+							
+
+
+
+		<record forcecreate="1" id="seq_kg_production_order" model="ir.sequence.type"> 
+			<field name="name">Production Order</field>
+			<field name="code">kg.production.order</field>
+		</record>
+
+		<record forcecreate="1" id="seq_kg_production_order_id" model="ir.sequence">
+			  <field name="name">Production Order</field>
+			  <field name="code">kg.production.order</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">DI/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>
+
+</data>
+	</openerp>

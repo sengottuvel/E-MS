@@ -1,0 +1,1209 @@
+7884987668 [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.JRException: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:266)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:157)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by: org.postgresql.util.PSQLException: The column index is out of range: 8, number of columns: 7.
+	at org.postgresql.core.v3.SimpleParameterList.bind(SimpleParameterList.java:53)
+	at org.postgresql.core.v3.SimpleParameterList.setLiteralParameter(SimpleParameterList.java:114)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.bindLiteral(AbstractJdbc2Statement.java:2143)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setInt(AbstractJdbc2Statement.java:1186)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:407)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:283)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:258)
+	... 20 more
+Caused by:
+net.sf.jasperreports.engine.JRException: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:266)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:157)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: org.postgresql.util.PSQLException: The column index is out of range: 8, number of columns: 7.
+	at org.postgresql.core.v3.SimpleParameterList.bind(SimpleParameterList.java:53)
+	at org.postgresql.core.v3.SimpleParameterList.setLiteralParameter(SimpleParameterList.java:114)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.bindLiteral(AbstractJdbc2Statement.java:2143)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setInt(AbstractJdbc2Statement.java:1186)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:407)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:283)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:258)
+	... 20 more
+7885024955 [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.JRException: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:266)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:157)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by: org.postgresql.util.PSQLException: The column index is out of range: 8, number of columns: 7.
+	at org.postgresql.core.v3.SimpleParameterList.bind(SimpleParameterList.java:53)
+	at org.postgresql.core.v3.SimpleParameterList.setLiteralParameter(SimpleParameterList.java:114)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.bindLiteral(AbstractJdbc2Statement.java:2143)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setInt(AbstractJdbc2Statement.java:1186)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:407)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:283)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:258)
+	... 20 more
+Caused by:
+net.sf.jasperreports.engine.JRException: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:266)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:157)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: org.postgresql.util.PSQLException: The column index is out of range: 8, number of columns: 7.
+	at org.postgresql.core.v3.SimpleParameterList.bind(SimpleParameterList.java:53)
+	at org.postgresql.core.v3.SimpleParameterList.setLiteralParameter(SimpleParameterList.java:114)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.bindLiteral(AbstractJdbc2Statement.java:2143)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setInt(AbstractJdbc2Statement.java:1186)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:407)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:283)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:258)
+	... 20 more
+7885031065 [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.JRException: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:266)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:157)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by: org.postgresql.util.PSQLException: The column index is out of range: 8, number of columns: 7.
+	at org.postgresql.core.v3.SimpleParameterList.bind(SimpleParameterList.java:53)
+	at org.postgresql.core.v3.SimpleParameterList.setLiteralParameter(SimpleParameterList.java:114)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.bindLiteral(AbstractJdbc2Statement.java:2143)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setInt(AbstractJdbc2Statement.java:1186)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:407)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:283)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:258)
+	... 20 more
+Caused by:
+net.sf.jasperreports.engine.JRException: Error preparing statement for executing the report query : 
+
+select distinct emp_name,
+trim(TO_CHAR((sum(avl_bal::numeric) OVER (PARTITION by emp_name)), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+overall_amount_txt,company,user_name,company_refer_id,new_date,current_date,from_date,to_date,company_name,street1,street2,city,zip,phone,fax,email,stores_name,ref_street1,ref_street2,ref_city,ref_zip from (
+select emp_code,emp_name,avl_bal,
+trim(TO_CHAR((avl_bal), '999G999G99G999G99G99G990D99')) as avl_bal_txt,
+trim(TO_CHAR((purchase), '999G999G99G999G99G99G990D99')) as purchase_txt,
+trim(TO_CHAR((overall_amount), '999G999G99G999G99G99G990D99')) as overall_amount_txt,
+user_part.name as user_name,company,company_refer_id,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY') AS Current_Date,
+to_char('2016-04-01'::date, 'DD-MM-YYYY') AS from_date,
+to_char('2016-04-28'::date, 'DD-MM-YYYY') AS to_date,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+refpart.street as ref_street1,
+refpart.street2 as ref_street2,
+refcomp_city.name as ref_city,
+refpart.zip as ref_zip
+from (
+select distinct emp_code,case when emp_name is not null and emp_name != '' then
+(select name_related from hr_employee where emp_code = emp_name) else '' end as emp_name,sub_tot as avl_bal,sub_tot as purchase,overall_amount,company,company_refer_id
+from (
+select emp_code,sale_date::date,bill_no,pay_mode,name as item_name,(select name from product_uom where id = product_uom) as uom,
+product_uom_qty,price_unit,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code,company_refer_id,sale_date,bill_no,name) as tot,
+sum(product_uom_qty*price_unit) OVER (PARTITION by emp_code ) as sub_tot,
+sum(product_uom_qty*price_unit) OVER () as overall_amount,
+(select name from res_company  where id = company_refer_id) as company,company_refer_id,
+case when product_id is not null then emp_code end as emp_name
+from sale_order_line
+where pay_mode = 'Accounts' and sale_date::between between  ?::date and ?::date
+and src_stock_location in (
+select id from stock_location where location_type = 'counter' and id <=
+case when 0 =  ? then (select max(id) from stock_location where location_type = 'counter')  end or id = ?  )
+/*and emp_code in (select emp_code from hr_employee where category_type = 'accounts' and
+deduction_mode = 'from_prepaid' and status = 'active'
+and id between
+(case when 0 =  (case when (select  min(employee_id) from sale_accounts where sale_wiz_id =  ? ) is null then 0 else (select  min(employee_id) from sale_accounts where sale_wiz_id = ?  ) end) then (select min(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  min(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+and
+(case when 0 =  (case when (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) is null then 0 else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end) then (select max(id) from hr_employee where deduction_mode = 'from_prepaid' and status = 'active' and category_type = 'accounts')
+else (select  max(employee_id) from sale_accounts where sale_wiz_id = ? ) end)
+ )*/
+and company_refer_id in (
+select id from res_company where for_sale = 't' and id <=
+case when 0 =   ?   then (select max(id) from res_company where for_sale = 't')  end or id = ? )
+and state in ('progress','done','draft')
+order by 1,2,3,5 asc
+) as sample ) as sample
+left join res_users users on (users.id =  ?  )
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = 1)
+
+left join res_company refcomp on (refcomp.id = company_refer_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner refpart on (refpart.id = refcomp.partner_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city refcomp_city on (refcomp_city.id = refcomp.city)
+
+left join res_city partner_city on (partner_city.id = part.city)
+order by 2
+) as sam order by emp_name
+
+
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:266)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:157)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: org.postgresql.util.PSQLException: The column index is out of range: 8, number of columns: 7.
+	at org.postgresql.core.v3.SimpleParameterList.bind(SimpleParameterList.java:53)
+	at org.postgresql.core.v3.SimpleParameterList.setLiteralParameter(SimpleParameterList.java:114)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.bindLiteral(AbstractJdbc2Statement.java:2143)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setInt(AbstractJdbc2Statement.java:1186)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:407)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:283)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:258)
+	... 20 more

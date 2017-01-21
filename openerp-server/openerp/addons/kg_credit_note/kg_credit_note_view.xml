@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+<!--form view starts-->
+		
+		<record id ='t_form_v_credit_note' model='ir.ui.view'>
+			<field name='name'>Credit Note</field>
+			<field name='model'>kg.credit.note</field>
+			<field name='arch' type='xml'>
+			<form string='Credit Note' version='7.0' >					
+					<header>
+						<button name="entry_approve" type="object" string="Approve" state="approved" attrs="{'invisible':[('state','in',('draft','approved','reject'))]}" class="oe_highlight"  confirm="Are you sure to proceed ?"/>				
+						<button name="entry_reject" type="object" string="Cancel" state="confirm" attrs="{'invisible':[('state','in',('reject','confirm','draft'))]}" class="oe_highlight"  confirm="Are you sure to proceed ?"/>
+						<button name="entry_confirm" type="object" string="Confirm" state="draft" attrs="{'invisible':[('state','in',('reject','confirm','approved'))]}" class="oe_highlight"/>
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","reject":"red"}' readonly="1"/>
+					</header>				
+						<group>
+							<group>								
+								<field name='name'  class="aplhanum_expect"  attrs="{'readonly': [('state','in',('approved','reject'))]}"/>
+								<field name='supplier_id' required="1"/>
+								<field name='supplier_invoice_no'  class="aplhanum_expect"  required="1"/>
+							</group>
+							<group >
+								<field name='date' required ="True" attrs="{'readonly': [('state','in',('approved','reject'))]}"/>
+								<field name='supplier_invoice_date' required="1"/>
+								</group>
+						</group>
+						<group>   
+								<group> 
+									<field name="remark" attrs="{'invisible':[('state','=','draft')], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+								</group>
+								<group>                                               
+								<field name="cancel_remark" attrs="{'invisible': [('state','in', ('draft','confirm','reject'))] , 'readonly': [('state','in',['cancel'])]}"/>												
+								</group>
+						</group>						
+						<notebook>
+							<page string='Item Details' >								
+									<field name='line_ids' nolabel="1" attrs="{'readonly': [('state','in',['approved','reject'])]}">										
+										<tree editable="bottom">
+											<field name = 'product_id' colspan="4" required="True" on_change="onchange_product_id(product_id)"/>											
+											<field name = 'uom' readonly="True" />											
+											<field name = 'qty'/>											
+											<field name = 'price_unit'/>											
+											<field name = 'price_subtotal' sum="Total amount"/>
+											<field name = 'remark'/>											
+										</tree>	
+									</field>								
+							<group class="oe_subtotal_footer oe_right">
+							<div class="oe_subtotal_footer_separator oe_inline">
+							<label for="amount_total"/>
+							</div>
+							<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+						</group>									
+							</page>		
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>	
+							<page string="Entry Info">	
+								<group>
+										<field name="company_id"/>
+										<field name="active"/>
+								</group>
+								<group>
+									<group>
+										<field name="user_id"/>
+										<field name="confirm_user_id" attrs="{'invisible':[('state','in',['draft'])]}"/>
+										<field name="app_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm'])]}"/>
+										<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>										
+										<field name="cancel_user_id" attrs="{'invisible': [('state','in', ('draft','confirm','approved','reject'))]}"/>
+										<field name="updated_by"/>
+									</group>
+									<group>
+										<field name="crt_date"/>
+										<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+										<field name="approve_date" attrs="{'invisible':[('state','in',['draft', 'confirm'])]}"/>
+										<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>																				
+										<field name="cancel_date" attrs="{'invisible': [('state','in', ('draft','confirm','approved','reject'))]}"/>							
+										<field name="updated_date"/>	
+									</group>
+								</group>
+							</page>							
+						</notebook>			
+			</form>
+			</field>
+		</record>
+		
+<!--form view ends-->
+
+<!--tree view starts-->
+
+		<record id='t_tree_v_credit_note' model='ir.ui.view'>
+			<field name='name'>Credit Note</field>
+			<field name='model'>kg.credit.note</field>
+			<field eval='8' name='priority'/>
+			<field name ='arch' type='xml'>
+				<tree colors="Blue:state=='draft';gray:state=='reject';black:state=='approved';red:state=='confirm'" toolbar="True" string="Credit Note">
+					<field name='name'/>
+					<field name='date'/>
+					<field name='supplier_id'/>
+					<field name='supplier_invoice_no'/>
+					<field name='supplier_invoice_date'/>
+					<field name='amount_total'/>
+					<field name = 'state'/>
+				</tree>
+			</field>
+		</record>
+		
+<!--tree view ends-->
+		
+<!--search view starts-->
+
+		<record id="t_search_v_credit_note" model="ir.ui.view">
+            <field name="name">Credit Note</field>
+            <field name="model">kg.credit.note</field>
+            <field name="arch" type="xml">
+                <search string="Credit Note Search">
+					<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="draft" string="Confirmed" domain="[('state','=','confirm')]"/>
+					<filter icon="terp-check" name="draft" string="Approved" domain="[('state','=','approved')]"/>
+					<filter icon="terp-check" name="draft" string="Cancelled" domain="[('state','=','reject')]"/>											
+					<separator/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Date" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'date'}"/>                        
+					</group>
+				<field name="name" string="Invoice no"/>
+				<field name="supplier_id" string="Supplier"/>
+                </search>
+			</field>
+		</record>
+		
+<!--search view ends-->
+            
+<!--menu action starts-->
+		<record id='tma_credit_note' model='ir.actions.act_window'>
+			<field name='name'>Credit Note</field>
+			<field name='type'>ir.actions.act_window</field>
+			<field name='res_model'>kg.credit.note</field>
+			<field name='view_type'>form</field>
+			<field name='view_id' ref='t_tree_v_credit_note'/>
+			<field name="search_view_id" ref="t_search_v_credit_note"/>		
+		</record>	
+			
+<!--menu action ends-->
+
+<!--
+		<record forcecreate="1" id="seq_kg_credit_note" model="ir.sequence.type"> 
+			<field name="name">Credit Note</field>
+			<field name="code">kg.credit.note</field>
+		</record>
+
+		<record forcecreate="1" id="kg_credit_note_id" model="ir.sequence">
+			  <field name="name">Credit Note</field>
+			  <field name="code">kg.credit.note</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">CN/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>
+-->
+		
+
+
+            
+
+
+
+<!--menu items starts-->
+		<menuitem id="tmi_credit_note" parent="kg_purchase_invoice.tmi_purchase_invoice_main_menu" sequence="1" action="tma_credit_note" />		
+		
+<!--menu item ends-->	
+	</data>
+</openerp>

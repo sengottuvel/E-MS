@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False" id="service_order_report" model="kg.service.order" name="onscreen_service_order_report"
+                rml="kg_service_order/report/Service_Order.jrxml" string="Print Service Order"
+                usage="default"/>
+
+
+    </data>
+</openerp>

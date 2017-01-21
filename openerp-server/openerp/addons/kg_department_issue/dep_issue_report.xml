@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="True" id="store_issue_slip_id" model="kg.department.issue" name="onscreen_store_issue_slip"
+                rml="kg_department_issue/Issue_Slip.jrxml" string="Print Issue Slip"  menu="True"
+                usage="default"/>
+
+
+    </data>
+</openerp>

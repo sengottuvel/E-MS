@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+          =====================
+          Form view
+          =====================
+        -->
+
+        <record id="kg_general_grn_form" model="ir.ui.view">
+            <field name="name">kg.general.grn.form</field>
+            <field name="model">kg.general.grn</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            <form string="General GRN" version="7.0">
+				<header>
+					<button name="entry_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="entry_approve" string="Approve" type="object" states="confirmed" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="entry_cancel" string="Cancel" type="object" states="done" class="oe_highlight"/>
+					<button name="entry_reject" string="Reject" type="object" states="confirmed" class="oe_highlight"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,done,confirmed,cancel,reject" statusbar_colors='{"draft":"blue","done":"blue","confirmed":"red","cancel":"red","reject":"red"}' readonly="1"/>
+				</header>
+				<group>
+					<group>
+						<field name="name"/>
+						<field name="dc_no"  class="aplhanum_expect"  />
+						<field name="supplier_id" required="1"/>
+						<field name="sup_invoice_no" attrs="{'invisible': [('grn_dc','!=','dc_invoice')],'required': [('grn_dc','=','dc_invoice')]}"/>
+						<field name="bill" string="Bill Type"/>
+                        <field name="payment_type" attrs="{'required': [('bill','=','applicable')]}"/>
+                        <field name="dep_name" invisible="1"/>
+                        <field name="invoice_flag" invisible="1"/>
+                    </group>
+                    <group>
+						<field name="grn_date" on_change="onchange_grn_date(grn_date)"/>
+						<field name="dc_date"/>
+						<field name="sup_invoice_date"  attrs="{'invisible': [('grn_dc','!=','dc_invoice')],'required': [('grn_dc','=','dc_invoice')]}"/>
+						<field name="inward_type"/>
+                        <field name="grn_dc" readonly="1"/>
+                    </group>
+                </group>
+                <group string='Remarks' attrs="{'invisible':[('state','in',('draft'))]}">
+					<group>	
+						<field name="reject_remark" attrs="{'invisible':[('state','not in',['confirmed','done'])], 'readonly': [('state','in',['done','cancel','inv','reject'])]}"/>	
+					</group>
+					<group>												
+						<field name="can_remark" attrs="{'invisible':[('state','not in',('done','cancel'))], 'readonly': [('state','in',['cancel','inv','reject'])]}"/>
+					</group>
+				</group>				
+                <notebook>
+					<page string="Products">
+						<field name="grn_line" nolabel="1" context="{'inward_type':inward_type,'state':'draft','price_type': 'po_uom',}"/>
+					</page>
+					<page string="Additonal Charges" invisible='1'>
+						<field colspan="4" mode="tree" name="expense_line_id" nolabel="1" widget="one2many_list" >
+							<tree string="Expense Lines" editable="bottom"> 
+							<field name="description" required="1"/>
+							<field name="expense_amt" required="1"/>
+							</tree>
+							</field>
+					</page>
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>						
+					<page string="Entry Info">
+					<group>
+						<field name="company_id"/>
+						<field name="active"/>
+					</group>
+					<group>
+						<group>
+							<field name="user_id" on_change="onchange_user_id(user_id)"/>
+							<field name="confirmed_by" attrs="{'invisible':[('state','in',['draft'])]}"/>
+							<field name="rej_user_id" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+							<field name="approved_by" attrs="{'invisible':[('state','in',['draft','reject','confirmed'])]}"/>
+							<field name="cancel_user_id" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+							<field name="update_user_id"/>
+						</group>
+						<group>
+							<field name="creation_date"/>
+							<field name="confirmed_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+							<field name="reject_date" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+							<field name="approved_date" attrs="{'invisible':[('state','in',['draft','reject','confirmed'])]}"/>
+							<field name="cancel_date" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+							<field name="update_date"/>
+						</group>
+					</group>
+				</page>
+				</notebook>
+				<group invisible="1">
+					<group invisible="1">
+					<field name="po_expenses_type1" invisible="1"/>
+					<field name="value1" invisible="1"/>
+					</group>
+					<group invisible="1">
+					<field name="po_expenses_type2" invisible="1"/>
+					<field name="value2" invisible="1"/>
+					</group>					
+				</group>
+				<group class="oe_subtotal_footer oe_right">
+					<field name="line_amount_total"/>
+					<field name="discount"/>
+					<field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					<div class="oe_subtotal_footer_separator oe_inline">
+					<label for="amount_total"/>
+					<button name="button_dummy"
+						states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+					</div>
+					<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+				</group>
+               </form>
+           </field>
+        </record>
+        
+        <!--
+        =====================
+        Tree view
+        =====================
+        -->
+        <record id="kg_general_grn_tree" model="ir.ui.view">
+            <field name="name">kg.general.grn.view</field>
+            <field name="model">kg.general.grn</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree colors="red:state=='confirmed';blue:state=='draft';black:state=='done';gray:state 'in' ('cancel','reject')" 
+							string="General GRN" toolbar="1" >
+					<field name="name"/>
+					<field name="grn_date"/>
+					 <field name="supplier_id"/>
+                    <field name="inward_type"/>
+					<field name="dc_date"/>
+					<field name="dc_no"/>            
+                    <field name="state"/>
+                </tree> 
+            </field>
+        </record>
+        
+        <record id="kg_general_grn_line_form" model="ir.ui.view">
+            <field name="name">kg.general.grn.line.form.view</field>
+            <field name="model">kg.general.grn.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+				<form string="General GRN Line" version="7.0">
+				  <group>
+					<group>
+						<field name="product_id" on_change="onchange_uom_id(product_id)"/>
+						<field name="brand_id"/>
+						<field name="uom_id" readonly = "1"/>
+						<field name="price_type" required="1"/>
+						<field name="tot_price" readonly="1"/>
+                    </group> 
+                    <group> 
+						<field name="grn_qty" on_change="onchange_qty(grn_qty,price_unit)"/>
+						<field name="weight"/>
+						<field name="price_unit" on_change="onchange_unit_price(price_unit,grn_qty)"/>
+						<field name="inward_type" required="1"/>
+						<field name="state" invisible="1"/>
+					</group>
+                  </group>
+                  <group>
+					<group string="Discounts">
+						<field name="kg_discount_per" on_change="onchange_discount_value_calc(kg_discount_per, price_unit,tot_price)"/>
+						<field name="kg_discount" on_change="onchange_disc_amt(kg_discount,price_unit,tot_price)"/>
+					</group>
+					<group string="Taxes">
+						<field name="grn_tax_ids" widget="many2many_tags"/>
+					</group>					
+                  </group>
+                  <notebook>
+					<page string="S/N Details">
+						<field name="exp_batch_id" nolabel="1">
+							<tree editable="bottom">
+								<field name="product_qty" required="1"/>
+								<field name="exp_date" required="1"/>               
+								<field name="batch_no" string="S/N" required="1"/>
+							</tree>
+						</field>
+					</page>
+					<page string="Remarks">
+						<field name="cancel_remark"  attrs="{'readonly': [('state','=','draft')]}"/>
+					</page>
+                  </notebook>
+				<button name="grn_line_cancel" string="Cancel" type="object" states="draft,confirmed,done" 
+						class="oe_highlight"/>  
+                </form> 
+            </field>
+        </record>
+        
+        <record id="kg_general_grn_line_tree" model="ir.ui.view">
+            <field name="name">kg.general.grn.line.tree.view</field>
+            <field name="model">kg.general.grn.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="General GRN Line">
+					<field name="product_id"/>
+					<field name="brand_id"/>              
+					<field name="uom_id"/>
+					<field name="grn_qty"/>
+					<field name="price_unit"/>
+					<field name="kg_discount"/>
+					<field name="tot_price"/>
+					<field name="inward_type"/>
+					<field name="state" invisible="1"/>
+                </tree> 
+            </field>
+        </record>
+       
+       <!-- Search View Start -->
+
+		<record id="t_search_v_general_grn" model="ir.ui.view">
+            <field name="name">General GRN Search</field>
+            <field name="model">kg.general.grn</field>
+            <field name="arch" type="xml">
+                <search string="General GRN Search">
+					<field name="name" string="GRN No" filter_domain="[('name','ilike',self)]" />
+					<field name="supplier_id" string="Supplier" filter_domain="[('supplier_id','ilike',self)]" />
+					<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]"/>					
+					<filter icon="terp-check" name="done" string="Done" domain="[('state','=','done')]"/>					
+					<separator/>
+                    <group expand="0" string="Group By...">
+						<filter string="Supplier" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'supplier_id'}"/>
+                        <filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="GRN Date" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'grn_date'}"/>
+					</group>
+                </search>
+			</field>
+		</record>
+		
+       <!--
+        =====================
+        Form Action
+        ===================== -->
+
+		<record id="action_kg_general_grn" model="ir.actions.act_window">
+				<field name="name">General GRN</field>
+				<field name="type">ir.actions.act_window</field>
+				<field name="res_model">kg.general.grn</field>
+				<field name="view_type">form</field>
+				<field name="view_id" ref="kg_general_grn_tree"/>
+				<field name="search_view_id" ref="t_search_v_general_grn"/>
+				<field name="domain">[('state','!=','confirmed')]</field>
+		</record>
+
+	<record id="action_general_qa_verify" model="ir.actions.act_window">
+			<field name="name">General GRN QA</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.general.grn</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_general_grn_tree"/>
+            <field name="domain">[('state','=','confirmed')]</field>
+	</record>
+		
+		<menuitem action="action_general_qa_verify" id="kg_general_grn_qa" name="General GRN QA" parent="kg_menus.menu_stock_warehouse_mgmt_m" sequence="1"/>		
+
+	
+<!--
+		<record forcecreate="1" id="seq_kg_general_grn" model="ir.sequence.type"> 
+			<field name="name">KG General GRN</field>
+			<field name="code">kg.general.grn</field>
+		</record>
+
+		<record forcecreate="1" id="seq_kg_general_grn_id" model="ir.sequence">
+			  <field name="name">KG General GRN</field>
+			  <field name="code">kg.general.grn</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">GRN/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>	
+-->
+                  
+    </data>
+</openerp>

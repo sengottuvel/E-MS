@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_grn_register_report" model="ir.ui.view">
+            <field name="name">GRN Register</field>
+            <field name="model">grn.register.report.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+             <form string="GRN Register">
+                <separator string="GRN Register" colspan="4"/>
+                   
+                    <notebook tabpos="up" colspan="4">
+						<page string="Filters" name="filters">
+						  <group>
+							<group string="GRN Date">
+								<field name="date_from" required="1"/>
+								<field name="date_to" required="1"/>
+							</group>
+							<group string="Status">
+								<field name="status"/>
+								<field name="inward_type"/>
+							</group>
+						   </group>
+						</page>
+                        <page string="Supplier" name="supplier">
+                            <group colspan="2" col="2">
+								<separator string="Supplier" colspan="2" col="2" />
+								<field name = "supplier" domain="[('supplier','=',True)]"/>
+							</group>
+                        </page>
+                       <!-- <page string="Product Type" name="product_type">
+                            <group colspan="2" col="2">
+								<separator string="Product Type" colspan="2" col="2" />
+								<field name = "product_type"/>
+							</group>
+                        </page>-->
+                        <page string="Product" name="product">
+                             <field name="product"/>
+                        </page>
+                                                                         
+                    </notebook>                
+                    <separator colspan="4"/>
+						<group col="4" colspan="4">
+							<button icon="gtk-print" name="check_report" string="Generate" type="object" colspan="2" default_focus="1" />
+							<button icon="gtk-cancel" special="cancel" string="Cancel" colspan="2"/>
+						</group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_grn_report" model="ir.actions.act_window">  
+            <field name="name">GRN Register</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">grn.register.report.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+           
+		
+    </data>
+</openerp>

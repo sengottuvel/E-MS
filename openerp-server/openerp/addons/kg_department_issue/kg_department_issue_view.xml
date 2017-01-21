@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+          =====================
+          Form view
+          =====================
+        -->
+        <record id="kg_department_issue_form" model="ir.ui.view">
+            <field name="name">kg.department.issue.form</field>
+            <field name="model">kg.department.issue</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            <form string="Department Issue" version="7.0">
+				<header>
+					<button name="entry_confirm" string="Confirm" type="object" states="confirmed" class="oe_highlight"/>
+					<button name="action_process" states="approve" string="Issue to Substore" type="object" class="oe_highlight"/>
+					<button name="entry_cancel" states="done" string="Cancel" type="object" class="oe_highlight"/>
+					<button name="entry_reject" states="approve" string="Reject" type="object" class="oe_highlight"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,approve,done,reject" statusbar_colors='{"draft":"red","confirmed":"red","done":"blue"}'/>
+				</header>
+	            <sheet>
+					<group string="Issue Details">
+						<group>
+							<field name="name"/>
+							<field name="user_id" invisible="1"/>
+							<field name="department_id"/>
+							<field name="dep_issue_type" on_change = "onchange_direct_issue(dep_issue_type,products_flag)"/>
+							<field name="confirm_flag" invisible="1"/>
+							<field name="products_flag" invisible="1"/>
+							<field name="project" invisible="1"/>
+						</group>
+						<group> 
+							<field name="issue_date"/>
+							<field name="outward_type"/>
+							<field name="building" invisible="1"/>
+						</group>
+					</group>
+					<group string = "Type">
+						<group>
+							<field name="issue_type" required="1" />
+						</group>
+						<group>
+							<field name="approve_flag" invisible="1"/>
+						</group>
+					</group>
+					<group string='Remarks' attrs="{'invisible':[('state','in',('draft','confirmed'))]}">
+						<group>
+							<field name="can_remark" attrs="{'invisible':[('state','not in',('done','cancel'))], 'readonly': [('state','in',['cancel','reject'])]}"/>
+							<field name="reject_remark" attrs="{'invisible':[('state','not in',['approve','reject'])], 'readonly': [('state','in',['cancel','reject'])]}"/>
+						</group>
+						<group>
+						</group>
+					</group>
+					<notebook>
+					<page string="Products" attrs="{'invisible': [('products_flag','=',False)]}" >
+						<field name="issue_line_ids" nolabel="1" context="{'issue_type':issue_type}"/>
+					</page>
+					<page string="Select Pending Department Indent" attrs="{'invisible': ['|',('dep_issue_type','=','direct'),('issue_type','in',('service'))]}">
+						<field name="kg_dep_indent_line" colspan="4" nolabel="1"  >
+							<tree string = "Dep Indent" editable="bottom">
+								<field name="indent_id" readonly="1"/>
+								<field name="product_id" readonly="1"/>
+								<field name="uom" readonly="1"/>
+								<field name="qty" readonly="1"/>
+								<field name="issue_pending_qty" readonly="1"/>
+							</tree>
+						</field>
+						<button name="update_depindent_to_issue" type='object' states="draft,confirmed" string="Save Record"/>
+					</page>
+					<page string="Select Pending Service Indent" attrs="{'invisible': ['|',('dep_issue_type','=','direct'),('issue_type','in',('material'))]}">
+						<field name="kg_service_indent_line" colspan="4" nolabel="1"  >
+								<tree string = "Service Indent" editable="bottom">
+									<field name="service_id" readonly="1"/>
+									<field name="product_id" readonly="1"/>
+									<field name="uom" readonly="1"/>
+									<field name="qty" readonly="1"/>
+									<field name="issue_pending_qty" readonly="1"/>
+								</tree>
+						</field>
+						<button name="update_serviceindent_to_issue" type='object' states="draft,confirmed" string="Save Record"/>
+					</page>
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>						
+					<page string="Entry Info">
+					<group>
+						<field name="company_id" readonly='1'/>
+						<field name="active"/>
+					</group>
+					<group>
+						<group>
+							<field name="created_by"/>
+							<field name="confirmed_by" attrs="{'invisible':[('state','in',['draft','confirmed'])]}"/>
+							<field name="approved_by" attrs="{'invisible':[('state','in',['draft','confirmed','approve'])]}"/>
+							<field name="cancel_user_id" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+							<field name="rej_user_id" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+							<field name="update_user_id"/>
+						</group>
+						<group>
+							<field name="creation_date"/>
+							<field name="confirmed_date" attrs="{'invisible':[('state','in',['draft','confirmed'])]}"/>
+							<field name="approved_date" attrs="{'invisible':[('state','in',['draft','confirmed','approve'])]}"/>
+							<field name="cancel_date" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+							<field name="reject_date" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+							<field name="update_date"/>
+						</group>
+					</group>
+				</page>
+				</notebook>
+				</sheet>
+				
+               </form>
+           </field>
+        </record>
+        
+        <!--
+        =====================
+        Tree view
+        =====================
+        -->
+        <record id="kg_department_issue_tree" model="ir.ui.view">
+            <field name="name">kg.department.issue.tree</field>
+            <field name="model">kg.department.issue</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree colors="blue:state == 'draft';red:state == 'confirmed';red:state == 'approve';grey:state == 'reject';black:state == 'done'"
+								string="Department Issue" toolbar="1" >   
+					<field name="name"/>
+					<field name="issue_date"/>
+					<field name="department_id"/>
+					<field name="outward_type"/>
+                    <field name="state"/>
+                </tree> 
+            </field>
+        </record>
+        
+       <!--
+        =====================
+        Line Form view
+        =====================
+        -->
+        <record id="kg_department_issue_line_form" model="ir.ui.view">
+            <field name="name">kg.department.issue.line.form.view</field>
+            <field name="model">kg.department.issue.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+				<form string="Department Issue Line" version="7.0">
+				  <group string="Product Details">
+					<group>
+						<field name="product_id" on_change="onchange_product_id(product_id)"/>               
+						<field name="indent_qty" readonly="1"/>               
+						<field name="remarks"/>
+						<field name="location_id" invisible="1"/>
+						<field name="wo_state" invisible="1"/>
+                    </group> 
+                    <group>
+						<field name="brand_id"/>
+						<field name="uom_id"/>
+						<field name="issue_qty"/>
+						<field name="issue_type" invisible="1"/>
+						<field name="location_dest_id" invisible="1"/>
+					</group>
+                  </group>
+                  <group string = "GRN Details">
+						<field name="kg_grn_moves" nolabel="1">
+						</field>
+                  </group>
+                  <group>
+                  </group>
+                  <group string="Issue Details">
+					<field name="kg_itemwise_issue_line" nolabel="1">
+						<tree string = "Item wise Issue" editable="bottom">
+							<field name="product_id" readonly = "1"/>
+							<field name="uom_id" readonly = "1"/>
+							<field name="grn_qty" readonly = "1"/>
+							<field name="issue_qty"/>
+							<field name="expiry_date" readonly = "1"/>
+							<field name="batch_no" readonly = "1"/>
+						</tree>
+					</field>
+                  </group>
+                </form> 
+            </field>
+        </record>
+        
+        <record id="kg_department_issue_line_tree" model="ir.ui.view">
+            <field name="name">kg.department.issue.line.tree.view</field>
+            <field name="model">kg.department.issue.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+				<tree string="Department Issue Line">
+						<field name="product_id"/>
+						<field name="brand_id"/>              
+						<field name="uom_id"/>
+						<field name="issue_qty"/>
+						<field name="price_unit"/>
+						<field name="state" invisible="1"/>
+						<field name="wo_state"/>
+                </tree> 
+            </field>
+        </record>
+        
+        <!-- Search View Start -->
+
+		<record id="t_search_v_department_issue" model="ir.ui.view">
+            <field name="name">Dept Issue Search</field>
+            <field name="model">kg.department.issue</field>
+            <field name="arch" type="xml">
+                <search string="Department Issue Search">
+					<field name="name" string="Issue No" filter_domain="[('name','ilike',self)]" />
+					<field name="department_id" string="Department" filter_domain="[('department_id','ilike',self)]" />
+					<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="confirmed" string="WFC" domain="[('state','=','confirmed')]"/>					
+					<filter icon="terp-check" name="approve" string="WFA" domain="[('state','=','approve')]"/>					
+					<filter icon="terp-check" name="done" string="Issued" domain="[('state','=','done')]"/>					
+					<separator/>
+                    <group expand="0" string="Group By...">
+						<filter string="Department" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'department_id'}"/>
+                        <filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Issue Date" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'issue_date'}"/>
+					</group>
+                </search>
+			</field>
+		</record>
+	
+        <!--
+        =====================
+        Form Action
+        ===================== -->
+    
+		<record id="action_kg_department_issue" model="ir.actions.act_window">
+			<field name="name">Store Issue</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.department.issue</field>
+			<field name="view_type">form</field>
+			<field name="domain">[('state','in',('draft','confirmed','done','approve','cancel','reject'))]</field>
+			<field name="view_id" ref="kg_department_issue_tree"/>
+			<field name="search_view_id" ref="t_search_v_department_issue"/>
+		</record>
+		
+
+        <!--
+        =====================
+        master Menu Item
+        =====================
+        -->
+        
+	<menuitem id="kg_department_issue_menu" parent="kg_menus.menu_stock_warehouse_mgmt_m" sequence="4" action="action_kg_department_issue" />
+            
+   
+   
+<!--
+		<record forcecreate="1" id="seq_kg_department_issue" model="ir.sequence.type"> 
+			<field name="name">Department Issue</field>
+			<field name="code">kg.department.issue</field>
+		</record>
+
+		<record forcecreate="1" id="seq_kg_department_issue_id" model="ir.sequence">
+			  <field name="name">Department Issue</field>
+			  <field name="code">kg.department.issue</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">DII/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>   
+-->
+         
+    </data>
+</openerp>

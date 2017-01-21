@@ -1,0 +1,333 @@
+5987045014 [XML-RPC-1] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error preparing statement for executing the report query : 
+
+select
+case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+max(rrr) OVER () as sam,
+trim(TO_CHAR((sum(amt) OVER()), '999G999G99G999G99G99G990D99')) as grand_tot,* from (
+select
+DENSE_RANK() OVER(Order by supplier_name ASC) as rrr,
+sum(bills) OVER(PARTITION BY supplier_name) as tot_bill,
+trim(TO_CHAR((sum(amt) OVER(PARTITION BY supplier_name)), '999G999G99G999G99G99G990D99')) as tot_amt,
+sum(amt) OVER(PARTITION BY supplier_name) as total_amt,
+* from
+(
+select
+pb.id as pb_id,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,
+partner.name as supplier_name,
+count(pb.supplier_id) as bills,
+sum(pb.net_amt) as amt,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+user_part.name as user_name
+
+
+from kg_purchase_invoice pb
+
+
+left join res_users users on (users.login = ?)
+
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = pb.company_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner partner on (partner.id = pb.supplier_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city partner_city on (partner_city.id = partner.city)
+
+where 
+--pb.approved_date::date >= ?::date
+--and pb.approved_date::date <= ?::date
+--and 
+pb.state='approved'
+
+group by 1,2,3,4,5,6,7,8,9,10,13,14
+order by supplier_name
+) as dd
+) as final
+
+
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error preparing statement for executing the report query : 
+
+select
+case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+max(rrr) OVER () as sam,
+trim(TO_CHAR((sum(amt) OVER()), '999G999G99G999G99G99G990D99')) as grand_tot,* from (
+select
+DENSE_RANK() OVER(Order by supplier_name ASC) as rrr,
+sum(bills) OVER(PARTITION BY supplier_name) as tot_bill,
+trim(TO_CHAR((sum(amt) OVER(PARTITION BY supplier_name)), '999G999G99G999G99G99G990D99')) as tot_amt,
+sum(amt) OVER(PARTITION BY supplier_name) as total_amt,
+* from
+(
+select
+pb.id as pb_id,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,
+partner.name as supplier_name,
+count(pb.supplier_id) as bills,
+sum(pb.net_amt) as amt,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+user_part.name as user_name
+
+
+from kg_purchase_invoice pb
+
+
+left join res_users users on (users.login = ?)
+
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = pb.company_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner partner on (partner.id = pb.supplier_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city partner_city on (partner_city.id = partner.city)
+
+where 
+--pb.approved_date::date >= ?::date
+--and pb.approved_date::date <= ?::date
+--and 
+pb.state='approved'
+
+group by 1,2,3,4,5,6,7,8,9,10,13,14
+order by supplier_name
+) as dd
+) as final
+
+
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.JRException: Error preparing statement for executing the report query : 
+
+select
+case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+max(rrr) OVER () as sam,
+trim(TO_CHAR((sum(amt) OVER()), '999G999G99G999G99G99G990D99')) as grand_tot,* from (
+select
+DENSE_RANK() OVER(Order by supplier_name ASC) as rrr,
+sum(bills) OVER(PARTITION BY supplier_name) as tot_bill,
+trim(TO_CHAR((sum(amt) OVER(PARTITION BY supplier_name)), '999G999G99G999G99G99G990D99')) as tot_amt,
+sum(amt) OVER(PARTITION BY supplier_name) as total_amt,
+* from
+(
+select
+pb.id as pb_id,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,
+partner.name as supplier_name,
+count(pb.supplier_id) as bills,
+sum(pb.net_amt) as amt,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+user_part.name as user_name
+
+
+from kg_purchase_invoice pb
+
+
+left join res_users users on (users.login = ?)
+
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = pb.company_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner partner on (partner.id = pb.supplier_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city partner_city on (partner_city.id = partner.city)
+
+where 
+--pb.approved_date::date >= ?::date
+--and pb.approved_date::date <= ?::date
+--and 
+pb.state='approved'
+
+group by 1,2,3,4,5,6,7,8,9,10,13,14
+order by supplier_name
+) as dd
+) as final
+
+
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:266)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:157)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by: org.postgresql.util.PSQLException: The column index is out of range: 2, number of columns: 1.
+	at org.postgresql.core.v3.SimpleParameterList.bind(SimpleParameterList.java:53)
+	at org.postgresql.core.v3.SimpleParameterList.setStringParameter(SimpleParameterList.java:118)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.bindString(AbstractJdbc2Statement.java:2155)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setString(AbstractJdbc2Statement.java:1276)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setString(AbstractJdbc2Statement.java:1262)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:451)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:283)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:258)
+	... 20 more
+Caused by:
+net.sf.jasperreports.engine.JRException: Error preparing statement for executing the report query : 
+
+select
+case when (SELECT current_database()) = 'NMH_CANTEEN' then
+'NMH STORES'
+else
+( case when (SELECT current_database()) = 'MAIN_CANTEEN_BAKERY' then
+'MAIN CANTEEN BAKERY STORES'
+else 'STORES' end
+)
+end as stores_name,
+max(rrr) OVER () as sam,
+trim(TO_CHAR((sum(amt) OVER()), '999G999G99G999G99G99G990D99')) as grand_tot,* from (
+select
+DENSE_RANK() OVER(Order by supplier_name ASC) as rrr,
+sum(bills) OVER(PARTITION BY supplier_name) as tot_bill,
+trim(TO_CHAR((sum(amt) OVER(PARTITION BY supplier_name)), '999G999G99G999G99G99G990D99')) as tot_amt,
+sum(amt) OVER(PARTITION BY supplier_name) as total_amt,
+* from
+(
+select
+pb.id as pb_id,
+comp.name as company_name,
+part.street as street1,
+part.street2 as street2,
+comp_city.name as city,
+part.zip as zip,
+part.phone as phone,
+part.fax as fax,
+part.email as email,
+partner.name as supplier_name,
+count(pb.supplier_id) as bills,
+sum(pb.net_amt) as amt,
+to_char(CURRENT_TIMESTAMP, 'DD-MM-YYYY HH12:MI:SS AM') AS New_Date,
+user_part.name as user_name
+
+
+from kg_purchase_invoice pb
+
+
+left join res_users users on (users.login = ?)
+
+
+left join res_partner user_part on (user_part.id = users.partner_id)
+
+left join res_company comp on (comp.id = pb.company_id)
+
+left join res_partner part on (part.id = comp.partner_id)
+
+left join res_partner partner on (partner.id = pb.supplier_id)
+
+left join res_city comp_city on (comp_city.id = comp.city)
+
+left join res_city partner_city on (partner_city.id = partner.city)
+
+where 
+--pb.approved_date::date >= ?::date
+--and pb.approved_date::date <= ?::date
+--and 
+pb.state='approved'
+
+group by 1,2,3,4,5,6,7,8,9,10,13,14
+order by supplier_name
+) as dd
+) as final
+
+
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:266)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:157)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.GeneratedMethodAccessor17.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: org.postgresql.util.PSQLException: The column index is out of range: 2, number of columns: 1.
+	at org.postgresql.core.v3.SimpleParameterList.bind(SimpleParameterList.java:53)
+	at org.postgresql.core.v3.SimpleParameterList.setStringParameter(SimpleParameterList.java:118)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.bindString(AbstractJdbc2Statement.java:2155)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setString(AbstractJdbc2Statement.java:1276)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.setString(AbstractJdbc2Statement.java:1262)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:451)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.setStatementParameter(JRJdbcQueryExecuter.java:283)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createStatement(JRJdbcQueryExecuter.java:258)
+	... 20 more

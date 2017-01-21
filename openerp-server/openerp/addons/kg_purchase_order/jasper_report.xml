@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+         <report auto="False" id="buyer_report" model="purchase.order"
+        name="onscreen_purchase_order_report"
+                rml="kg_purchase_order/report/Purchase_Order.jrxml" string="PRINT PO"
+                usage="default"/> 
+
+
+<!--
+		<report string="IPD Purchase Order Copy"
+        model="purchase.order"
+        auto="True"
+        name="onscreen_purchase_order_report"
+        rml="kg_purchase_order/report/Purchase_Order.jrxml"
+        id="po_jasper_report_menu" 
+        menu="True"
+        header="False"
+        />
+
+		<report string="PPD&amp;FOU Purchase Order Copy"
+        model="purchase.order"
+        auto="True"
+        name="onscreen_ppd_purchase_order_report"
+        rml="kg_purchase_order/report/Ppd_Purchase_Order.jrxml"
+        id="ppd_po_jasper_report_menu" 
+        menu="True"
+        header="False"
+        />
+-->
+
+
+    </data>
+</openerp>

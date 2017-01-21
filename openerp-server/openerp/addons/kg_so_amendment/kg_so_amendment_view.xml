@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	<!-- Form View -->
+	
+		<record id="kg_so_amend_form_view" model="ir.ui.view">
+				<field name="name">SO Amendment</field>
+				<field name="model">kg.so.amendment</field>
+				<field name="arch" type="xml">
+				<form string="SO Amendment Form" version="7.0">
+				<header>
+					<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="approve_amend" type="object" string="Approve" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="entry_draft" type="object" string="Set Draft" states="cancel" class="oe_highlight"/>
+					<button name="confirm_amend" type="object" string="Confirm" states="draft" class="oe_highlight"/>
+					<button name="entry_cancel" type="object" string="Cancel" states="approved" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="make_amend" string="Load SO Data" type="object" states="amend" class="oe_highlight"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,confirm,approved,reject,cancel" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>
+				</header>		
+					<group>
+						<group>
+							<field name="name"/>
+							<field name="so_id"/>
+							<field name="so_date"/>	
+							<field name="quot_ref_no" invisible='1'/>	
+							<field name="partner_id"/>
+							<field name="partner_address"/>
+							<field name="origin"/>
+							<field name="payment_mode"/>
+							<field name="freight_charges"/>
+							<field name="dep_name" invisible='1'/>
+							<field name="warranty" invisible='1'/>
+							<field name="price"/>
+						</group>											
+						<group>
+							<field name="trans_date"/>					
+							<field name="so_date_amend"/>	
+							<field name="quot_ref_no_amend" invisible='1'/>	
+							<field name="partner_id_amend" on_change="onchange_partner_id(partner_id_amend,partner_address_amend)"/>
+							<field name="partner_address_amend"/>
+							<field name="origin_amend" invisible='1'/>
+							<field name="payment_mode_amend"/>
+							<field name="freight_charges_amend"/>
+							<field name="dep_name_amend" invisible='1'/>
+							<field name="warranty_amend" invisible='1'/>
+							<field name="price_amend"/>
+							<field name="amend_flag" invisible="1"/>		
+						</group>					
+					</group>		
+				<group string='Remarks' attrs="{'invisible':[('state','in',('draft','amend'))]}">
+					<group>	
+						<field name="remark" attrs="{'invisible':[('state','in',('draft','amend'))], 'readonly': [('state','in',['approved','reject','cancel'])]}"/>
+					</group>
+					<group>												
+						<field name="cancel_remark" attrs="{'invisible':[('state','in',['draft','reject','confirm'])], 'readonly': [('state','in',['cancel'])]}"/>												
+					</group>
+				</group>	
+					<notebook>
+						<page string="Line Details">
+						<field colspan="4" mode="tree" name="line_ids" nolabel="1" widget="one2many_list" >
+							<tree string="SO Amendment Line" delete='false' create="false"> 
+								<field name="product_id"/>								
+								<field name="uom_id"/>								
+								<field name="product_qty_amend"/>
+								<field name="brand_id_amend" readonly="1"/>								
+								<field name="price_unit_amend"/>								
+								<field name="price_subtotal"/>								
+							</tree>					
+							<form string="SO Amendment Line" >
+								<group>
+									<group>
+										<field name="product_id"/>										
+										<field name="product_qty" readonly='1'/>
+										<field name="brand_id" readonly='1'/>											
+										<field name="note"/>											
+										<field name="price_unit" readonly='1'/>	
+										<field name="taxes_id" widget="many2many_tags" invisible="1"/>									
+									</group>
+									<group>
+										<field name="uom_id" invisible='1'/>
+										<field name="product_qty_amend"/>	
+										<field name="brand_id_amend"/>		
+										<field name="note_amend"/>		
+										<field name="discount" invisible="1"/>	
+										<field name="price_unit_amend" invisible="0"/>										
+										<field name="taxes_id_amend" widget="many2many_tags" invisible="1"/>
+									</group>
+									<field name="kg_soindent_lines" nolabel="1"/>
+								</group>
+							</form>
+						</field>
+						</page>	
+						<page string="Internal Notes">
+							<field name="notes" nolabel='1' placeholder="Put an internal note..."/>
+						</page>	  
+						<page string="Entry Info">
+					<group>
+						<field name="company_id"/>
+							<field name="active"/>		
+					</group>
+					
+					<group>
+						<group>
+							<field name="user_id"/>
+							<field name="conf_user_id" attrs="{'invisible':[('state','in',['draft','amend'])]}"/>
+							<field name="rej_user_id" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+							<field name="app_user_id" attrs="{'invisible':[('state','in',['draft','amend','confirm'])]}"/>
+							<field name="can_user_id" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+							<field name="update_user_id"/>
+						</group>
+						<group>
+							<field name="date"/>
+							<field name="confirm_date" attrs="{'invisible':[('state','in',['draft','amend'])]}"/>
+							<field name="reject_date" attrs="{'invisible':[('state','not in',['reject'])]}"/>
+							<field name="approve_date" attrs="{'invisible':[('state','in',['draft','amend','confirm'])]}"/>
+							<field name="cancel_date" attrs="{'invisible':[('state','not in',['cancel'])]}"/>
+							<field name="update_date"/>
+						</group>
+					</group>
+				</page>	
+					</notebook>					
+					
+					<group class="oe_subtotal_footer oe_right">
+								<field name="discount"/>
+								<field name="other_charge"/>
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="amount_total"/>
+                                    <button name="button_dummy"
+                                        states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+				</form>
+			</field>
+		</record>
+
+	<!-- Tree View -->
+		
+		<record id="kg_so_amendment_sample_tree_view" model="ir.ui.view">
+			<field name="name">SO Amendment</field>
+			<field name="model">kg.so.amendment</field>
+			<field eval="8" name="priority"/>
+			<field name="arch" type="xml">
+				<tree colors="blue:state == 'draft';red:state == 'confirm'
+						;black:state == 'approved';gray:state == 'reject'" 
+								toolbar="True" string="SO Amendment">				
+					<field name="name"/>
+					<field name="trans_date"/>
+					<field name="so_id"/>
+					<field name="so_date"/>
+					<field name="partner_id"/>
+					<field name="amount_total"/>
+					<field name="state"/>				
+				</tree>
+			</field>
+		</record>
+		
+
+	<!-- Search View Start -->
+
+		<record id="t_search_v_so_amend" model="ir.ui.view">
+            <field name="name">SO Amend Search</field>
+            <field name="model">kg.so.amendment</field>
+            <field name="arch" type="xml">
+                <search string="SO Amendment Search">
+					<field name="name" string="Amendment SO No" filter_domain="[('name','ilike',self)]" />
+					<field name="partner_id" string="Supplier" filter_domain="[('partner_id','ilike',self)]" />
+					<filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]"/>
+					<filter icon="terp-check" name="amend" string="Processing" domain="[('state','=','amend')]"/>					
+					<filter icon="terp-check" name="confirm" string="Confirmed" domain="[('state','=','confirm')]"/>					
+					<filter icon="terp-check" name="approved" string="Approved" domain="[('state','=','approved')]"/>					
+					<filter icon="terp-check" name="cancel" string="Cancelled" domain="[('state','=','cancel')]"/>					
+					<separator/>
+                    <group expand="0" string="Group By...">
+						<filter string="Supplier" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Status" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Amend Date" icon="terp-gtk-select-all" domain="[]" context="{'group_by':'trans_date'}"/>
+					</group>
+                </search>
+			</field>
+		</record>
+		
+	<!-- Search View End -->		
+        
+	<!-- Menu Action -->			
+		
+		 <record id="so_amendment_sample_form_action1" model="ir.actions.act_window">
+			<field name="name">SO Amendment</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.so.amendment</field>
+			<field name="view_type">form</field>
+			<field name="context">{}</field>
+			<field name="domain">[('state','!=','amend')]</field>
+			<field name="view_id" ref="kg_so_amendment_sample_tree_view"/>
+			<field name="search_view_id" ref="t_search_v_so_amend"/>
+		</record>	
+		
+
+	</data>
+</openerp>

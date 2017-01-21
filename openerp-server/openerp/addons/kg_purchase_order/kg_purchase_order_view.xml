@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		
+		<!-- Purchase order form inherit -->
+		
+	<record model="ir.ui.view" id="kg_purchase_order_form_inherit">
+        <field name="name">kg.purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+		<field name="partner_id" context="{'search_default_supplier':1,'default_supplier':1,'default_customer':0}" domain="[('supplier','=',True)]" position="replace">
+			<field name="kg_seq_id" invisible="1"/>
+			<field name="name" readonly="1"/>
+			<field name="division" invisible="1"/>
+			 <field name="po_type" required="1" on_change="onchange_type_flag(po_type)" attrs="{'readonly':[('po_type','=','fromquote')]}"/>
+			<field name="partner_id" on_change="onchange_partner_id(partner_id,add_text)" context="{'search_default_supplier':1,'default_supplier':1,'default_customer':0}" />
+		</field>
+        <field name="partner_ref" position="replace">
+			<field name="add_text" />
+			<field name="dep_project_name" invisible="1"/>
+			<field name="term_price" invisible='1'/>
+			<field name="delivery_mode" />
+			<field name="term_freight" on_change="onchange_frieght_flag(term_freight)" invisible='1'/>
+			<field name="insurance" invisible='1'/>
+			<field name="excise_duty" invisible='1'/>
+			 <field name="purpose" required="1"/>
+			<field name="type_flag" invisible="1" />
+			<field name="confirm_flag" invisible="1"/>
+			<field name="approve_flag" invisible="1"/>	
+			<field name="frieght_flag" invisible="1"/>	
+		</field>
+		
+		<label string="Request for Quotation " attrs="{'invisible': [('state','not in',('draft','sent'))]}" position="replace">
+		<label string="Request for Quotation " invisible="1"/>
+		</label>
+		<field name="payment_term_id" position="replace">
+		</field>
+		<field name="notes" class="oe_inline" placeholder="Terms and conditions..." position="replace">
+		<field name="notes" string="Notes" class="oe_inline" placeholder="Notes..." invisible='1'/>
+		</field>
+        <field name="location_id" groups="stock.group_locations" position="replace">
+		</field>
+        <button name="view_picking" string="Receive Products" type="object" 
+			attrs="{'invisible': ['|', ('shipped','=',True), ('state','!=', 'approved')]}" class="oe_highlight" position="replace">
+        <button name="view_picking" string="Receive Products" type="object" 
+			attrs="{'invisible': ['|', ('shipped','=',True), ('state','!=', 'approved')]}" class="oe_highlight" invisible="1"/>
+		</button>
+        <button name="view_invoice" string="Receive Invoice" type="object" 
+			attrs="{'invisible': ['|', ('invoice_method','=','picking'), '|', ('state','!=', 'approved'), ('invoiced','=',True) ]}"
+			class="oe_highlight" position="replace">
+		</button>
+		<button name="print_quotation" string="Print" type="object" states="draft" class="oe_highlight" groups="base.group_user" position="replace">
+		<button name="print_quotation" string="Print" type="object" states="draft" class="oe_highlight" groups="base.group_user" invisible="1"/>
+		</button>
+		<button name="wkf_send_rfq" states="draft" string="Send by Email" type="object" context="{'send_rfq':True}" 
+									class="oe_highlight" position="replace">
+		<button name="wkf_send_rfq" states="draft" string="Send by Email" type="object" context="{'send_rfq':True}" 
+					class="oe_highlight" invisible="1"/>
+		</button>
+		<button name="wkf_send_rfq" states="sent" string="Send by Email" type="object" context="{'send_rfq':True}" position="replace">
+		<button name="wkf_send_rfq" states="approved" string="Send by Email" type="object" context="{'send_rfq':True}" invisible="1"/>
+		</button>
+		<button name="purchase_confirm" states="draft" string="Confirm Order" position="replace">
+			<button name="purchase_confirm" states="confirmed" string="Approve" confirm="Are you sure to proceed ?" />
+			<button name="entry_reject" string="Reject" confirm="Are you sure to proceed ?" type="object" states="confirmed" />
+			<button name="action_cancel" string="Cancel" confirm="Are you sure to proceed ?" type="object" states="approved"/>
+			<button name="action_set_to_draft" string="Set To Draft" type="object" states="cancel"/>
+		</button>
+		<button name="purchase_confirm" states="confirmed" string="Approve" position="after">
+			<button name="confirm_po" states="draft" string="Confirm" type="object"/>
+		</button>
+		<field name="origin" position="replace">
+			<field name="bill_type" invisible="1"/>
+			<field name="po_flag" invisible="1"/>
+			<field name="vendor_bill_no" invisible="1"/>
+		</field>
+		
+		<field name="bill_type" position="replace">
+			 <field name="date_order" required="1"  on_change="onchange_date_order(date_order)"/>
+			 <field name="quotation_date" />
+			 <field name="quot_ref_no"  class="aplhanum_expect"  />
+			 <field name="delivery_address"/>
+			 <field name="bill_type" required="1"/>
+			 <field name="payment_mode" />
+			 <field name="term_warranty" invisible='1'/>
+			 <field name="revision" invisible="1"/>
+			<field name="grn_flag" invisible="1"/>
+		</field>
+		
+		<field name="order_line" position="after" create="false">
+		<group>
+			<group>
+			<field name="po_expenses_type1" invisible="1"/>
+			<field name="value1" invisible="1"/>
+			</group>
+			<group>
+			<field name="po_expenses_type2" invisible="1"/>
+			<field name="value2" invisible="1"/>
+			</group>
+		</group>
+		</field>
+		<field name="amount_untaxed" position="before">
+			<field name="line_amount_total"/>
+			<field name="discount"/>
+			<field name="other_charge" invisible='1'/>
+        </field>
+		<field name="pricelist_id" position="replace">
+		<field name="pricelist_id" invisible="1"/>
+		</field>
+		<field name="pricelist_id" position="after">
+		<field name="location_id" invisible="1"/>
+		</field>
+        <field name="company_id" position="replace">
+		<field name="company_id" invisible="1"/>
+		</field>
+		<field name="warehouse_id" position="replace">
+		<field name="warehouse_id" invisible="1"/>
+		</field>
+		<field name="name" position="replace">
+		</field>
+		
+		<field name="account_analytic_id" groups="purchase.group_analytic_accounting" domain="[('type','not in',('view','template'))]" position="replace">
+		</field>
+        <field name="company_id" groups="base.group_multi_company" widget="selection" position="replace">
+		</field>
+		<field name="date_planned" position="replace">
+		</field>
+		<field name="price_unit" position="after">
+		<field name="tot_price"/>
+		<field name="kg_discount"/>
+		<field name="kg_discount_per" invisible='1'/>
+		</field>
+		<field name="product_qty" on_change="onchange_product_id(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id,parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" position="after">
+			<field name="pending_qty"/>
+		</field>
+		<field name="product_qty" on_change="onchange_product_id(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id,parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" position="before">
+			<field name="brand_id"/>
+		</field>
+		<field name="price_subtotal" position="after">		
+		<field name="name" string="Remarks" invisible="1"/>
+		<field name="line_state" invisible="1"/>
+		</field>
+		
+		<xpath expr = "//page[@string='Incoming Shipments &amp; Invoices']" position="before">
+			<page string="Select Items" attrs="{'invisible':[('po_type','!=','frompi')]}">
+				<field name="kg_poindent_lines">
+					<tree string="PI Lines" editable="bottom">
+					<field name="requisition_id" string="Indent NO" readonly="1"/>
+					<field name="line_date" string="Indent Date" readonly="1"/>
+					<field name="product_id" readonly="1"/>
+					<field name="brand_id" string="Brand" readonly="1"/>
+					<field name="product_uom_id" string="UOM" invisible="1"/>
+					<field name="product_qty" string="Qty" readonly="1"/>
+					<field name="pending_qty" readonly="1" invisible="1"/>
+					<field name="note" readonly="1"/>
+					<field name="user_id" string="Entered By" readonly="1" invisible="1"/>
+					<field name="dep_id" readonly="1" invisible="1"/>
+					</tree>
+					</field>
+				 <button name="update_poline" type='object' string="Save Record" states="draft,confirmed"/>
+			 </page>
+		</xpath>
+		
+		<xpath expr = "//page[@string='Select Items']" position="after">
+			<page string="Internal notes">
+				<field name="note"/>							
+			 </page>
+		</xpath>
+		<xpath expr = "//page[@string='Internal notes']" position="before">
+			<page string="Additional Charges" invisible='1'>
+			<field colspan="4" mode="tree" name="expense_line_id" nolabel="1" widget="one2many_list" >
+				<tree string="Expense Lines" editable="bottom"> 
+					<field name="expense" required="1"/>
+					<field name="description" required="1"/>
+					<field name="expense_amt" required="1"/>
+				</tree>
+			</field>
+		</page>
+		</xpath>
+		<xpath expr = "//page[@string='Internal notes']" position="after">
+			<page string="Entry Info">
+			<group>
+				<field name="company_id" readonly="1" />
+				<field name="active"/>
+			</group>
+			<group>
+				<group>
+					<field name="user_id" on_change="onchange_user(user_id,location_id)"/>
+					<field name="confirmed_by" attrs="{'invisible': [('state','=','draft')]}"/>
+					<field name="rej_user_id" attrs="{'invisible': [('state','not in',('reject'))]}"/>
+					<field name="approved_by" attrs="{'invisible': [('state','in',('draft','confirmed','reject'))]}"/>
+					<field name="cancel_user_id" attrs="{'invisible': [('state','not in',('cancel'))]}"/>
+					<field name="update_user_id"/>
+				</group>
+				<group>
+					<field name="creation_date"/>
+					<field name="confirmed_date" attrs="{'invisible': [('state','=','draft')]}"/>
+					<field name="reject_date" attrs="{'invisible': [('state','not in',('reject'))]}"/>
+					<field name="approved_date" attrs="{'invisible': [('state','in',('draft','confirmed','reject'))]}"/>
+					<field name="cancel_date" attrs="{'invisible': [('state','not in',('cancel'))]}"/>
+					<field name="update_date"/>
+				</group>
+			</group>
+			</page>
+		</xpath>
+
+		</field>
+	</record>
+	
+	<record model="ir.ui.view" id="kg_purchase_order_form_inherit_new">
+        <field name="name">kg.purchase.order.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form_new"/>
+        <field name="arch" type="xml">
+		<field name="partner_id" context="{'search_default_supplier':1,'default_supplier':1,'default_customer':0}" domain="[('supplier','=',True)]" position="replace">
+			<field name="kg_seq_id" invisible="1"/>
+			<field name="name" readonly="1"/>
+			<field name="division" required="1"/>
+			 <field name="po_type" required="1" on_change="onchange_type_flag(po_type)"/>
+			<field name="partner_id" on_change="onchange_partner_id(partner_id,add_text)" context="{'search_default_supplier':1,'default_supplier':1,'default_customer':0}" />
+		</field>
+        <field name="partner_ref" position="replace">
+			<field name="add_text" />
+			<field name="dep_project_name" invisible="1"/>
+			<field name="term_price" invisible='1'/>
+			<field name="delivery_mode" />
+			<field name="term_freight" on_change="onchange_frieght_flag(term_freight)" invisible='1'/>
+			<field name="insurance"/>
+			<field name="excise_duty" invisible='1'/>
+			<field name="type_flag" invisible="1" />
+			<field name="confirm_flag" invisible="1"/>
+			<field name="approve_flag" invisible="1"/>	
+			<field name="frieght_flag" invisible="1"/>	
+		</field>
+		
+		<label string="Request for Quotation " attrs="{'invisible': [('state','not in',('draft','sent'))]}" position="replace">
+		<label string="Request for Quotation " invisible="1"/>
+		</label>
+		<field name="payment_term_id" position="replace">
+		</field>
+		<field name="notes" class="oe_inline" placeholder="Terms and conditions..." position="replace">
+		<field name="notes" string="Notes" class="oe_inline" placeholder="Notes..." invisible='1'/>
+		</field>
+        <field name="location_id" groups="stock.group_locations" position="replace">
+		</field>
+        <button name="view_picking" string="Receive Products" type="object" 
+			attrs="{'invisible': ['|', ('shipped','=',True), ('state','!=', 'approved')]}" class="oe_highlight" position="replace">
+        <button name="view_picking" string="Receive Products" type="object" 
+			attrs="{'invisible': ['|', ('shipped','=',True), ('state','!=', 'approved')]}" class="oe_highlight" invisible="1"/>
+		</button>
+        <button name="view_invoice" string="Receive Invoice" type="object" 
+			attrs="{'invisible': ['|', ('invoice_method','=','picking'), '|', ('state','!=', 'approved'), ('invoiced','=',True) ]}"
+			class="oe_highlight" position="replace">
+		</button>
+		<button name="print_quotation" string="Print" type="object" states="draft" class="oe_highlight" groups="base.group_user" position="replace">
+		<button name="print_quotation" string="Print" type="object" states="draft" class="oe_highlight" groups="base.group_user" invisible="1"/>
+		</button>
+		<button name="wkf_send_rfq" states="draft" string="Send by Email" type="object" context="{'send_rfq':True}" 
+									class="oe_highlight" position="replace">
+		<button name="wkf_send_rfq" states="draft" string="Send by Email" type="object" context="{'send_rfq':True}" 
+					class="oe_highlight" invisible="1"/>
+		</button>
+		<button name="wkf_send_rfq" states="sent" string="Send by Email" type="object" context="{'send_rfq':True}" position="replace">
+		<button name="wkf_send_rfq" states="approved" string="Send by Email" type="object" context="{'send_rfq':True}" invisible="1"/>
+		</button>
+		<button name="purchase_confirm" states="draft" string="Confirm Order" position="replace">
+			<button name="purchase_confirm" states="confirmed" string="Approve" confirm="Are you sure to proceed ?" />
+			<button name="entry_reject" string="Reject" confirm="Are you sure to proceed ?" type="object" states="confirmed" />
+			<button name="action_cancel" string="Cancel" confirm="Are you sure to proceed ?" type="object" states="approved"/>
+			<button name="action_set_to_draft" string="Set To Draft" type="object" states="cancel"/>
+		</button>
+		<button name="purchase_confirm" states="confirmed" string="Approve" position="after">
+			<button name="confirm_po" states="draft" string="Confirm" type="object" confirm="Are you sure to proceed ?"/>
+		</button>
+		<field name="origin" position="replace">
+			<field name="bill_type" invisible="1"/>
+			<field name="po_flag" invisible="1"/>
+			<field name="vendor_bill_no" invisible="1"/>
+		</field>
+		
+		<field name="bill_type" position="replace">
+			 <field name="date_order" required="1"  on_change="onchange_date_order(date_order)"/>
+			 <field name="quotation_date" />
+			 <field name="quot_ref_no" />
+			 <field name="delivery_address"/>
+			 <field name="bill_type" required="1"/>
+			 <field name="payment_mode" />
+			 <field name="term_warranty" />
+			 <field name="purpose" required="1"/>
+			 <field name="revision" invisible="1"/>
+			<field name="grn_flag" invisible="1"/>
+		</field>
+		
+		<field name="order_line" position="after" create="false">
+		<group>
+			<group>
+			<field name="po_expenses_type1" invisible="1"/>
+			<field name="value1" invisible="1"/>
+			</group>
+			<group>
+			<field name="po_expenses_type2" invisible="1"/>
+			<field name="value2" invisible="1"/>
+			</group>
+		</group>
+		</field>
+		<field name="amount_untaxed" position="before">
+			<field name="line_amount_total"/>
+			<field name="discount"/>
+			<field name="other_charge" invisible='1'/>
+        </field>
+		<field name="pricelist_id" position="replace">
+		<field name="pricelist_id" invisible="1"/>
+		</field>
+		<field name="pricelist_id" position="after">
+		<field name="location_id" invisible="1"/>
+		</field>
+        <field name="company_id" position="replace">
+		<field name="company_id" invisible="1"/>
+		</field>
+		<field name="warehouse_id" position="replace">
+		<field name="warehouse_id" invisible="1"/>
+		</field>
+		<field name="name" position="replace">
+		</field>
+		
+		<field name="account_analytic_id" groups="purchase.group_analytic_accounting" domain="[('type','not in',('view','template'))]" position="replace">
+		</field>
+        <field name="company_id" groups="base.group_multi_company" widget="selection" position="replace">
+		</field>
+		<field name="date_planned" position="replace">
+		</field>
+		<field name="price_unit" position="after">
+		<field name="tot_price"/>
+		<field name="kg_discount"/>
+		<field name="kg_discount_per" invisible='1'/>
+		</field>
+		<field name="product_qty" on_change="onchange_product_id(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id,parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" position="after">
+			<field name="pending_qty"/>
+		</field>
+		<field name="product_qty" on_change="onchange_product_id(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id,parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" position="before">
+			<field name="brand_id"/>
+		</field>
+		<field name="price_subtotal" position="after">		
+		<field name="name" string="Remarks" invisible="1"/>
+		<field name="line_state" invisible="1"/>
+		</field>
+		
+		<xpath expr = "//page[@string='Incoming Shipments &amp; Invoices']" position="before">
+			<page string="Select Items" attrs="{'invisible':[('po_type','!=','frompi')]}">
+				<field name="kg_poindent_lines">
+					<tree string="PI Lines" editable="bottom">
+					<field name="requisition_id" string="Indent NO" readonly="1"/>
+					<field name="line_date" string="Indent Date" readonly="1"/>
+					<field name="product_id" readonly="1"/>
+					<field name="brand_id" string="Brand" readonly="1"/>
+					<field name="product_uom_id" string="UOM" invisible="1"/>
+					<field name="product_qty" string="Qty" readonly="1"/>
+					<field name="pending_qty" readonly="1" invisible="1"/>
+					<field name="note" readonly="1"/>
+					<field name="user_id" string="Entered By" readonly="1" invisible="1"/>
+					<field name="dep_id" readonly="1" invisible="1"/>
+					</tree>
+					</field>
+				 <button name="update_poline" type='object' string="Save Record" states="draft,confirmed"/>
+			 </page>
+		</xpath>
+		
+		<xpath expr = "//page[@string='Select Items']" position="after">
+			<page string="Internal notes">
+				<field name="note"/>							
+			 </page>
+		</xpath>
+		<xpath expr = "//page[@string='Internal notes']" position="before">
+			<page string="Additonal Charges">
+			<field colspan="4" mode="tree" name="expense_line_id" nolabel="1" widget="one2many_list" >
+				<tree string="Expense Lines" editable="bottom"> 
+					<field name="expense" required="1"/>
+					<field name="description" required="1"/>
+					<field name="expense_amt" required="1"/>
+				</tree>
+			</field>
+		</page>
+		</xpath>
+		<xpath expr = "//page[@string='Internal notes']" position="after">
+			<page string="Entry Info">
+			<group>
+				<field name="company_id" readonly="1" />
+				<field name="active"/>
+			</group>
+			<group>
+				<group>
+					<field name="user_id" on_change="onchange_user(user_id,location_id)"/>
+					<field name="confirmed_by" attrs="{'invisible': [('state','=','draft')]}"/>
+					<field name="rej_user_id" attrs="{'invisible': [('state','not in',('reject'))]}"/>
+					<field name="approved_by" attrs="{'invisible': [('state','in',('draft','confirmed','reject'))]}"/>
+					<field name="cancel_user_id" attrs="{'invisible': [('state','not in',('cancel'))]}"/>
+					<field name="update_user_id"/>
+				</group>
+				<group>
+					<field name="creation_date"/>
+					<field name="confirmed_date" attrs="{'invisible': [('state','=','draft')]}"/>
+					<field name="reject_date" attrs="{'invisible': [('state','not in',('reject'))]}"/>
+					<field name="approved_date" attrs="{'invisible': [('state','in',('draft','confirmed','reject'))]}"/>
+					<field name="cancel_date" attrs="{'invisible': [('state','not in',('cancel'))]}"/>
+					<field name="update_date"/>
+				</group>
+			</group>
+			</page>
+		</xpath>
+
+		</field>
+	</record>
+	
+    <!-- purchase order line form inherit -->
+    
+      <record model="ir.ui.view" id="kg_purchase_order_line_form_inherit">
+        <field name="name">kg.purchase.order.line.form.inherit</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase.purchase_order_line_form"/>
+        <field name="arch" type="xml">
+			<field name="product_id" 
+				on_change="onchange_product_id(parent.pricelist_id,product_id,0,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" 
+					position="replace">
+			<field name="product_id" 
+				on_change="onchange_product_id(parent.pricelist_id,product_id,0,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" 
+				attrs="{'readonly': [('line_flag', '=', True)]}"/>		
+			</field>
+			<field name="product_id" 
+				on_change="onchange_product_id(parent.pricelist_id,product_id,0,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" 
+				attrs="{'readonly': [('line_flag', '=', True)]}" position="after">
+				<field name="uom_conversation_factor" readonly="1" invisible="1"/>
+				<field name="length" on_change="onchange_price_type(product_qty,uom_conversation_factor,length,breadth,price_type,product_id)" attrs="{'invisible':[('uom_conversation_factor','!=','two_dimension')],'required':[('uom_conversation_factor','=','two_dimension')]}"/>
+				<field name="breadth" on_change="onchange_price_type(product_qty,uom_conversation_factor,length,breadth,price_type,product_id)" attrs="{'invisible':[('uom_conversation_factor','!=','two_dimension')],'required':[('uom_conversation_factor','=','two_dimension')]}"/>
+			</field>
+			<field name="product_qty" position="replace">
+			<field name="product_qty" required="True" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_qty(product_qty,pending_qty,pi_line_id,pi_qty,uom_conversation_factor,length,breadth,price_type,product_id,price_unit)"/>
+			</field>
+			<field name="product_uom" 
+						on_change="onchange_product_uom(parent.pricelist_id,product_id,product_qty,product_uom,
+							parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" 
+							class="oe_inline" position="replace">
+			<field name="product_uom"
+						on_change="onchange_product_uom(parent.pricelist_id,product_id,product_qty,product_uom,
+							parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)" 
+							class="oe_inline"/>
+			</field>
+			<field name="date_planned" position="replace">
+			<field name="date_planned" attrs="{'readonly': [('cancel_flag','=', True)]}" invisible="1"/>
+			<field name="line_state" invisible="1"/>
+			<field name="line_bill" invisible="1"/>
+			<field name="line_flag" invisible="1"/>		
+			</field>
+                <field name="taxes_id" position="replace" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}">
+				<field name="pending_qty" invisible="1" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}"/>
+				<field name="tot_price" readonly="1"/>
+				<field name="pi_qty" readonly="1"/>
+                <field name="kg_discount" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_disc_amt(kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price)" />
+                <field name="kg_disc_amt_per" invisible="1" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}"/>
+                <field name="kg_discount_per" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_discount_value_calc(kg_discount_per, product_qty, price_unit,tot_price)"/> 
+                <field name="kg_discount_per_value" invisible="1"/>
+				<field name="total_disc" invisible="1"/>
+                <field name="taxes_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','!=','sale')]" />
+                <field name="pi_line_id" invisible="1"/>
+				</field>
+				<field name="price_unit" position="replace">
+					<field name="price_unit" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_unit_price(price_unit,product_qty)"/>
+				</field>
+				<field name="price_unit" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" position="after">
+                <field name="cancel_qty" readonly="1" attrs="{'invisible': [('cancel_qty','=',0)]}"/>				
+				<field name="received_qty" readonly="1"	attrs="{'invisible': [('received_qty','=',0)]}" />
+				<field name = "quantity" invisible="1"/>
+				<field name = "price_type" on_change="onchange_price_type(product_qty,uom_conversation_factor,length,breadth,price_type,product_id)" required="1"/>
+				<field name = "cancel_flag" invisible="1"/>
+				<group string="Price History">
+				<field name="least_price" readonly="1"/>
+				<field name="high_price" readonly="1"/>
+				<field name="recent_price" readonly="1"/>
+				</group>
+				<button name="get_old_details" string="Show Price List" type="object" class="oe_highlight" invisible="1"/>
+                </field>
+               
+                <xpath expr = "//page[@string='Notes']" position="before">
+					<page string="PO History" invisible='1'>
+						<field name="po_order" readonly = "1">
+							<tree string="PO Line">
+								<field name="po_no"/>
+								<field name="date_order"/>
+								<field name="supp_name"/>
+								<field name="price_unit"/>
+								<field name="kg_discount"/>
+								<field name="kg_discount_per"/>
+							</tree>
+						</field>
+					</page>
+				</xpath>        
+				 
+				<xpath expr = "//page[@string='Notes']" position="before">
+					<page string="Specifiation">
+						<field name="po_specification" nolabel="1"/>
+					</page>
+				</xpath>
+				
+				<xpath expr = "//page[@string='PO History']" position="before">
+					<page string="WO Details" invisible='1'>
+						<field name="line_id">
+							<tree string="WO Line" editable="bottom">
+						    <field name="qty"/>
+						    <field name="wo_id" invisible="1"/>
+							</tree>
+							</field>
+					</page>
+				</xpath>
+				
+        </field>
+    </record>
+    
+    <!-- Purchase Order Tree view -->
+    
+		<record model="ir.ui.view" id="kg_purchase_order_tree_inherit">
+        <field name="name">kg.purchase.order.tree.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+        <field name="arch" type="xml">
+			
+			<field name="name" string="Reference" position="replace">
+			<field name="name" string="Purchase Order No"/>
+			<field name="revision"/>
+			</field>
+			<field name="minimum_planned_date" invisible="context.get('quotation_only', False)" position="replace">
+			<field name="amount_tax"/>					
+			</field>
+			<field name="origin" position="replace">
+			<field name="origin" invisible="1"/>
+			</field>
+			<field name="state" position="after">
+			<field name="amend_flag"/>
+			</field>
+			
+		</field>
+		</record>
+    <!-- Purchase Order Tree view -->
+    
+		<record model="ir.ui.view" id="kg_purchase_order_tree_inherit_new">
+        <field name="name">kg.purchase.order.tree.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_tree_new"/>
+        <field name="arch" type="xml">
+			
+			<field name="name" string="Reference" position="replace">
+			<field name="name" string="Purchase Order No"/>
+			<field name="revision"/>
+			</field>
+			<field name="minimum_planned_date" invisible="context.get('quotation_only', False)" position="replace">
+			<field name="amount_tax"/>					
+			</field>
+			<field name="origin" position="replace">
+			<field name="origin" invisible="1"/>
+			</field>
+			<field name="state" position="after">
+			<field name="amend_flag"/>
+			</field>
+			
+		</field>
+		</record>
+    
+    <!-- purchase order line tree view -->
+    
+    <record model="ir.ui.view" id="kg_purchase_order_line_tree_inherit">
+        <field name="name">kg.purchase.order.line.tree.inherit</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase.purchase_order_line_tree"/>
+        <field name="arch" type="xml">
+			<tree string="Purchase Order Lines">
+            <field name="date_planned" position="after">
+                <field name="discount"/>
+            </field>
+            <field name="product_qty" position="after">				
+            </field>
+            <field name="name" position="replace">
+            <field name="name" invisible="1"/>
+            </field>
+            
+            </tree>
+        </field>
+    </record>
+    
+    <record id="kg_po_line_tree_view" model="ir.ui.view">
+		<field name="name">PO Line Tree View</field>
+		<field name="model">purchase.order.line</field>
+		<field name="type">tree</field>
+		<field name="arch" type="xml">
+			<tree string="PO Line Tree View" create="false" delete="false">					
+				<field name="order_id" string="PO No"/>
+				<field name="date_planned" string="PO Date"/>
+				<field name="partner_id" string="Supplier"/>
+				<field name="product_id"/>
+				<field name="product_uom"/>
+				<field name="brand_id"/>
+				<field name="product_qty" string="Purchase Order Qty"/>
+				<field name="pending_qty" string="GRN Pending Qty"/>
+				<field name="price_unit"/>
+			</tree>
+		</field>
+	</record>
+    
+    <record id="pol_search_view" model="ir.ui.view">
+		<field name="name">PO Line</field>
+		<field name="model">purchase.order.line</field>
+		<field name="arch" type="xml">
+			<search string="PO Line">
+				<field name="name" string="Product" filter_domain="[('product_id','ilike',self)]"/>
+				<field name="order_id" string="PO No" filter_domain="[('order_id','ilike',self)]"/>
+			<separator/> 
+			<group expand="0" string="Group By...">
+				<filter string="PO No" name="group_order_id"  icon="terp-personal" domain="[]" context="{'group_by':'order_id'}"/>
+				<filter string="PO Date" icon="terp-personal" domain="[]" context="{'group_by':'date_planned'}"/>
+				<filter string="Product" name="group_product_id" icon="terp-personal" domain="[]" context="{'group_by':'product_id'}"/>
+				<filter string="Brand" icon="terp-personal" domain="[]" context="{'group_by':'brand_id'}"/>
+			</group>                   
+			</search>
+		</field>
+	</record>
+	
+	<record id="kg_poline_confirmed_action" model="ir.actions.act_window">
+		<field name="name">PO Item Details</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">purchase.order.line</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree</field>
+		<field name="domain">[('pending_qty','!=',0),('order_id.state','=','approved')]</field>
+		<field name="context">{'search_default_group_order_id':1}</field>
+		<field name="search_view_id" ref="pol_search_view"/>
+	</record>
+
+	<record id="po_line_new_tree" model="ir.actions.act_window.view">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="view_id" ref="kg_po_line_tree_view"/>
+		<field name="act_window_id" ref="kg_poline_confirmed_action"/>
+	</record>
+        
+    <menuitem action="purchase.purchase_rfq" id="purchase.menu_purchase_rfq"
+            parent="purchase.menu_procurement_management" name="Generate PO"
+            sequence="3"/>  
+            
+            
+<!--
+		<record forcecreate="1" id="seq_kg_purchase_order" model="ir.sequence.type"> 
+			<field name="name">Purchase Order</field>
+			<field name="code">purchase.order</field>
+		</record>
+
+		<record forcecreate="1" id="seq_kg_purchase_order_id" model="ir.sequence">
+			  <field name="name">Purchase Order</field>
+			  <field name="code">purchase.order</field>
+			  <field name="padding" eval="4"/>
+			  <field name="prefix">PO/%(year)s /</field>
+			  <field name="reset_sequence">yearly_reset</field>
+		</record>            
+-->
+            
+    </data>
+</openerp>

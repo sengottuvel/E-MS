@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False" id="gate_pass_report" model="kg.gate.pass" name="onscreen_gate_pass_report"
+                rml="kg_gate_pass/report/Gate_Pass.jrxml" string="Print GP Slip"
+                usage="default"/>
+
+
+    </data>
+</openerp>

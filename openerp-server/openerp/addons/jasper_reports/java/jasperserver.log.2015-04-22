@@ -1,0 +1,3677 @@
+1    [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error executing SQL statement for : PODOC
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Error executing SQL statement for : PODOC
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.JRException: Error executing SQL statement for : PODOC
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:169)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by: org.postgresql.util.PSQLException: ERROR: relation "custom_company_address" does not exist
+  Position: 5061
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2062)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:1795)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:257)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.execute(AbstractJdbc2Statement.java:479)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeWithFlags(AbstractJdbc2Statement.java:367)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeQuery(AbstractJdbc2Statement.java:271)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:163)
+	... 20 more
+Caused by:
+net.sf.jasperreports.engine.JRException: Error executing SQL statement for : PODOC
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:169)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.createQueryDatasource(JRFillDataset.java:684)
+	at net.sf.jasperreports.engine.fill.JRFillDataset.initDatasource(JRFillDataset.java:605)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.setParameters(JRBaseFiller.java:1281)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:901)
+	at net.sf.jasperreports.engine.fill.JRBaseFiller.fill(JRBaseFiller.java:845)
+	at net.sf.jasperreports.engine.fill.JRFiller.fillReport(JRFiller.java:58)
+	at net.sf.jasperreports.engine.JasperFillManager.fillReport(JasperFillManager.java:417)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:222)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: org.postgresql.util.PSQLException: ERROR: relation "custom_company_address" does not exist
+  Position: 5061
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2062)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:1795)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:257)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.execute(AbstractJdbc2Statement.java:479)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeWithFlags(AbstractJdbc2Statement.java:367)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeQuery(AbstractJdbc2Statement.java:271)
+	at net.sf.jasperreports.engine.query.JRJdbcQueryExecuter.createDatasource(JRJdbcQueryExecuter.java:163)
+	... 20 more
+84537 [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : street
+	 4. Field not found : street2
+	 5. Field not found : city
+	 6. Field not found : zip
+	 7. Field not found : state
+	 8. Field not found : country
+	 9. Field not found : company_name
+	 10. Field not found : phone
+	 11. Field not found : fax
+	 12. Field not found : email
+	 13. Field not found : poid
+	 14. Field not found : pono
+	 15. Field not found : pono
+	 16. Field not found : podate
+	 17. Field not found : podate
+	 18. Field not found : version_no
+	 19. Field not found : version_no
+	 20. Field not found : version_no
+	 21. Field not found : podraft_no
+	 22. Field not found : podraft_no
+	 23. Field not found : podraft_no
+	 24. Field not found : podraft_no
+	 25. Field not found : podraft_date
+	 26. Field not found : poid
+	 27. Field not found : postate
+	 28. Field not found : poid
+	 29. Field not found : paname
+	 30. Field not found : paname
+	 31. Field not found : pastreet
+	 32. Field not found : pastreet
+	 33. Field not found : pastreet2
+	 34. Field not found : pastreet2
+	 35. Field not found : pacity
+	 36. Field not found : pacity
+	 37. Field not found : pazip
+	 38. Field not found : pazip
+	 39. Field not found : pastate
+	 40. Field not found : pastate
+	 41. Field not found : poid
+	 42. Field not found : paatt
+	 43. Field not found : paatt
+	 44. Field not found : pafax
+	 45. Field not found : pafax
+	 46. Field not found : paphone
+	 47. Field not found : paphone
+	 48. Field not found : paemail
+	 49. Field not found : paemail
+	 50. Field not found : company_name
+	 51. Field not found : company_name
+	 52. Field not found : shname
+	 53. Field not found : shname
+	 54. Field not found : shstreet
+	 55. Field not found : shstreet
+	 56. Field not found : shstreet2
+	 57. Field not found : shstreet2
+	 58. Field not found : shcity
+	 59. Field not found : shcity
+	 60. Field not found : shzip
+	 61. Field not found : shzip
+	 62. Field not found : shstate
+	 63. Field not found : shstate
+	 64. Field not found : company_name
+	 65. Field not found : company_name
+	 66. Field not found : ivname
+	 67. Field not found : ivname
+	 68. Field not found : ivstreet
+	 69. Field not found : ivstreet
+	 70. Field not found : ivstreet2
+	 71. Field not found : ivstreet2
+	 72. Field not found : ivcity
+	 73. Field not found : ivcity
+	 74. Field not found : ivzip
+	 75. Field not found : ivzip
+	 76. Field not found : ivstate
+	 77. Field not found : ivstate
+	 78. Field not found : quotation_ref_no
+	 79. Field not found : quotation_ref_no
+	 80. Field not found : quotation_date
+	 81. Field not found : quotation_date
+	 82. Field not found : project
+	 83. Field not found : delivery_date
+	 84. Field not found : delivery_date
+	 85. Field not found : poid
+	 86. Field not found : tax_amount
+	 87. Field not found : discount_amount
+	 88. Field not found : cst_amount
+	 89. Field not found : duty
+	 90. Field not found : currency
+	 91. Field not found : currency
+	 92. Field not found : poid
+	 93. Field not found : tax_amount
+	 94. Field not found : discount_amount
+	 95. Field not found : cst_amount
+	 96. Field not found : duty
+	 97. Field not found : poid
+	 98. Field not found : poid
+	 99. Field not found : partner_id
+	 100. Field not found : project_id
+	 101. Field not found : poid
+	 102. Field not found : plnotecount
+	 103. Field not found : plnotecount
+	 104. Field not found : plnotecount
+	 105. Field not found : plnotecount
+	 106. Field not found : poid
+	 107. Field not found : pkg_and_fwd_terms
+	 108. Field not found : octroi_terms
+	 109. Field not found : octroi_terms
+	 110. Field not found : insurance_terms
+	 111. Field not found : insurance_terms
+	 112. Field not found : octroi_terms
+	 113. Field not found : payment_terms
+	 114. Field not found : payment_terms
+	 115. Field not found : warranty_terms
+	 116. Field not found : delivery_terms
+	 117. Field not found : freight_terms
+	 118. Field not found : pkg_and_fwd_terms
+	 119. Field not found : pkg_and_fwd_terms
+	 120. Field not found : other_terms
+	 121. Field not found : inspection_terms
+	 122. Field not found : freight_terms
+	 123. Field not found : freight_terms
+	 124. Field not found : delivery_terms
+	 125. Field not found : delivery_terms
+	 126. Field not found : warranty_terms
+	 127. Field not found : warranty_terms
+	 128. Field not found : insurance_terms
+	 129. Field not found : payment_terms
+	 130. Field not found : payment_terms
+	 131. Field not found : inspection_terms
+	 132. Field not found : inspection_terms
+	 133. Field not found : other_terms
+	 134. Field not found : other_terms
+	 135. Field not found : internalnotes
+	 136. Field not found : internalnotes
+	 137. Field not found : internalnotes
+	 138. Field not found : partner_id
+	 139. Field not found : poid
+	 140. Field not found : tax_amount
+	 141. Field not found : discount_amount
+	 142. Field not found : cst_amount
+	 143. Field not found : duty
+	 144. Field not found : currency
+	 145. Field not found : currency
+	 146. Field not found : tax_amount
+	 147. Field not found : discount_amount
+	 148. Field not found : cst_amount
+	 149. Field not found : duty
+	 150. Field not found : tax_amount
+	 151. Field not found : poid
+	 152. Field not found : amount_in_words
+	 153. Field not found : amount_in_words
+	 154. Field not found : cst_amount
+	 155. Field not found : netamount
+	 156. Field not found : discount_amount
+	 157. Field not found : discount_amount
+	 158. Field not found : duty
+	 159. Field not found : total_amount
+	 160. Field not found : roundoff
+	 161. Field not found : duty
+	 162. Field not found : tax_amount
+	 163. Field not found : other_charges
+	 164. Field not found : tax_amount
+	 165. Field not found : tax_amount
+	 166. Field not found : cst_amount
+	 167. Field not found : cst_amount
+	 168. Field not found : duty
+	 169. Field not found : total_amount
+	 170. Field not found : tax_amount
+	 171. Field not found : cst_amount
+	 172. Field not found : duty
+	 173. Field not found : poid
+	 174. Field not found : poid
+	 175. Field not found : poid
+	 176. Field not found : tax_amount
+	 177. Field not found : cst_amount
+	 178. Field not found : duty
+	 179. Field not found : currency
+	 180. Field not found : currency
+	 181. Field not found : poid
+	 182. Field not found : tax_amount
+	 183. Field not found : cst_amount
+	 184. Field not found : duty
+	 185. Field not found : poid
+	 186. Field not found : poid
+	 187. Field not found : tax_amount
+	 188. Field not found : discount_amount
+	 189. Field not found : cst_amount
+	 190. Field not found : duty
+	 191. Field not found : currency
+	 192. Field not found : currency
+	 193. Field not found : poid
+	 194. Field not found : tax_amount
+	 195. Field not found : discount_amount
+	 196. Field not found : cst_amount
+	 197. Field not found : duty
+	 198. Field not found : poid
+	 199. Field not found : poid
+	 200. Field not found : tax_amount
+	 201. Field not found : discount_amount
+	 202. Field not found : cst_amount
+	 203. Field not found : duty
+	 204. Field not found : currency
+	 205. Field not found : currency
+	 206. Field not found : poid
+	 207. Field not found : tax_amount
+	 208. Field not found : discount_amount
+	 209. Field not found : cst_amount
+	 210. Field not found : duty
+	 211. Field not found : poid
+	 212. Field not found : poid
+	 213. Field not found : tax_amount
+	 214. Field not found : discount_amount
+	 215. Field not found : cst_amount
+	 216. Field not found : duty
+	 217. Field not found : currency
+	 218. Field not found : currency
+	 219. Field not found : tax_amount
+	 220. Field not found : discount_amount
+	 221. Field not found : cst_amount
+	 222. Field not found : duty
+	 223. Field not found : poid
+	 224. Field not found : poid
+	 225. Field not found : tax_amount
+	 226. Field not found : discount_amount
+	 227. Field not found : cst_amount
+	 228. Field not found : duty
+	 229. Field not found : currency
+	 230. Field not found : currency
+	 231. Field not found : tax_amount
+	 232. Field not found : discount_amount
+	 233. Field not found : cst_amount
+	 234. Field not found : duty
+	 235. Field not found : poid
+	 236. Field not found : poid
+	 237. Field not found : tax_amount
+	 238. Field not found : discount_amount
+	 239. Field not found : cst_amount
+	 240. Field not found : duty
+	 241. Field not found : currency
+	 242. Field not found : currency
+	 243. Field not found : tax_amount
+	 244. Field not found : discount_amount
+	 245. Field not found : cst_amount
+	 246. Field not found : duty
+	 247. Field not found : poid
+	 248. Field not found : poid
+	 249. Field not found : tax_amount
+	 250. Field not found : discount_amount
+	 251. Field not found : cst_amount
+	 252. Field not found : duty
+	 253. Field not found : currency
+	 254. Field not found : currency
+	 255. Field not found : tax_amount
+	 256. Field not found : discount_amount
+	 257. Field not found : cst_amount
+	 258. Field not found : duty
+	 259. Field not found : poid
+	 260. Field not found : poid
+	 261. Field not found : tax_amount
+	 262. Field not found : discount_amount
+	 263. Field not found : cst_amount
+	 264. Field not found : duty
+	 265. Field not found : currency
+	 266. Field not found : currency
+	 267. Field not found : tax_amount
+	 268. Field not found : discount_amount
+	 269. Field not found : cst_amount
+	 270. Field not found : duty
+	 271. Field not found : poid
+	 272. Field not found : poid
+	 273. Field not found : tax_amount
+	 274. Field not found : discount_amount
+	 275. Field not found : cst_amount
+	 276. Field not found : duty
+	 277. Field not found : currency
+	 278. Field not found : currency
+	 279. Field not found : tax_amount
+	 280. Field not found : discount_amount
+	 281. Field not found : cst_amount
+	 282. Field not found : duty
+	 283. Field not found : poid
+	 284. Field not found : postate
+	 285. Field not found : poid
+	 286. Field not found : approved_time
+	 287. Field not found : approved_by
+	 288. Field not found : approved_time
+	 289. Field not found : new_date
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : street
+	 4. Field not found : street2
+	 5. Field not found : city
+	 6. Field not found : zip
+	 7. Field not found : state
+	 8. Field not found : country
+	 9. Field not found : company_name
+	 10. Field not found : phone
+	 11. Field not found : fax
+	 12. Field not found : email
+	 13. Field not found : poid
+	 14. Field not found : pono
+	 15. Field not found : pono
+	 16. Field not found : podate
+	 17. Field not found : podate
+	 18. Field not found : version_no
+	 19. Field not found : version_no
+	 20. Field not found : version_no
+	 21. Field not found : podraft_no
+	 22. Field not found : podraft_no
+	 23. Field not found : podraft_no
+	 24. Field not found : podraft_no
+	 25. Field not found : podraft_date
+	 26. Field not found : poid
+	 27. Field not found : postate
+	 28. Field not found : poid
+	 29. Field not found : paname
+	 30. Field not found : paname
+	 31. Field not found : pastreet
+	 32. Field not found : pastreet
+	 33. Field not found : pastreet2
+	 34. Field not found : pastreet2
+	 35. Field not found : pacity
+	 36. Field not found : pacity
+	 37. Field not found : pazip
+	 38. Field not found : pazip
+	 39. Field not found : pastate
+	 40. Field not found : pastate
+	 41. Field not found : poid
+	 42. Field not found : paatt
+	 43. Field not found : paatt
+	 44. Field not found : pafax
+	 45. Field not found : pafax
+	 46. Field not found : paphone
+	 47. Field not found : paphone
+	 48. Field not found : paemail
+	 49. Field not found : paemail
+	 50. Field not found : company_name
+	 51. Field not found : company_name
+	 52. Field not found : shname
+	 53. Field not found : shname
+	 54. Field not found : shstreet
+	 55. Field not found : shstreet
+	 56. Field not found : shstreet2
+	 57. Field not found : shstreet2
+	 58. Field not found : shcity
+	 59. Field not found : shcity
+	 60. Field not found : shzip
+	 61. Field not found : shzip
+	 62. Field not found : shstate
+	 63. Field not found : shstate
+	 64. Field not found : company_name
+	 65. Field not found : company_name
+	 66. Field not found : ivname
+	 67. Field not found : ivname
+	 68. Field not found : ivstreet
+	 69. Field not found : ivstreet
+	 70. Field not found : ivstreet2
+	 71. Field not found : ivstreet2
+	 72. Field not found : ivcity
+	 73. Field not found : ivcity
+	 74. Field not found : ivzip
+	 75. Field not found : ivzip
+	 76. Field not found : ivstate
+	 77. Field not found : ivstate
+	 78. Field not found : quotation_ref_no
+	 79. Field not found : quotation_ref_no
+	 80. Field not found : quotation_date
+	 81. Field not found : quotation_date
+	 82. Field not found : project
+	 83. Field not found : delivery_date
+	 84. Field not found : delivery_date
+	 85. Field not found : poid
+	 86. Field not found : tax_amount
+	 87. Field not found : discount_amount
+	 88. Field not found : cst_amount
+	 89. Field not found : duty
+	 90. Field not found : currency
+	 91. Field not found : currency
+	 92. Field not found : poid
+	 93. Field not found : tax_amount
+	 94. Field not found : discount_amount
+	 95. Field not found : cst_amount
+	 96. Field not found : duty
+	 97. Field not found : poid
+	 98. Field not found : poid
+	 99. Field not found : partner_id
+	 100. Field not found : project_id
+	 101. Field not found : poid
+	 102. Field not found : plnotecount
+	 103. Field not found : plnotecount
+	 104. Field not found : plnotecount
+	 105. Field not found : plnotecount
+	 106. Field not found : poid
+	 107. Field not found : pkg_and_fwd_terms
+	 108. Field not found : octroi_terms
+	 109. Field not found : octroi_terms
+	 110. Field not found : insurance_terms
+	 111. Field not found : insurance_terms
+	 112. Field not found : octroi_terms
+	 113. Field not found : payment_terms
+	 114. Field not found : payment_terms
+	 115. Field not found : warranty_terms
+	 116. Field not found : delivery_terms
+	 117. Field not found : freight_terms
+	 118. Field not found : pkg_and_fwd_terms
+	 119. Field not found : pkg_and_fwd_terms
+	 120. Field not found : other_terms
+	 121. Field not found : inspection_terms
+	 122. Field not found : freight_terms
+	 123. Field not found : freight_terms
+	 124. Field not found : delivery_terms
+	 125. Field not found : delivery_terms
+	 126. Field not found : warranty_terms
+	 127. Field not found : warranty_terms
+	 128. Field not found : insurance_terms
+	 129. Field not found : payment_terms
+	 130. Field not found : payment_terms
+	 131. Field not found : inspection_terms
+	 132. Field not found : inspection_terms
+	 133. Field not found : other_terms
+	 134. Field not found : other_terms
+	 135. Field not found : internalnotes
+	 136. Field not found : internalnotes
+	 137. Field not found : internalnotes
+	 138. Field not found : partner_id
+	 139. Field not found : poid
+	 140. Field not found : tax_amount
+	 141. Field not found : discount_amount
+	 142. Field not found : cst_amount
+	 143. Field not found : duty
+	 144. Field not found : currency
+	 145. Field not found : currency
+	 146. Field not found : tax_amount
+	 147. Field not found : discount_amount
+	 148. Field not found : cst_amount
+	 149. Field not found : duty
+	 150. Field not found : tax_amount
+	 151. Field not found : poid
+	 152. Field not found : amount_in_words
+	 153. Field not found : amount_in_words
+	 154. Field not found : cst_amount
+	 155. Field not found : netamount
+	 156. Field not found : discount_amount
+	 157. Field not found : discount_amount
+	 158. Field not found : duty
+	 159. Field not found : total_amount
+	 160. Field not found : roundoff
+	 161. Field not found : duty
+	 162. Field not found : tax_amount
+	 163. Field not found : other_charges
+	 164. Field not found : tax_amount
+	 165. Field not found : tax_amount
+	 166. Field not found : cst_amount
+	 167. Field not found : cst_amount
+	 168. Field not found : duty
+	 169. Field not found : total_amount
+	 170. Field not found : tax_amount
+	 171. Field not found : cst_amount
+	 172. Field not found : duty
+	 173. Field not found : poid
+	 174. Field not found : poid
+	 175. Field not found : poid
+	 176. Field not found : tax_amount
+	 177. Field not found : cst_amount
+	 178. Field not found : duty
+	 179. Field not found : currency
+	 180. Field not found : currency
+	 181. Field not found : poid
+	 182. Field not found : tax_amount
+	 183. Field not found : cst_amount
+	 184. Field not found : duty
+	 185. Field not found : poid
+	 186. Field not found : poid
+	 187. Field not found : tax_amount
+	 188. Field not found : discount_amount
+	 189. Field not found : cst_amount
+	 190. Field not found : duty
+	 191. Field not found : currency
+	 192. Field not found : currency
+	 193. Field not found : poid
+	 194. Field not found : tax_amount
+	 195. Field not found : discount_amount
+	 196. Field not found : cst_amount
+	 197. Field not found : duty
+	 198. Field not found : poid
+	 199. Field not found : poid
+	 200. Field not found : tax_amount
+	 201. Field not found : discount_amount
+	 202. Field not found : cst_amount
+	 203. Field not found : duty
+	 204. Field not found : currency
+	 205. Field not found : currency
+	 206. Field not found : poid
+	 207. Field not found : tax_amount
+	 208. Field not found : discount_amount
+	 209. Field not found : cst_amount
+	 210. Field not found : duty
+	 211. Field not found : poid
+	 212. Field not found : poid
+	 213. Field not found : tax_amount
+	 214. Field not found : discount_amount
+	 215. Field not found : cst_amount
+	 216. Field not found : duty
+	 217. Field not found : currency
+	 218. Field not found : currency
+	 219. Field not found : tax_amount
+	 220. Field not found : discount_amount
+	 221. Field not found : cst_amount
+	 222. Field not found : duty
+	 223. Field not found : poid
+	 224. Field not found : poid
+	 225. Field not found : tax_amount
+	 226. Field not found : discount_amount
+	 227. Field not found : cst_amount
+	 228. Field not found : duty
+	 229. Field not found : currency
+	 230. Field not found : currency
+	 231. Field not found : tax_amount
+	 232. Field not found : discount_amount
+	 233. Field not found : cst_amount
+	 234. Field not found : duty
+	 235. Field not found : poid
+	 236. Field not found : poid
+	 237. Field not found : tax_amount
+	 238. Field not found : discount_amount
+	 239. Field not found : cst_amount
+	 240. Field not found : duty
+	 241. Field not found : currency
+	 242. Field not found : currency
+	 243. Field not found : tax_amount
+	 244. Field not found : discount_amount
+	 245. Field not found : cst_amount
+	 246. Field not found : duty
+	 247. Field not found : poid
+	 248. Field not found : poid
+	 249. Field not found : tax_amount
+	 250. Field not found : discount_amount
+	 251. Field not found : cst_amount
+	 252. Field not found : duty
+	 253. Field not found : currency
+	 254. Field not found : currency
+	 255. Field not found : tax_amount
+	 256. Field not found : discount_amount
+	 257. Field not found : cst_amount
+	 258. Field not found : duty
+	 259. Field not found : poid
+	 260. Field not found : poid
+	 261. Field not found : tax_amount
+	 262. Field not found : discount_amount
+	 263. Field not found : cst_amount
+	 264. Field not found : duty
+	 265. Field not found : currency
+	 266. Field not found : currency
+	 267. Field not found : tax_amount
+	 268. Field not found : discount_amount
+	 269. Field not found : cst_amount
+	 270. Field not found : duty
+	 271. Field not found : poid
+	 272. Field not found : poid
+	 273. Field not found : tax_amount
+	 274. Field not found : discount_amount
+	 275. Field not found : cst_amount
+	 276. Field not found : duty
+	 277. Field not found : currency
+	 278. Field not found : currency
+	 279. Field not found : tax_amount
+	 280. Field not found : discount_amount
+	 281. Field not found : cst_amount
+	 282. Field not found : duty
+	 283. Field not found : poid
+	 284. Field not found : postate
+	 285. Field not found : poid
+	 286. Field not found : approved_time
+	 287. Field not found : approved_by
+	 288. Field not found : approved_time
+	 289. Field not found : new_date
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : street
+	 4. Field not found : street2
+	 5. Field not found : city
+	 6. Field not found : zip
+	 7. Field not found : state
+	 8. Field not found : country
+	 9. Field not found : company_name
+	 10. Field not found : phone
+	 11. Field not found : fax
+	 12. Field not found : email
+	 13. Field not found : poid
+	 14. Field not found : pono
+	 15. Field not found : pono
+	 16. Field not found : podate
+	 17. Field not found : podate
+	 18. Field not found : version_no
+	 19. Field not found : version_no
+	 20. Field not found : version_no
+	 21. Field not found : podraft_no
+	 22. Field not found : podraft_no
+	 23. Field not found : podraft_no
+	 24. Field not found : podraft_no
+	 25. Field not found : podraft_date
+	 26. Field not found : poid
+	 27. Field not found : postate
+	 28. Field not found : poid
+	 29. Field not found : paname
+	 30. Field not found : paname
+	 31. Field not found : pastreet
+	 32. Field not found : pastreet
+	 33. Field not found : pastreet2
+	 34. Field not found : pastreet2
+	 35. Field not found : pacity
+	 36. Field not found : pacity
+	 37. Field not found : pazip
+	 38. Field not found : pazip
+	 39. Field not found : pastate
+	 40. Field not found : pastate
+	 41. Field not found : poid
+	 42. Field not found : paatt
+	 43. Field not found : paatt
+	 44. Field not found : pafax
+	 45. Field not found : pafax
+	 46. Field not found : paphone
+	 47. Field not found : paphone
+	 48. Field not found : paemail
+	 49. Field not found : paemail
+	 50. Field not found : company_name
+	 51. Field not found : company_name
+	 52. Field not found : shname
+	 53. Field not found : shname
+	 54. Field not found : shstreet
+	 55. Field not found : shstreet
+	 56. Field not found : shstreet2
+	 57. Field not found : shstreet2
+	 58. Field not found : shcity
+	 59. Field not found : shcity
+	 60. Field not found : shzip
+	 61. Field not found : shzip
+	 62. Field not found : shstate
+	 63. Field not found : shstate
+	 64. Field not found : company_name
+	 65. Field not found : company_name
+	 66. Field not found : ivname
+	 67. Field not found : ivname
+	 68. Field not found : ivstreet
+	 69. Field not found : ivstreet
+	 70. Field not found : ivstreet2
+	 71. Field not found : ivstreet2
+	 72. Field not found : ivcity
+	 73. Field not found : ivcity
+	 74. Field not found : ivzip
+	 75. Field not found : ivzip
+	 76. Field not found : ivstate
+	 77. Field not found : ivstate
+	 78. Field not found : quotation_ref_no
+	 79. Field not found : quotation_ref_no
+	 80. Field not found : quotation_date
+	 81. Field not found : quotation_date
+	 82. Field not found : project
+	 83. Field not found : delivery_date
+	 84. Field not found : delivery_date
+	 85. Field not found : poid
+	 86. Field not found : tax_amount
+	 87. Field not found : discount_amount
+	 88. Field not found : cst_amount
+	 89. Field not found : duty
+	 90. Field not found : currency
+	 91. Field not found : currency
+	 92. Field not found : poid
+	 93. Field not found : tax_amount
+	 94. Field not found : discount_amount
+	 95. Field not found : cst_amount
+	 96. Field not found : duty
+	 97. Field not found : poid
+	 98. Field not found : poid
+	 99. Field not found : partner_id
+	 100. Field not found : project_id
+	 101. Field not found : poid
+	 102. Field not found : plnotecount
+	 103. Field not found : plnotecount
+	 104. Field not found : plnotecount
+	 105. Field not found : plnotecount
+	 106. Field not found : poid
+	 107. Field not found : pkg_and_fwd_terms
+	 108. Field not found : octroi_terms
+	 109. Field not found : octroi_terms
+	 110. Field not found : insurance_terms
+	 111. Field not found : insurance_terms
+	 112. Field not found : octroi_terms
+	 113. Field not found : payment_terms
+	 114. Field not found : payment_terms
+	 115. Field not found : warranty_terms
+	 116. Field not found : delivery_terms
+	 117. Field not found : freight_terms
+	 118. Field not found : pkg_and_fwd_terms
+	 119. Field not found : pkg_and_fwd_terms
+	 120. Field not found : other_terms
+	 121. Field not found : inspection_terms
+	 122. Field not found : freight_terms
+	 123. Field not found : freight_terms
+	 124. Field not found : delivery_terms
+	 125. Field not found : delivery_terms
+	 126. Field not found : warranty_terms
+	 127. Field not found : warranty_terms
+	 128. Field not found : insurance_terms
+	 129. Field not found : payment_terms
+	 130. Field not found : payment_terms
+	 131. Field not found : inspection_terms
+	 132. Field not found : inspection_terms
+	 133. Field not found : other_terms
+	 134. Field not found : other_terms
+	 135. Field not found : internalnotes
+	 136. Field not found : internalnotes
+	 137. Field not found : internalnotes
+	 138. Field not found : partner_id
+	 139. Field not found : poid
+	 140. Field not found : tax_amount
+	 141. Field not found : discount_amount
+	 142. Field not found : cst_amount
+	 143. Field not found : duty
+	 144. Field not found : currency
+	 145. Field not found : currency
+	 146. Field not found : tax_amount
+	 147. Field not found : discount_amount
+	 148. Field not found : cst_amount
+	 149. Field not found : duty
+	 150. Field not found : tax_amount
+	 151. Field not found : poid
+	 152. Field not found : amount_in_words
+	 153. Field not found : amount_in_words
+	 154. Field not found : cst_amount
+	 155. Field not found : netamount
+	 156. Field not found : discount_amount
+	 157. Field not found : discount_amount
+	 158. Field not found : duty
+	 159. Field not found : total_amount
+	 160. Field not found : roundoff
+	 161. Field not found : duty
+	 162. Field not found : tax_amount
+	 163. Field not found : other_charges
+	 164. Field not found : tax_amount
+	 165. Field not found : tax_amount
+	 166. Field not found : cst_amount
+	 167. Field not found : cst_amount
+	 168. Field not found : duty
+	 169. Field not found : total_amount
+	 170. Field not found : tax_amount
+	 171. Field not found : cst_amount
+	 172. Field not found : duty
+	 173. Field not found : poid
+	 174. Field not found : poid
+	 175. Field not found : poid
+	 176. Field not found : tax_amount
+	 177. Field not found : cst_amount
+	 178. Field not found : duty
+	 179. Field not found : currency
+	 180. Field not found : currency
+	 181. Field not found : poid
+	 182. Field not found : tax_amount
+	 183. Field not found : cst_amount
+	 184. Field not found : duty
+	 185. Field not found : poid
+	 186. Field not found : poid
+	 187. Field not found : tax_amount
+	 188. Field not found : discount_amount
+	 189. Field not found : cst_amount
+	 190. Field not found : duty
+	 191. Field not found : currency
+	 192. Field not found : currency
+	 193. Field not found : poid
+	 194. Field not found : tax_amount
+	 195. Field not found : discount_amount
+	 196. Field not found : cst_amount
+	 197. Field not found : duty
+	 198. Field not found : poid
+	 199. Field not found : poid
+	 200. Field not found : tax_amount
+	 201. Field not found : discount_amount
+	 202. Field not found : cst_amount
+	 203. Field not found : duty
+	 204. Field not found : currency
+	 205. Field not found : currency
+	 206. Field not found : poid
+	 207. Field not found : tax_amount
+	 208. Field not found : discount_amount
+	 209. Field not found : cst_amount
+	 210. Field not found : duty
+	 211. Field not found : poid
+	 212. Field not found : poid
+	 213. Field not found : tax_amount
+	 214. Field not found : discount_amount
+	 215. Field not found : cst_amount
+	 216. Field not found : duty
+	 217. Field not found : currency
+	 218. Field not found : currency
+	 219. Field not found : tax_amount
+	 220. Field not found : discount_amount
+	 221. Field not found : cst_amount
+	 222. Field not found : duty
+	 223. Field not found : poid
+	 224. Field not found : poid
+	 225. Field not found : tax_amount
+	 226. Field not found : discount_amount
+	 227. Field not found : cst_amount
+	 228. Field not found : duty
+	 229. Field not found : currency
+	 230. Field not found : currency
+	 231. Field not found : tax_amount
+	 232. Field not found : discount_amount
+	 233. Field not found : cst_amount
+	 234. Field not found : duty
+	 235. Field not found : poid
+	 236. Field not found : poid
+	 237. Field not found : tax_amount
+	 238. Field not found : discount_amount
+	 239. Field not found : cst_amount
+	 240. Field not found : duty
+	 241. Field not found : currency
+	 242. Field not found : currency
+	 243. Field not found : tax_amount
+	 244. Field not found : discount_amount
+	 245. Field not found : cst_amount
+	 246. Field not found : duty
+	 247. Field not found : poid
+	 248. Field not found : poid
+	 249. Field not found : tax_amount
+	 250. Field not found : discount_amount
+	 251. Field not found : cst_amount
+	 252. Field not found : duty
+	 253. Field not found : currency
+	 254. Field not found : currency
+	 255. Field not found : tax_amount
+	 256. Field not found : discount_amount
+	 257. Field not found : cst_amount
+	 258. Field not found : duty
+	 259. Field not found : poid
+	 260. Field not found : poid
+	 261. Field not found : tax_amount
+	 262. Field not found : discount_amount
+	 263. Field not found : cst_amount
+	 264. Field not found : duty
+	 265. Field not found : currency
+	 266. Field not found : currency
+	 267. Field not found : tax_amount
+	 268. Field not found : discount_amount
+	 269. Field not found : cst_amount
+	 270. Field not found : duty
+	 271. Field not found : poid
+	 272. Field not found : poid
+	 273. Field not found : tax_amount
+	 274. Field not found : discount_amount
+	 275. Field not found : cst_amount
+	 276. Field not found : duty
+	 277. Field not found : currency
+	 278. Field not found : currency
+	 279. Field not found : tax_amount
+	 280. Field not found : discount_amount
+	 281. Field not found : cst_amount
+	 282. Field not found : duty
+	 283. Field not found : poid
+	 284. Field not found : postate
+	 285. Field not found : poid
+	 286. Field not found : approved_time
+	 287. Field not found : approved_by
+	 288. Field not found : approved_time
+	 289. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : street
+	 4. Field not found : street2
+	 5. Field not found : city
+	 6. Field not found : zip
+	 7. Field not found : state
+	 8. Field not found : country
+	 9. Field not found : company_name
+	 10. Field not found : phone
+	 11. Field not found : fax
+	 12. Field not found : email
+	 13. Field not found : poid
+	 14. Field not found : pono
+	 15. Field not found : pono
+	 16. Field not found : podate
+	 17. Field not found : podate
+	 18. Field not found : version_no
+	 19. Field not found : version_no
+	 20. Field not found : version_no
+	 21. Field not found : podraft_no
+	 22. Field not found : podraft_no
+	 23. Field not found : podraft_no
+	 24. Field not found : podraft_no
+	 25. Field not found : podraft_date
+	 26. Field not found : poid
+	 27. Field not found : postate
+	 28. Field not found : poid
+	 29. Field not found : paname
+	 30. Field not found : paname
+	 31. Field not found : pastreet
+	 32. Field not found : pastreet
+	 33. Field not found : pastreet2
+	 34. Field not found : pastreet2
+	 35. Field not found : pacity
+	 36. Field not found : pacity
+	 37. Field not found : pazip
+	 38. Field not found : pazip
+	 39. Field not found : pastate
+	 40. Field not found : pastate
+	 41. Field not found : poid
+	 42. Field not found : paatt
+	 43. Field not found : paatt
+	 44. Field not found : pafax
+	 45. Field not found : pafax
+	 46. Field not found : paphone
+	 47. Field not found : paphone
+	 48. Field not found : paemail
+	 49. Field not found : paemail
+	 50. Field not found : company_name
+	 51. Field not found : company_name
+	 52. Field not found : shname
+	 53. Field not found : shname
+	 54. Field not found : shstreet
+	 55. Field not found : shstreet
+	 56. Field not found : shstreet2
+	 57. Field not found : shstreet2
+	 58. Field not found : shcity
+	 59. Field not found : shcity
+	 60. Field not found : shzip
+	 61. Field not found : shzip
+	 62. Field not found : shstate
+	 63. Field not found : shstate
+	 64. Field not found : company_name
+	 65. Field not found : company_name
+	 66. Field not found : ivname
+	 67. Field not found : ivname
+	 68. Field not found : ivstreet
+	 69. Field not found : ivstreet
+	 70. Field not found : ivstreet2
+	 71. Field not found : ivstreet2
+	 72. Field not found : ivcity
+	 73. Field not found : ivcity
+	 74. Field not found : ivzip
+	 75. Field not found : ivzip
+	 76. Field not found : ivstate
+	 77. Field not found : ivstate
+	 78. Field not found : quotation_ref_no
+	 79. Field not found : quotation_ref_no
+	 80. Field not found : quotation_date
+	 81. Field not found : quotation_date
+	 82. Field not found : project
+	 83. Field not found : delivery_date
+	 84. Field not found : delivery_date
+	 85. Field not found : poid
+	 86. Field not found : tax_amount
+	 87. Field not found : discount_amount
+	 88. Field not found : cst_amount
+	 89. Field not found : duty
+	 90. Field not found : currency
+	 91. Field not found : currency
+	 92. Field not found : poid
+	 93. Field not found : tax_amount
+	 94. Field not found : discount_amount
+	 95. Field not found : cst_amount
+	 96. Field not found : duty
+	 97. Field not found : poid
+	 98. Field not found : poid
+	 99. Field not found : partner_id
+	 100. Field not found : project_id
+	 101. Field not found : poid
+	 102. Field not found : plnotecount
+	 103. Field not found : plnotecount
+	 104. Field not found : plnotecount
+	 105. Field not found : plnotecount
+	 106. Field not found : poid
+	 107. Field not found : pkg_and_fwd_terms
+	 108. Field not found : octroi_terms
+	 109. Field not found : octroi_terms
+	 110. Field not found : insurance_terms
+	 111. Field not found : insurance_terms
+	 112. Field not found : octroi_terms
+	 113. Field not found : payment_terms
+	 114. Field not found : payment_terms
+	 115. Field not found : warranty_terms
+	 116. Field not found : delivery_terms
+	 117. Field not found : freight_terms
+	 118. Field not found : pkg_and_fwd_terms
+	 119. Field not found : pkg_and_fwd_terms
+	 120. Field not found : other_terms
+	 121. Field not found : inspection_terms
+	 122. Field not found : freight_terms
+	 123. Field not found : freight_terms
+	 124. Field not found : delivery_terms
+	 125. Field not found : delivery_terms
+	 126. Field not found : warranty_terms
+	 127. Field not found : warranty_terms
+	 128. Field not found : insurance_terms
+	 129. Field not found : payment_terms
+	 130. Field not found : payment_terms
+	 131. Field not found : inspection_terms
+	 132. Field not found : inspection_terms
+	 133. Field not found : other_terms
+	 134. Field not found : other_terms
+	 135. Field not found : internalnotes
+	 136. Field not found : internalnotes
+	 137. Field not found : internalnotes
+	 138. Field not found : partner_id
+	 139. Field not found : poid
+	 140. Field not found : tax_amount
+	 141. Field not found : discount_amount
+	 142. Field not found : cst_amount
+	 143. Field not found : duty
+	 144. Field not found : currency
+	 145. Field not found : currency
+	 146. Field not found : tax_amount
+	 147. Field not found : discount_amount
+	 148. Field not found : cst_amount
+	 149. Field not found : duty
+	 150. Field not found : tax_amount
+	 151. Field not found : poid
+	 152. Field not found : amount_in_words
+	 153. Field not found : amount_in_words
+	 154. Field not found : cst_amount
+	 155. Field not found : netamount
+	 156. Field not found : discount_amount
+	 157. Field not found : discount_amount
+	 158. Field not found : duty
+	 159. Field not found : total_amount
+	 160. Field not found : roundoff
+	 161. Field not found : duty
+	 162. Field not found : tax_amount
+	 163. Field not found : other_charges
+	 164. Field not found : tax_amount
+	 165. Field not found : tax_amount
+	 166. Field not found : cst_amount
+	 167. Field not found : cst_amount
+	 168. Field not found : duty
+	 169. Field not found : total_amount
+	 170. Field not found : tax_amount
+	 171. Field not found : cst_amount
+	 172. Field not found : duty
+	 173. Field not found : poid
+	 174. Field not found : poid
+	 175. Field not found : poid
+	 176. Field not found : tax_amount
+	 177. Field not found : cst_amount
+	 178. Field not found : duty
+	 179. Field not found : currency
+	 180. Field not found : currency
+	 181. Field not found : poid
+	 182. Field not found : tax_amount
+	 183. Field not found : cst_amount
+	 184. Field not found : duty
+	 185. Field not found : poid
+	 186. Field not found : poid
+	 187. Field not found : tax_amount
+	 188. Field not found : discount_amount
+	 189. Field not found : cst_amount
+	 190. Field not found : duty
+	 191. Field not found : currency
+	 192. Field not found : currency
+	 193. Field not found : poid
+	 194. Field not found : tax_amount
+	 195. Field not found : discount_amount
+	 196. Field not found : cst_amount
+	 197. Field not found : duty
+	 198. Field not found : poid
+	 199. Field not found : poid
+	 200. Field not found : tax_amount
+	 201. Field not found : discount_amount
+	 202. Field not found : cst_amount
+	 203. Field not found : duty
+	 204. Field not found : currency
+	 205. Field not found : currency
+	 206. Field not found : poid
+	 207. Field not found : tax_amount
+	 208. Field not found : discount_amount
+	 209. Field not found : cst_amount
+	 210. Field not found : duty
+	 211. Field not found : poid
+	 212. Field not found : poid
+	 213. Field not found : tax_amount
+	 214. Field not found : discount_amount
+	 215. Field not found : cst_amount
+	 216. Field not found : duty
+	 217. Field not found : currency
+	 218. Field not found : currency
+	 219. Field not found : tax_amount
+	 220. Field not found : discount_amount
+	 221. Field not found : cst_amount
+	 222. Field not found : duty
+	 223. Field not found : poid
+	 224. Field not found : poid
+	 225. Field not found : tax_amount
+	 226. Field not found : discount_amount
+	 227. Field not found : cst_amount
+	 228. Field not found : duty
+	 229. Field not found : currency
+	 230. Field not found : currency
+	 231. Field not found : tax_amount
+	 232. Field not found : discount_amount
+	 233. Field not found : cst_amount
+	 234. Field not found : duty
+	 235. Field not found : poid
+	 236. Field not found : poid
+	 237. Field not found : tax_amount
+	 238. Field not found : discount_amount
+	 239. Field not found : cst_amount
+	 240. Field not found : duty
+	 241. Field not found : currency
+	 242. Field not found : currency
+	 243. Field not found : tax_amount
+	 244. Field not found : discount_amount
+	 245. Field not found : cst_amount
+	 246. Field not found : duty
+	 247. Field not found : poid
+	 248. Field not found : poid
+	 249. Field not found : tax_amount
+	 250. Field not found : discount_amount
+	 251. Field not found : cst_amount
+	 252. Field not found : duty
+	 253. Field not found : currency
+	 254. Field not found : currency
+	 255. Field not found : tax_amount
+	 256. Field not found : discount_amount
+	 257. Field not found : cst_amount
+	 258. Field not found : duty
+	 259. Field not found : poid
+	 260. Field not found : poid
+	 261. Field not found : tax_amount
+	 262. Field not found : discount_amount
+	 263. Field not found : cst_amount
+	 264. Field not found : duty
+	 265. Field not found : currency
+	 266. Field not found : currency
+	 267. Field not found : tax_amount
+	 268. Field not found : discount_amount
+	 269. Field not found : cst_amount
+	 270. Field not found : duty
+	 271. Field not found : poid
+	 272. Field not found : poid
+	 273. Field not found : tax_amount
+	 274. Field not found : discount_amount
+	 275. Field not found : cst_amount
+	 276. Field not found : duty
+	 277. Field not found : currency
+	 278. Field not found : currency
+	 279. Field not found : tax_amount
+	 280. Field not found : discount_amount
+	 281. Field not found : cst_amount
+	 282. Field not found : duty
+	 283. Field not found : poid
+	 284. Field not found : postate
+	 285. Field not found : poid
+	 286. Field not found : approved_time
+	 287. Field not found : approved_by
+	 288. Field not found : approved_time
+	 289. Field not found : new_date
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+0    [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : pono
+	 5. Field not found : pono
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : poid
+	 9. Field not found : poid
+	 10. Field not found : tax_amount
+	 11. Field not found : discount_amount
+	 12. Field not found : cst_amount
+	 13. Field not found : duty
+	 14. Field not found : currency
+	 15. Field not found : poid
+	 16. Field not found : tax_amount
+	 17. Field not found : discount_amount
+	 18. Field not found : cst_amount
+	 19. Field not found : duty
+	 20. Field not found : poid
+	 21. Field not found : poid
+	 22. Field not found : poid
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : plnotecount
+	 26. Field not found : plnotecount
+	 27. Field not found : poid
+	 28. Field not found : payment_terms
+	 29. Field not found : poid
+	 30. Field not found : tax_amount
+	 31. Field not found : discount_amount
+	 32. Field not found : cst_amount
+	 33. Field not found : duty
+	 34. Field not found : tax_amount
+	 35. Field not found : discount_amount
+	 36. Field not found : cst_amount
+	 37. Field not found : duty
+	 38. Field not found : tax_amount
+	 39. Field not found : poid
+	 40. Field not found : amount_in_words
+	 41. Field not found : duty
+	 42. Field not found : total_amount
+	 43. Field not found : duty
+	 44. Field not found : tax_amount
+	 45. Field not found : tax_amount
+	 46. Field not found : cst_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : tax_amount
+	 49. Field not found : cst_amount
+	 50. Field not found : duty
+	 51. Field not found : poid
+	 52. Field not found : poid
+	 53. Field not found : poid
+	 54. Field not found : tax_amount
+	 55. Field not found : cst_amount
+	 56. Field not found : duty
+	 57. Field not found : currency
+	 58. Field not found : poid
+	 59. Field not found : tax_amount
+	 60. Field not found : cst_amount
+	 61. Field not found : duty
+	 62. Field not found : poid
+	 63. Field not found : poid
+	 64. Field not found : tax_amount
+	 65. Field not found : discount_amount
+	 66. Field not found : cst_amount
+	 67. Field not found : duty
+	 68. Field not found : currency
+	 69. Field not found : poid
+	 70. Field not found : tax_amount
+	 71. Field not found : discount_amount
+	 72. Field not found : cst_amount
+	 73. Field not found : duty
+	 74. Field not found : poid
+	 75. Field not found : poid
+	 76. Field not found : tax_amount
+	 77. Field not found : discount_amount
+	 78. Field not found : cst_amount
+	 79. Field not found : duty
+	 80. Field not found : currency
+	 81. Field not found : currency
+	 82. Field not found : poid
+	 83. Field not found : tax_amount
+	 84. Field not found : discount_amount
+	 85. Field not found : cst_amount
+	 86. Field not found : duty
+	 87. Field not found : poid
+	 88. Field not found : poid
+	 89. Field not found : tax_amount
+	 90. Field not found : discount_amount
+	 91. Field not found : cst_amount
+	 92. Field not found : duty
+	 93. Field not found : currency
+	 94. Field not found : currency
+	 95. Field not found : tax_amount
+	 96. Field not found : discount_amount
+	 97. Field not found : cst_amount
+	 98. Field not found : duty
+	 99. Field not found : poid
+	 100. Field not found : poid
+	 101. Field not found : tax_amount
+	 102. Field not found : discount_amount
+	 103. Field not found : cst_amount
+	 104. Field not found : duty
+	 105. Field not found : currency
+	 106. Field not found : currency
+	 107. Field not found : tax_amount
+	 108. Field not found : discount_amount
+	 109. Field not found : cst_amount
+	 110. Field not found : duty
+	 111. Field not found : poid
+	 112. Field not found : poid
+	 113. Field not found : tax_amount
+	 114. Field not found : discount_amount
+	 115. Field not found : cst_amount
+	 116. Field not found : duty
+	 117. Field not found : currency
+	 118. Field not found : currency
+	 119. Field not found : tax_amount
+	 120. Field not found : discount_amount
+	 121. Field not found : cst_amount
+	 122. Field not found : duty
+	 123. Field not found : poid
+	 124. Field not found : poid
+	 125. Field not found : tax_amount
+	 126. Field not found : discount_amount
+	 127. Field not found : cst_amount
+	 128. Field not found : duty
+	 129. Field not found : currency
+	 130. Field not found : currency
+	 131. Field not found : tax_amount
+	 132. Field not found : discount_amount
+	 133. Field not found : cst_amount
+	 134. Field not found : duty
+	 135. Field not found : poid
+	 136. Field not found : poid
+	 137. Field not found : tax_amount
+	 138. Field not found : discount_amount
+	 139. Field not found : cst_amount
+	 140. Field not found : duty
+	 141. Field not found : currency
+	 142. Field not found : tax_amount
+	 143. Field not found : discount_amount
+	 144. Field not found : cst_amount
+	 145. Field not found : duty
+	 146. Field not found : poid
+	 147. Field not found : poid
+	 148. Field not found : tax_amount
+	 149. Field not found : discount_amount
+	 150. Field not found : cst_amount
+	 151. Field not found : duty
+	 152. Field not found : currency
+	 153. Field not found : currency
+	 154. Field not found : tax_amount
+	 155. Field not found : discount_amount
+	 156. Field not found : cst_amount
+	 157. Field not found : duty
+	 158. Field not found : poid
+	 159. Field not found : postate
+	 160. Field not found : poid
+	 161. Field not found : taxamount
+	 162. Field not found : taxamount
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : pono
+	 5. Field not found : pono
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : poid
+	 9. Field not found : poid
+	 10. Field not found : tax_amount
+	 11. Field not found : discount_amount
+	 12. Field not found : cst_amount
+	 13. Field not found : duty
+	 14. Field not found : currency
+	 15. Field not found : poid
+	 16. Field not found : tax_amount
+	 17. Field not found : discount_amount
+	 18. Field not found : cst_amount
+	 19. Field not found : duty
+	 20. Field not found : poid
+	 21. Field not found : poid
+	 22. Field not found : poid
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : plnotecount
+	 26. Field not found : plnotecount
+	 27. Field not found : poid
+	 28. Field not found : payment_terms
+	 29. Field not found : poid
+	 30. Field not found : tax_amount
+	 31. Field not found : discount_amount
+	 32. Field not found : cst_amount
+	 33. Field not found : duty
+	 34. Field not found : tax_amount
+	 35. Field not found : discount_amount
+	 36. Field not found : cst_amount
+	 37. Field not found : duty
+	 38. Field not found : tax_amount
+	 39. Field not found : poid
+	 40. Field not found : amount_in_words
+	 41. Field not found : duty
+	 42. Field not found : total_amount
+	 43. Field not found : duty
+	 44. Field not found : tax_amount
+	 45. Field not found : tax_amount
+	 46. Field not found : cst_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : tax_amount
+	 49. Field not found : cst_amount
+	 50. Field not found : duty
+	 51. Field not found : poid
+	 52. Field not found : poid
+	 53. Field not found : poid
+	 54. Field not found : tax_amount
+	 55. Field not found : cst_amount
+	 56. Field not found : duty
+	 57. Field not found : currency
+	 58. Field not found : poid
+	 59. Field not found : tax_amount
+	 60. Field not found : cst_amount
+	 61. Field not found : duty
+	 62. Field not found : poid
+	 63. Field not found : poid
+	 64. Field not found : tax_amount
+	 65. Field not found : discount_amount
+	 66. Field not found : cst_amount
+	 67. Field not found : duty
+	 68. Field not found : currency
+	 69. Field not found : poid
+	 70. Field not found : tax_amount
+	 71. Field not found : discount_amount
+	 72. Field not found : cst_amount
+	 73. Field not found : duty
+	 74. Field not found : poid
+	 75. Field not found : poid
+	 76. Field not found : tax_amount
+	 77. Field not found : discount_amount
+	 78. Field not found : cst_amount
+	 79. Field not found : duty
+	 80. Field not found : currency
+	 81. Field not found : currency
+	 82. Field not found : poid
+	 83. Field not found : tax_amount
+	 84. Field not found : discount_amount
+	 85. Field not found : cst_amount
+	 86. Field not found : duty
+	 87. Field not found : poid
+	 88. Field not found : poid
+	 89. Field not found : tax_amount
+	 90. Field not found : discount_amount
+	 91. Field not found : cst_amount
+	 92. Field not found : duty
+	 93. Field not found : currency
+	 94. Field not found : currency
+	 95. Field not found : tax_amount
+	 96. Field not found : discount_amount
+	 97. Field not found : cst_amount
+	 98. Field not found : duty
+	 99. Field not found : poid
+	 100. Field not found : poid
+	 101. Field not found : tax_amount
+	 102. Field not found : discount_amount
+	 103. Field not found : cst_amount
+	 104. Field not found : duty
+	 105. Field not found : currency
+	 106. Field not found : currency
+	 107. Field not found : tax_amount
+	 108. Field not found : discount_amount
+	 109. Field not found : cst_amount
+	 110. Field not found : duty
+	 111. Field not found : poid
+	 112. Field not found : poid
+	 113. Field not found : tax_amount
+	 114. Field not found : discount_amount
+	 115. Field not found : cst_amount
+	 116. Field not found : duty
+	 117. Field not found : currency
+	 118. Field not found : currency
+	 119. Field not found : tax_amount
+	 120. Field not found : discount_amount
+	 121. Field not found : cst_amount
+	 122. Field not found : duty
+	 123. Field not found : poid
+	 124. Field not found : poid
+	 125. Field not found : tax_amount
+	 126. Field not found : discount_amount
+	 127. Field not found : cst_amount
+	 128. Field not found : duty
+	 129. Field not found : currency
+	 130. Field not found : currency
+	 131. Field not found : tax_amount
+	 132. Field not found : discount_amount
+	 133. Field not found : cst_amount
+	 134. Field not found : duty
+	 135. Field not found : poid
+	 136. Field not found : poid
+	 137. Field not found : tax_amount
+	 138. Field not found : discount_amount
+	 139. Field not found : cst_amount
+	 140. Field not found : duty
+	 141. Field not found : currency
+	 142. Field not found : tax_amount
+	 143. Field not found : discount_amount
+	 144. Field not found : cst_amount
+	 145. Field not found : duty
+	 146. Field not found : poid
+	 147. Field not found : poid
+	 148. Field not found : tax_amount
+	 149. Field not found : discount_amount
+	 150. Field not found : cst_amount
+	 151. Field not found : duty
+	 152. Field not found : currency
+	 153. Field not found : currency
+	 154. Field not found : tax_amount
+	 155. Field not found : discount_amount
+	 156. Field not found : cst_amount
+	 157. Field not found : duty
+	 158. Field not found : poid
+	 159. Field not found : postate
+	 160. Field not found : poid
+	 161. Field not found : taxamount
+	 162. Field not found : taxamount
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : pono
+	 5. Field not found : pono
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : poid
+	 9. Field not found : poid
+	 10. Field not found : tax_amount
+	 11. Field not found : discount_amount
+	 12. Field not found : cst_amount
+	 13. Field not found : duty
+	 14. Field not found : currency
+	 15. Field not found : poid
+	 16. Field not found : tax_amount
+	 17. Field not found : discount_amount
+	 18. Field not found : cst_amount
+	 19. Field not found : duty
+	 20. Field not found : poid
+	 21. Field not found : poid
+	 22. Field not found : poid
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : plnotecount
+	 26. Field not found : plnotecount
+	 27. Field not found : poid
+	 28. Field not found : payment_terms
+	 29. Field not found : poid
+	 30. Field not found : tax_amount
+	 31. Field not found : discount_amount
+	 32. Field not found : cst_amount
+	 33. Field not found : duty
+	 34. Field not found : tax_amount
+	 35. Field not found : discount_amount
+	 36. Field not found : cst_amount
+	 37. Field not found : duty
+	 38. Field not found : tax_amount
+	 39. Field not found : poid
+	 40. Field not found : amount_in_words
+	 41. Field not found : duty
+	 42. Field not found : total_amount
+	 43. Field not found : duty
+	 44. Field not found : tax_amount
+	 45. Field not found : tax_amount
+	 46. Field not found : cst_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : tax_amount
+	 49. Field not found : cst_amount
+	 50. Field not found : duty
+	 51. Field not found : poid
+	 52. Field not found : poid
+	 53. Field not found : poid
+	 54. Field not found : tax_amount
+	 55. Field not found : cst_amount
+	 56. Field not found : duty
+	 57. Field not found : currency
+	 58. Field not found : poid
+	 59. Field not found : tax_amount
+	 60. Field not found : cst_amount
+	 61. Field not found : duty
+	 62. Field not found : poid
+	 63. Field not found : poid
+	 64. Field not found : tax_amount
+	 65. Field not found : discount_amount
+	 66. Field not found : cst_amount
+	 67. Field not found : duty
+	 68. Field not found : currency
+	 69. Field not found : poid
+	 70. Field not found : tax_amount
+	 71. Field not found : discount_amount
+	 72. Field not found : cst_amount
+	 73. Field not found : duty
+	 74. Field not found : poid
+	 75. Field not found : poid
+	 76. Field not found : tax_amount
+	 77. Field not found : discount_amount
+	 78. Field not found : cst_amount
+	 79. Field not found : duty
+	 80. Field not found : currency
+	 81. Field not found : currency
+	 82. Field not found : poid
+	 83. Field not found : tax_amount
+	 84. Field not found : discount_amount
+	 85. Field not found : cst_amount
+	 86. Field not found : duty
+	 87. Field not found : poid
+	 88. Field not found : poid
+	 89. Field not found : tax_amount
+	 90. Field not found : discount_amount
+	 91. Field not found : cst_amount
+	 92. Field not found : duty
+	 93. Field not found : currency
+	 94. Field not found : currency
+	 95. Field not found : tax_amount
+	 96. Field not found : discount_amount
+	 97. Field not found : cst_amount
+	 98. Field not found : duty
+	 99. Field not found : poid
+	 100. Field not found : poid
+	 101. Field not found : tax_amount
+	 102. Field not found : discount_amount
+	 103. Field not found : cst_amount
+	 104. Field not found : duty
+	 105. Field not found : currency
+	 106. Field not found : currency
+	 107. Field not found : tax_amount
+	 108. Field not found : discount_amount
+	 109. Field not found : cst_amount
+	 110. Field not found : duty
+	 111. Field not found : poid
+	 112. Field not found : poid
+	 113. Field not found : tax_amount
+	 114. Field not found : discount_amount
+	 115. Field not found : cst_amount
+	 116. Field not found : duty
+	 117. Field not found : currency
+	 118. Field not found : currency
+	 119. Field not found : tax_amount
+	 120. Field not found : discount_amount
+	 121. Field not found : cst_amount
+	 122. Field not found : duty
+	 123. Field not found : poid
+	 124. Field not found : poid
+	 125. Field not found : tax_amount
+	 126. Field not found : discount_amount
+	 127. Field not found : cst_amount
+	 128. Field not found : duty
+	 129. Field not found : currency
+	 130. Field not found : currency
+	 131. Field not found : tax_amount
+	 132. Field not found : discount_amount
+	 133. Field not found : cst_amount
+	 134. Field not found : duty
+	 135. Field not found : poid
+	 136. Field not found : poid
+	 137. Field not found : tax_amount
+	 138. Field not found : discount_amount
+	 139. Field not found : cst_amount
+	 140. Field not found : duty
+	 141. Field not found : currency
+	 142. Field not found : tax_amount
+	 143. Field not found : discount_amount
+	 144. Field not found : cst_amount
+	 145. Field not found : duty
+	 146. Field not found : poid
+	 147. Field not found : poid
+	 148. Field not found : tax_amount
+	 149. Field not found : discount_amount
+	 150. Field not found : cst_amount
+	 151. Field not found : duty
+	 152. Field not found : currency
+	 153. Field not found : currency
+	 154. Field not found : tax_amount
+	 155. Field not found : discount_amount
+	 156. Field not found : cst_amount
+	 157. Field not found : duty
+	 158. Field not found : poid
+	 159. Field not found : postate
+	 160. Field not found : poid
+	 161. Field not found : taxamount
+	 162. Field not found : taxamount
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : pono
+	 5. Field not found : pono
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : poid
+	 9. Field not found : poid
+	 10. Field not found : tax_amount
+	 11. Field not found : discount_amount
+	 12. Field not found : cst_amount
+	 13. Field not found : duty
+	 14. Field not found : currency
+	 15. Field not found : poid
+	 16. Field not found : tax_amount
+	 17. Field not found : discount_amount
+	 18. Field not found : cst_amount
+	 19. Field not found : duty
+	 20. Field not found : poid
+	 21. Field not found : poid
+	 22. Field not found : poid
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : plnotecount
+	 26. Field not found : plnotecount
+	 27. Field not found : poid
+	 28. Field not found : payment_terms
+	 29. Field not found : poid
+	 30. Field not found : tax_amount
+	 31. Field not found : discount_amount
+	 32. Field not found : cst_amount
+	 33. Field not found : duty
+	 34. Field not found : tax_amount
+	 35. Field not found : discount_amount
+	 36. Field not found : cst_amount
+	 37. Field not found : duty
+	 38. Field not found : tax_amount
+	 39. Field not found : poid
+	 40. Field not found : amount_in_words
+	 41. Field not found : duty
+	 42. Field not found : total_amount
+	 43. Field not found : duty
+	 44. Field not found : tax_amount
+	 45. Field not found : tax_amount
+	 46. Field not found : cst_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : tax_amount
+	 49. Field not found : cst_amount
+	 50. Field not found : duty
+	 51. Field not found : poid
+	 52. Field not found : poid
+	 53. Field not found : poid
+	 54. Field not found : tax_amount
+	 55. Field not found : cst_amount
+	 56. Field not found : duty
+	 57. Field not found : currency
+	 58. Field not found : poid
+	 59. Field not found : tax_amount
+	 60. Field not found : cst_amount
+	 61. Field not found : duty
+	 62. Field not found : poid
+	 63. Field not found : poid
+	 64. Field not found : tax_amount
+	 65. Field not found : discount_amount
+	 66. Field not found : cst_amount
+	 67. Field not found : duty
+	 68. Field not found : currency
+	 69. Field not found : poid
+	 70. Field not found : tax_amount
+	 71. Field not found : discount_amount
+	 72. Field not found : cst_amount
+	 73. Field not found : duty
+	 74. Field not found : poid
+	 75. Field not found : poid
+	 76. Field not found : tax_amount
+	 77. Field not found : discount_amount
+	 78. Field not found : cst_amount
+	 79. Field not found : duty
+	 80. Field not found : currency
+	 81. Field not found : currency
+	 82. Field not found : poid
+	 83. Field not found : tax_amount
+	 84. Field not found : discount_amount
+	 85. Field not found : cst_amount
+	 86. Field not found : duty
+	 87. Field not found : poid
+	 88. Field not found : poid
+	 89. Field not found : tax_amount
+	 90. Field not found : discount_amount
+	 91. Field not found : cst_amount
+	 92. Field not found : duty
+	 93. Field not found : currency
+	 94. Field not found : currency
+	 95. Field not found : tax_amount
+	 96. Field not found : discount_amount
+	 97. Field not found : cst_amount
+	 98. Field not found : duty
+	 99. Field not found : poid
+	 100. Field not found : poid
+	 101. Field not found : tax_amount
+	 102. Field not found : discount_amount
+	 103. Field not found : cst_amount
+	 104. Field not found : duty
+	 105. Field not found : currency
+	 106. Field not found : currency
+	 107. Field not found : tax_amount
+	 108. Field not found : discount_amount
+	 109. Field not found : cst_amount
+	 110. Field not found : duty
+	 111. Field not found : poid
+	 112. Field not found : poid
+	 113. Field not found : tax_amount
+	 114. Field not found : discount_amount
+	 115. Field not found : cst_amount
+	 116. Field not found : duty
+	 117. Field not found : currency
+	 118. Field not found : currency
+	 119. Field not found : tax_amount
+	 120. Field not found : discount_amount
+	 121. Field not found : cst_amount
+	 122. Field not found : duty
+	 123. Field not found : poid
+	 124. Field not found : poid
+	 125. Field not found : tax_amount
+	 126. Field not found : discount_amount
+	 127. Field not found : cst_amount
+	 128. Field not found : duty
+	 129. Field not found : currency
+	 130. Field not found : currency
+	 131. Field not found : tax_amount
+	 132. Field not found : discount_amount
+	 133. Field not found : cst_amount
+	 134. Field not found : duty
+	 135. Field not found : poid
+	 136. Field not found : poid
+	 137. Field not found : tax_amount
+	 138. Field not found : discount_amount
+	 139. Field not found : cst_amount
+	 140. Field not found : duty
+	 141. Field not found : currency
+	 142. Field not found : tax_amount
+	 143. Field not found : discount_amount
+	 144. Field not found : cst_amount
+	 145. Field not found : duty
+	 146. Field not found : poid
+	 147. Field not found : poid
+	 148. Field not found : tax_amount
+	 149. Field not found : discount_amount
+	 150. Field not found : cst_amount
+	 151. Field not found : duty
+	 152. Field not found : currency
+	 153. Field not found : currency
+	 154. Field not found : tax_amount
+	 155. Field not found : discount_amount
+	 156. Field not found : cst_amount
+	 157. Field not found : duty
+	 158. Field not found : poid
+	 159. Field not found : postate
+	 160. Field not found : poid
+	 161. Field not found : taxamount
+	 162. Field not found : taxamount
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+1    [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : pono
+	 5. Field not found : pono
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : poid
+	 9. Field not found : poid
+	 10. Field not found : tax_amount
+	 11. Field not found : discount_amount
+	 12. Field not found : cst_amount
+	 13. Field not found : duty
+	 14. Field not found : currency
+	 15. Field not found : poid
+	 16. Field not found : tax_amount
+	 17. Field not found : discount_amount
+	 18. Field not found : cst_amount
+	 19. Field not found : duty
+	 20. Field not found : poid
+	 21. Field not found : poid
+	 22. Field not found : poid
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : plnotecount
+	 26. Field not found : plnotecount
+	 27. Field not found : poid
+	 28. Field not found : payment_terms
+	 29. Field not found : poid
+	 30. Field not found : tax_amount
+	 31. Field not found : discount_amount
+	 32. Field not found : cst_amount
+	 33. Field not found : duty
+	 34. Field not found : tax_amount
+	 35. Field not found : discount_amount
+	 36. Field not found : cst_amount
+	 37. Field not found : duty
+	 38. Field not found : tax_amount
+	 39. Field not found : poid
+	 40. Field not found : amount_in_words
+	 41. Field not found : duty
+	 42. Field not found : total_amount
+	 43. Field not found : duty
+	 44. Field not found : tax_amount
+	 45. Field not found : tax_amount
+	 46. Field not found : cst_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : tax_amount
+	 49. Field not found : cst_amount
+	 50. Field not found : duty
+	 51. Field not found : poid
+	 52. Field not found : poid
+	 53. Field not found : poid
+	 54. Field not found : tax_amount
+	 55. Field not found : cst_amount
+	 56. Field not found : duty
+	 57. Field not found : currency
+	 58. Field not found : poid
+	 59. Field not found : tax_amount
+	 60. Field not found : cst_amount
+	 61. Field not found : duty
+	 62. Field not found : poid
+	 63. Field not found : poid
+	 64. Field not found : tax_amount
+	 65. Field not found : discount_amount
+	 66. Field not found : cst_amount
+	 67. Field not found : duty
+	 68. Field not found : currency
+	 69. Field not found : poid
+	 70. Field not found : tax_amount
+	 71. Field not found : discount_amount
+	 72. Field not found : cst_amount
+	 73. Field not found : duty
+	 74. Field not found : poid
+	 75. Field not found : poid
+	 76. Field not found : tax_amount
+	 77. Field not found : discount_amount
+	 78. Field not found : cst_amount
+	 79. Field not found : duty
+	 80. Field not found : currency
+	 81. Field not found : currency
+	 82. Field not found : poid
+	 83. Field not found : tax_amount
+	 84. Field not found : discount_amount
+	 85. Field not found : cst_amount
+	 86. Field not found : duty
+	 87. Field not found : poid
+	 88. Field not found : poid
+	 89. Field not found : tax_amount
+	 90. Field not found : discount_amount
+	 91. Field not found : cst_amount
+	 92. Field not found : duty
+	 93. Field not found : currency
+	 94. Field not found : currency
+	 95. Field not found : tax_amount
+	 96. Field not found : discount_amount
+	 97. Field not found : cst_amount
+	 98. Field not found : duty
+	 99. Field not found : poid
+	 100. Field not found : poid
+	 101. Field not found : tax_amount
+	 102. Field not found : discount_amount
+	 103. Field not found : cst_amount
+	 104. Field not found : duty
+	 105. Field not found : currency
+	 106. Field not found : currency
+	 107. Field not found : tax_amount
+	 108. Field not found : discount_amount
+	 109. Field not found : cst_amount
+	 110. Field not found : duty
+	 111. Field not found : poid
+	 112. Field not found : poid
+	 113. Field not found : tax_amount
+	 114. Field not found : discount_amount
+	 115. Field not found : cst_amount
+	 116. Field not found : duty
+	 117. Field not found : currency
+	 118. Field not found : currency
+	 119. Field not found : tax_amount
+	 120. Field not found : discount_amount
+	 121. Field not found : cst_amount
+	 122. Field not found : duty
+	 123. Field not found : poid
+	 124. Field not found : poid
+	 125. Field not found : tax_amount
+	 126. Field not found : discount_amount
+	 127. Field not found : cst_amount
+	 128. Field not found : duty
+	 129. Field not found : currency
+	 130. Field not found : currency
+	 131. Field not found : tax_amount
+	 132. Field not found : discount_amount
+	 133. Field not found : cst_amount
+	 134. Field not found : duty
+	 135. Field not found : poid
+	 136. Field not found : poid
+	 137. Field not found : tax_amount
+	 138. Field not found : discount_amount
+	 139. Field not found : cst_amount
+	 140. Field not found : duty
+	 141. Field not found : currency
+	 142. Field not found : tax_amount
+	 143. Field not found : discount_amount
+	 144. Field not found : cst_amount
+	 145. Field not found : duty
+	 146. Field not found : poid
+	 147. Field not found : poid
+	 148. Field not found : tax_amount
+	 149. Field not found : discount_amount
+	 150. Field not found : cst_amount
+	 151. Field not found : duty
+	 152. Field not found : currency
+	 153. Field not found : currency
+	 154. Field not found : tax_amount
+	 155. Field not found : discount_amount
+	 156. Field not found : cst_amount
+	 157. Field not found : duty
+	 158. Field not found : poid
+	 159. Field not found : postate
+	 160. Field not found : poid
+	 161. Field not found : taxamount
+	 162. Field not found : taxamount
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : pono
+	 5. Field not found : pono
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : poid
+	 9. Field not found : poid
+	 10. Field not found : tax_amount
+	 11. Field not found : discount_amount
+	 12. Field not found : cst_amount
+	 13. Field not found : duty
+	 14. Field not found : currency
+	 15. Field not found : poid
+	 16. Field not found : tax_amount
+	 17. Field not found : discount_amount
+	 18. Field not found : cst_amount
+	 19. Field not found : duty
+	 20. Field not found : poid
+	 21. Field not found : poid
+	 22. Field not found : poid
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : plnotecount
+	 26. Field not found : plnotecount
+	 27. Field not found : poid
+	 28. Field not found : payment_terms
+	 29. Field not found : poid
+	 30. Field not found : tax_amount
+	 31. Field not found : discount_amount
+	 32. Field not found : cst_amount
+	 33. Field not found : duty
+	 34. Field not found : tax_amount
+	 35. Field not found : discount_amount
+	 36. Field not found : cst_amount
+	 37. Field not found : duty
+	 38. Field not found : tax_amount
+	 39. Field not found : poid
+	 40. Field not found : amount_in_words
+	 41. Field not found : duty
+	 42. Field not found : total_amount
+	 43. Field not found : duty
+	 44. Field not found : tax_amount
+	 45. Field not found : tax_amount
+	 46. Field not found : cst_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : tax_amount
+	 49. Field not found : cst_amount
+	 50. Field not found : duty
+	 51. Field not found : poid
+	 52. Field not found : poid
+	 53. Field not found : poid
+	 54. Field not found : tax_amount
+	 55. Field not found : cst_amount
+	 56. Field not found : duty
+	 57. Field not found : currency
+	 58. Field not found : poid
+	 59. Field not found : tax_amount
+	 60. Field not found : cst_amount
+	 61. Field not found : duty
+	 62. Field not found : poid
+	 63. Field not found : poid
+	 64. Field not found : tax_amount
+	 65. Field not found : discount_amount
+	 66. Field not found : cst_amount
+	 67. Field not found : duty
+	 68. Field not found : currency
+	 69. Field not found : poid
+	 70. Field not found : tax_amount
+	 71. Field not found : discount_amount
+	 72. Field not found : cst_amount
+	 73. Field not found : duty
+	 74. Field not found : poid
+	 75. Field not found : poid
+	 76. Field not found : tax_amount
+	 77. Field not found : discount_amount
+	 78. Field not found : cst_amount
+	 79. Field not found : duty
+	 80. Field not found : currency
+	 81. Field not found : currency
+	 82. Field not found : poid
+	 83. Field not found : tax_amount
+	 84. Field not found : discount_amount
+	 85. Field not found : cst_amount
+	 86. Field not found : duty
+	 87. Field not found : poid
+	 88. Field not found : poid
+	 89. Field not found : tax_amount
+	 90. Field not found : discount_amount
+	 91. Field not found : cst_amount
+	 92. Field not found : duty
+	 93. Field not found : currency
+	 94. Field not found : currency
+	 95. Field not found : tax_amount
+	 96. Field not found : discount_amount
+	 97. Field not found : cst_amount
+	 98. Field not found : duty
+	 99. Field not found : poid
+	 100. Field not found : poid
+	 101. Field not found : tax_amount
+	 102. Field not found : discount_amount
+	 103. Field not found : cst_amount
+	 104. Field not found : duty
+	 105. Field not found : currency
+	 106. Field not found : currency
+	 107. Field not found : tax_amount
+	 108. Field not found : discount_amount
+	 109. Field not found : cst_amount
+	 110. Field not found : duty
+	 111. Field not found : poid
+	 112. Field not found : poid
+	 113. Field not found : tax_amount
+	 114. Field not found : discount_amount
+	 115. Field not found : cst_amount
+	 116. Field not found : duty
+	 117. Field not found : currency
+	 118. Field not found : currency
+	 119. Field not found : tax_amount
+	 120. Field not found : discount_amount
+	 121. Field not found : cst_amount
+	 122. Field not found : duty
+	 123. Field not found : poid
+	 124. Field not found : poid
+	 125. Field not found : tax_amount
+	 126. Field not found : discount_amount
+	 127. Field not found : cst_amount
+	 128. Field not found : duty
+	 129. Field not found : currency
+	 130. Field not found : currency
+	 131. Field not found : tax_amount
+	 132. Field not found : discount_amount
+	 133. Field not found : cst_amount
+	 134. Field not found : duty
+	 135. Field not found : poid
+	 136. Field not found : poid
+	 137. Field not found : tax_amount
+	 138. Field not found : discount_amount
+	 139. Field not found : cst_amount
+	 140. Field not found : duty
+	 141. Field not found : currency
+	 142. Field not found : tax_amount
+	 143. Field not found : discount_amount
+	 144. Field not found : cst_amount
+	 145. Field not found : duty
+	 146. Field not found : poid
+	 147. Field not found : poid
+	 148. Field not found : tax_amount
+	 149. Field not found : discount_amount
+	 150. Field not found : cst_amount
+	 151. Field not found : duty
+	 152. Field not found : currency
+	 153. Field not found : currency
+	 154. Field not found : tax_amount
+	 155. Field not found : discount_amount
+	 156. Field not found : cst_amount
+	 157. Field not found : duty
+	 158. Field not found : poid
+	 159. Field not found : postate
+	 160. Field not found : poid
+	 161. Field not found : taxamount
+	 162. Field not found : taxamount
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : pono
+	 5. Field not found : pono
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : poid
+	 9. Field not found : poid
+	 10. Field not found : tax_amount
+	 11. Field not found : discount_amount
+	 12. Field not found : cst_amount
+	 13. Field not found : duty
+	 14. Field not found : currency
+	 15. Field not found : poid
+	 16. Field not found : tax_amount
+	 17. Field not found : discount_amount
+	 18. Field not found : cst_amount
+	 19. Field not found : duty
+	 20. Field not found : poid
+	 21. Field not found : poid
+	 22. Field not found : poid
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : plnotecount
+	 26. Field not found : plnotecount
+	 27. Field not found : poid
+	 28. Field not found : payment_terms
+	 29. Field not found : poid
+	 30. Field not found : tax_amount
+	 31. Field not found : discount_amount
+	 32. Field not found : cst_amount
+	 33. Field not found : duty
+	 34. Field not found : tax_amount
+	 35. Field not found : discount_amount
+	 36. Field not found : cst_amount
+	 37. Field not found : duty
+	 38. Field not found : tax_amount
+	 39. Field not found : poid
+	 40. Field not found : amount_in_words
+	 41. Field not found : duty
+	 42. Field not found : total_amount
+	 43. Field not found : duty
+	 44. Field not found : tax_amount
+	 45. Field not found : tax_amount
+	 46. Field not found : cst_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : tax_amount
+	 49. Field not found : cst_amount
+	 50. Field not found : duty
+	 51. Field not found : poid
+	 52. Field not found : poid
+	 53. Field not found : poid
+	 54. Field not found : tax_amount
+	 55. Field not found : cst_amount
+	 56. Field not found : duty
+	 57. Field not found : currency
+	 58. Field not found : poid
+	 59. Field not found : tax_amount
+	 60. Field not found : cst_amount
+	 61. Field not found : duty
+	 62. Field not found : poid
+	 63. Field not found : poid
+	 64. Field not found : tax_amount
+	 65. Field not found : discount_amount
+	 66. Field not found : cst_amount
+	 67. Field not found : duty
+	 68. Field not found : currency
+	 69. Field not found : poid
+	 70. Field not found : tax_amount
+	 71. Field not found : discount_amount
+	 72. Field not found : cst_amount
+	 73. Field not found : duty
+	 74. Field not found : poid
+	 75. Field not found : poid
+	 76. Field not found : tax_amount
+	 77. Field not found : discount_amount
+	 78. Field not found : cst_amount
+	 79. Field not found : duty
+	 80. Field not found : currency
+	 81. Field not found : currency
+	 82. Field not found : poid
+	 83. Field not found : tax_amount
+	 84. Field not found : discount_amount
+	 85. Field not found : cst_amount
+	 86. Field not found : duty
+	 87. Field not found : poid
+	 88. Field not found : poid
+	 89. Field not found : tax_amount
+	 90. Field not found : discount_amount
+	 91. Field not found : cst_amount
+	 92. Field not found : duty
+	 93. Field not found : currency
+	 94. Field not found : currency
+	 95. Field not found : tax_amount
+	 96. Field not found : discount_amount
+	 97. Field not found : cst_amount
+	 98. Field not found : duty
+	 99. Field not found : poid
+	 100. Field not found : poid
+	 101. Field not found : tax_amount
+	 102. Field not found : discount_amount
+	 103. Field not found : cst_amount
+	 104. Field not found : duty
+	 105. Field not found : currency
+	 106. Field not found : currency
+	 107. Field not found : tax_amount
+	 108. Field not found : discount_amount
+	 109. Field not found : cst_amount
+	 110. Field not found : duty
+	 111. Field not found : poid
+	 112. Field not found : poid
+	 113. Field not found : tax_amount
+	 114. Field not found : discount_amount
+	 115. Field not found : cst_amount
+	 116. Field not found : duty
+	 117. Field not found : currency
+	 118. Field not found : currency
+	 119. Field not found : tax_amount
+	 120. Field not found : discount_amount
+	 121. Field not found : cst_amount
+	 122. Field not found : duty
+	 123. Field not found : poid
+	 124. Field not found : poid
+	 125. Field not found : tax_amount
+	 126. Field not found : discount_amount
+	 127. Field not found : cst_amount
+	 128. Field not found : duty
+	 129. Field not found : currency
+	 130. Field not found : currency
+	 131. Field not found : tax_amount
+	 132. Field not found : discount_amount
+	 133. Field not found : cst_amount
+	 134. Field not found : duty
+	 135. Field not found : poid
+	 136. Field not found : poid
+	 137. Field not found : tax_amount
+	 138. Field not found : discount_amount
+	 139. Field not found : cst_amount
+	 140. Field not found : duty
+	 141. Field not found : currency
+	 142. Field not found : tax_amount
+	 143. Field not found : discount_amount
+	 144. Field not found : cst_amount
+	 145. Field not found : duty
+	 146. Field not found : poid
+	 147. Field not found : poid
+	 148. Field not found : tax_amount
+	 149. Field not found : discount_amount
+	 150. Field not found : cst_amount
+	 151. Field not found : duty
+	 152. Field not found : currency
+	 153. Field not found : currency
+	 154. Field not found : tax_amount
+	 155. Field not found : discount_amount
+	 156. Field not found : cst_amount
+	 157. Field not found : duty
+	 158. Field not found : poid
+	 159. Field not found : postate
+	 160. Field not found : poid
+	 161. Field not found : taxamount
+	 162. Field not found : taxamount
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : pono
+	 5. Field not found : pono
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : poid
+	 9. Field not found : poid
+	 10. Field not found : tax_amount
+	 11. Field not found : discount_amount
+	 12. Field not found : cst_amount
+	 13. Field not found : duty
+	 14. Field not found : currency
+	 15. Field not found : poid
+	 16. Field not found : tax_amount
+	 17. Field not found : discount_amount
+	 18. Field not found : cst_amount
+	 19. Field not found : duty
+	 20. Field not found : poid
+	 21. Field not found : poid
+	 22. Field not found : poid
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : plnotecount
+	 26. Field not found : plnotecount
+	 27. Field not found : poid
+	 28. Field not found : payment_terms
+	 29. Field not found : poid
+	 30. Field not found : tax_amount
+	 31. Field not found : discount_amount
+	 32. Field not found : cst_amount
+	 33. Field not found : duty
+	 34. Field not found : tax_amount
+	 35. Field not found : discount_amount
+	 36. Field not found : cst_amount
+	 37. Field not found : duty
+	 38. Field not found : tax_amount
+	 39. Field not found : poid
+	 40. Field not found : amount_in_words
+	 41. Field not found : duty
+	 42. Field not found : total_amount
+	 43. Field not found : duty
+	 44. Field not found : tax_amount
+	 45. Field not found : tax_amount
+	 46. Field not found : cst_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : tax_amount
+	 49. Field not found : cst_amount
+	 50. Field not found : duty
+	 51. Field not found : poid
+	 52. Field not found : poid
+	 53. Field not found : poid
+	 54. Field not found : tax_amount
+	 55. Field not found : cst_amount
+	 56. Field not found : duty
+	 57. Field not found : currency
+	 58. Field not found : poid
+	 59. Field not found : tax_amount
+	 60. Field not found : cst_amount
+	 61. Field not found : duty
+	 62. Field not found : poid
+	 63. Field not found : poid
+	 64. Field not found : tax_amount
+	 65. Field not found : discount_amount
+	 66. Field not found : cst_amount
+	 67. Field not found : duty
+	 68. Field not found : currency
+	 69. Field not found : poid
+	 70. Field not found : tax_amount
+	 71. Field not found : discount_amount
+	 72. Field not found : cst_amount
+	 73. Field not found : duty
+	 74. Field not found : poid
+	 75. Field not found : poid
+	 76. Field not found : tax_amount
+	 77. Field not found : discount_amount
+	 78. Field not found : cst_amount
+	 79. Field not found : duty
+	 80. Field not found : currency
+	 81. Field not found : currency
+	 82. Field not found : poid
+	 83. Field not found : tax_amount
+	 84. Field not found : discount_amount
+	 85. Field not found : cst_amount
+	 86. Field not found : duty
+	 87. Field not found : poid
+	 88. Field not found : poid
+	 89. Field not found : tax_amount
+	 90. Field not found : discount_amount
+	 91. Field not found : cst_amount
+	 92. Field not found : duty
+	 93. Field not found : currency
+	 94. Field not found : currency
+	 95. Field not found : tax_amount
+	 96. Field not found : discount_amount
+	 97. Field not found : cst_amount
+	 98. Field not found : duty
+	 99. Field not found : poid
+	 100. Field not found : poid
+	 101. Field not found : tax_amount
+	 102. Field not found : discount_amount
+	 103. Field not found : cst_amount
+	 104. Field not found : duty
+	 105. Field not found : currency
+	 106. Field not found : currency
+	 107. Field not found : tax_amount
+	 108. Field not found : discount_amount
+	 109. Field not found : cst_amount
+	 110. Field not found : duty
+	 111. Field not found : poid
+	 112. Field not found : poid
+	 113. Field not found : tax_amount
+	 114. Field not found : discount_amount
+	 115. Field not found : cst_amount
+	 116. Field not found : duty
+	 117. Field not found : currency
+	 118. Field not found : currency
+	 119. Field not found : tax_amount
+	 120. Field not found : discount_amount
+	 121. Field not found : cst_amount
+	 122. Field not found : duty
+	 123. Field not found : poid
+	 124. Field not found : poid
+	 125. Field not found : tax_amount
+	 126. Field not found : discount_amount
+	 127. Field not found : cst_amount
+	 128. Field not found : duty
+	 129. Field not found : currency
+	 130. Field not found : currency
+	 131. Field not found : tax_amount
+	 132. Field not found : discount_amount
+	 133. Field not found : cst_amount
+	 134. Field not found : duty
+	 135. Field not found : poid
+	 136. Field not found : poid
+	 137. Field not found : tax_amount
+	 138. Field not found : discount_amount
+	 139. Field not found : cst_amount
+	 140. Field not found : duty
+	 141. Field not found : currency
+	 142. Field not found : tax_amount
+	 143. Field not found : discount_amount
+	 144. Field not found : cst_amount
+	 145. Field not found : duty
+	 146. Field not found : poid
+	 147. Field not found : poid
+	 148. Field not found : tax_amount
+	 149. Field not found : discount_amount
+	 150. Field not found : cst_amount
+	 151. Field not found : duty
+	 152. Field not found : currency
+	 153. Field not found : currency
+	 154. Field not found : tax_amount
+	 155. Field not found : discount_amount
+	 156. Field not found : cst_amount
+	 157. Field not found : duty
+	 158. Field not found : poid
+	 159. Field not found : postate
+	 160. Field not found : poid
+	 161. Field not found : taxamount
+	 162. Field not found : taxamount
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+474073 [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : poid
+	 5. Field not found : poid
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : tax_amount
+	 9. Field not found : discount_amount
+	 10. Field not found : cst_amount
+	 11. Field not found : duty
+	 12. Field not found : currency
+	 13. Field not found : poid
+	 14. Field not found : tax_amount
+	 15. Field not found : discount_amount
+	 16. Field not found : cst_amount
+	 17. Field not found : duty
+	 18. Field not found : poid
+	 19. Field not found : poid
+	 20. Field not found : poid
+	 21. Field not found : plnotecount
+	 22. Field not found : plnotecount
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : poid
+	 26. Field not found : payment_terms
+	 27. Field not found : poid
+	 28. Field not found : tax_amount
+	 29. Field not found : discount_amount
+	 30. Field not found : cst_amount
+	 31. Field not found : duty
+	 32. Field not found : tax_amount
+	 33. Field not found : discount_amount
+	 34. Field not found : cst_amount
+	 35. Field not found : duty
+	 36. Field not found : tax_amount
+	 37. Field not found : poid
+	 38. Field not found : amount_in_words
+	 39. Field not found : duty
+	 40. Field not found : total_amount
+	 41. Field not found : duty
+	 42. Field not found : tax_amount
+	 43. Field not found : tax_amount
+	 44. Field not found : cst_amount
+	 45. Field not found : cst_amount
+	 46. Field not found : tax_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : duty
+	 49. Field not found : poid
+	 50. Field not found : poid
+	 51. Field not found : poid
+	 52. Field not found : tax_amount
+	 53. Field not found : cst_amount
+	 54. Field not found : duty
+	 55. Field not found : poid
+	 56. Field not found : tax_amount
+	 57. Field not found : cst_amount
+	 58. Field not found : duty
+	 59. Field not found : poid
+	 60. Field not found : poid
+	 61. Field not found : tax_amount
+	 62. Field not found : discount_amount
+	 63. Field not found : cst_amount
+	 64. Field not found : duty
+	 65. Field not found : currency
+	 66. Field not found : poid
+	 67. Field not found : tax_amount
+	 68. Field not found : discount_amount
+	 69. Field not found : cst_amount
+	 70. Field not found : duty
+	 71. Field not found : poid
+	 72. Field not found : poid
+	 73. Field not found : tax_amount
+	 74. Field not found : discount_amount
+	 75. Field not found : cst_amount
+	 76. Field not found : duty
+	 77. Field not found : currency
+	 78. Field not found : currency
+	 79. Field not found : poid
+	 80. Field not found : tax_amount
+	 81. Field not found : discount_amount
+	 82. Field not found : cst_amount
+	 83. Field not found : duty
+	 84. Field not found : poid
+	 85. Field not found : poid
+	 86. Field not found : tax_amount
+	 87. Field not found : discount_amount
+	 88. Field not found : cst_amount
+	 89. Field not found : duty
+	 90. Field not found : currency
+	 91. Field not found : currency
+	 92. Field not found : tax_amount
+	 93. Field not found : discount_amount
+	 94. Field not found : cst_amount
+	 95. Field not found : duty
+	 96. Field not found : poid
+	 97. Field not found : poid
+	 98. Field not found : tax_amount
+	 99. Field not found : discount_amount
+	 100. Field not found : cst_amount
+	 101. Field not found : duty
+	 102. Field not found : currency
+	 103. Field not found : currency
+	 104. Field not found : tax_amount
+	 105. Field not found : discount_amount
+	 106. Field not found : cst_amount
+	 107. Field not found : duty
+	 108. Field not found : poid
+	 109. Field not found : poid
+	 110. Field not found : tax_amount
+	 111. Field not found : discount_amount
+	 112. Field not found : cst_amount
+	 113. Field not found : duty
+	 114. Field not found : currency
+	 115. Field not found : currency
+	 116. Field not found : tax_amount
+	 117. Field not found : discount_amount
+	 118. Field not found : cst_amount
+	 119. Field not found : duty
+	 120. Field not found : poid
+	 121. Field not found : poid
+	 122. Field not found : tax_amount
+	 123. Field not found : discount_amount
+	 124. Field not found : cst_amount
+	 125. Field not found : duty
+	 126. Field not found : currency
+	 127. Field not found : currency
+	 128. Field not found : tax_amount
+	 129. Field not found : discount_amount
+	 130. Field not found : cst_amount
+	 131. Field not found : duty
+	 132. Field not found : poid
+	 133. Field not found : poid
+	 134. Field not found : tax_amount
+	 135. Field not found : discount_amount
+	 136. Field not found : cst_amount
+	 137. Field not found : duty
+	 138. Field not found : currency
+	 139. Field not found : tax_amount
+	 140. Field not found : discount_amount
+	 141. Field not found : cst_amount
+	 142. Field not found : duty
+	 143. Field not found : poid
+	 144. Field not found : poid
+	 145. Field not found : tax_amount
+	 146. Field not found : discount_amount
+	 147. Field not found : cst_amount
+	 148. Field not found : duty
+	 149. Field not found : currency
+	 150. Field not found : currency
+	 151. Field not found : tax_amount
+	 152. Field not found : discount_amount
+	 153. Field not found : cst_amount
+	 154. Field not found : duty
+	 155. Field not found : poid
+	 156. Field not found : postate
+	 157. Field not found : poid
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : poid
+	 5. Field not found : poid
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : tax_amount
+	 9. Field not found : discount_amount
+	 10. Field not found : cst_amount
+	 11. Field not found : duty
+	 12. Field not found : currency
+	 13. Field not found : poid
+	 14. Field not found : tax_amount
+	 15. Field not found : discount_amount
+	 16. Field not found : cst_amount
+	 17. Field not found : duty
+	 18. Field not found : poid
+	 19. Field not found : poid
+	 20. Field not found : poid
+	 21. Field not found : plnotecount
+	 22. Field not found : plnotecount
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : poid
+	 26. Field not found : payment_terms
+	 27. Field not found : poid
+	 28. Field not found : tax_amount
+	 29. Field not found : discount_amount
+	 30. Field not found : cst_amount
+	 31. Field not found : duty
+	 32. Field not found : tax_amount
+	 33. Field not found : discount_amount
+	 34. Field not found : cst_amount
+	 35. Field not found : duty
+	 36. Field not found : tax_amount
+	 37. Field not found : poid
+	 38. Field not found : amount_in_words
+	 39. Field not found : duty
+	 40. Field not found : total_amount
+	 41. Field not found : duty
+	 42. Field not found : tax_amount
+	 43. Field not found : tax_amount
+	 44. Field not found : cst_amount
+	 45. Field not found : cst_amount
+	 46. Field not found : tax_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : duty
+	 49. Field not found : poid
+	 50. Field not found : poid
+	 51. Field not found : poid
+	 52. Field not found : tax_amount
+	 53. Field not found : cst_amount
+	 54. Field not found : duty
+	 55. Field not found : poid
+	 56. Field not found : tax_amount
+	 57. Field not found : cst_amount
+	 58. Field not found : duty
+	 59. Field not found : poid
+	 60. Field not found : poid
+	 61. Field not found : tax_amount
+	 62. Field not found : discount_amount
+	 63. Field not found : cst_amount
+	 64. Field not found : duty
+	 65. Field not found : currency
+	 66. Field not found : poid
+	 67. Field not found : tax_amount
+	 68. Field not found : discount_amount
+	 69. Field not found : cst_amount
+	 70. Field not found : duty
+	 71. Field not found : poid
+	 72. Field not found : poid
+	 73. Field not found : tax_amount
+	 74. Field not found : discount_amount
+	 75. Field not found : cst_amount
+	 76. Field not found : duty
+	 77. Field not found : currency
+	 78. Field not found : currency
+	 79. Field not found : poid
+	 80. Field not found : tax_amount
+	 81. Field not found : discount_amount
+	 82. Field not found : cst_amount
+	 83. Field not found : duty
+	 84. Field not found : poid
+	 85. Field not found : poid
+	 86. Field not found : tax_amount
+	 87. Field not found : discount_amount
+	 88. Field not found : cst_amount
+	 89. Field not found : duty
+	 90. Field not found : currency
+	 91. Field not found : currency
+	 92. Field not found : tax_amount
+	 93. Field not found : discount_amount
+	 94. Field not found : cst_amount
+	 95. Field not found : duty
+	 96. Field not found : poid
+	 97. Field not found : poid
+	 98. Field not found : tax_amount
+	 99. Field not found : discount_amount
+	 100. Field not found : cst_amount
+	 101. Field not found : duty
+	 102. Field not found : currency
+	 103. Field not found : currency
+	 104. Field not found : tax_amount
+	 105. Field not found : discount_amount
+	 106. Field not found : cst_amount
+	 107. Field not found : duty
+	 108. Field not found : poid
+	 109. Field not found : poid
+	 110. Field not found : tax_amount
+	 111. Field not found : discount_amount
+	 112. Field not found : cst_amount
+	 113. Field not found : duty
+	 114. Field not found : currency
+	 115. Field not found : currency
+	 116. Field not found : tax_amount
+	 117. Field not found : discount_amount
+	 118. Field not found : cst_amount
+	 119. Field not found : duty
+	 120. Field not found : poid
+	 121. Field not found : poid
+	 122. Field not found : tax_amount
+	 123. Field not found : discount_amount
+	 124. Field not found : cst_amount
+	 125. Field not found : duty
+	 126. Field not found : currency
+	 127. Field not found : currency
+	 128. Field not found : tax_amount
+	 129. Field not found : discount_amount
+	 130. Field not found : cst_amount
+	 131. Field not found : duty
+	 132. Field not found : poid
+	 133. Field not found : poid
+	 134. Field not found : tax_amount
+	 135. Field not found : discount_amount
+	 136. Field not found : cst_amount
+	 137. Field not found : duty
+	 138. Field not found : currency
+	 139. Field not found : tax_amount
+	 140. Field not found : discount_amount
+	 141. Field not found : cst_amount
+	 142. Field not found : duty
+	 143. Field not found : poid
+	 144. Field not found : poid
+	 145. Field not found : tax_amount
+	 146. Field not found : discount_amount
+	 147. Field not found : cst_amount
+	 148. Field not found : duty
+	 149. Field not found : currency
+	 150. Field not found : currency
+	 151. Field not found : tax_amount
+	 152. Field not found : discount_amount
+	 153. Field not found : cst_amount
+	 154. Field not found : duty
+	 155. Field not found : poid
+	 156. Field not found : postate
+	 157. Field not found : poid
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : poid
+	 5. Field not found : poid
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : tax_amount
+	 9. Field not found : discount_amount
+	 10. Field not found : cst_amount
+	 11. Field not found : duty
+	 12. Field not found : currency
+	 13. Field not found : poid
+	 14. Field not found : tax_amount
+	 15. Field not found : discount_amount
+	 16. Field not found : cst_amount
+	 17. Field not found : duty
+	 18. Field not found : poid
+	 19. Field not found : poid
+	 20. Field not found : poid
+	 21. Field not found : plnotecount
+	 22. Field not found : plnotecount
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : poid
+	 26. Field not found : payment_terms
+	 27. Field not found : poid
+	 28. Field not found : tax_amount
+	 29. Field not found : discount_amount
+	 30. Field not found : cst_amount
+	 31. Field not found : duty
+	 32. Field not found : tax_amount
+	 33. Field not found : discount_amount
+	 34. Field not found : cst_amount
+	 35. Field not found : duty
+	 36. Field not found : tax_amount
+	 37. Field not found : poid
+	 38. Field not found : amount_in_words
+	 39. Field not found : duty
+	 40. Field not found : total_amount
+	 41. Field not found : duty
+	 42. Field not found : tax_amount
+	 43. Field not found : tax_amount
+	 44. Field not found : cst_amount
+	 45. Field not found : cst_amount
+	 46. Field not found : tax_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : duty
+	 49. Field not found : poid
+	 50. Field not found : poid
+	 51. Field not found : poid
+	 52. Field not found : tax_amount
+	 53. Field not found : cst_amount
+	 54. Field not found : duty
+	 55. Field not found : poid
+	 56. Field not found : tax_amount
+	 57. Field not found : cst_amount
+	 58. Field not found : duty
+	 59. Field not found : poid
+	 60. Field not found : poid
+	 61. Field not found : tax_amount
+	 62. Field not found : discount_amount
+	 63. Field not found : cst_amount
+	 64. Field not found : duty
+	 65. Field not found : currency
+	 66. Field not found : poid
+	 67. Field not found : tax_amount
+	 68. Field not found : discount_amount
+	 69. Field not found : cst_amount
+	 70. Field not found : duty
+	 71. Field not found : poid
+	 72. Field not found : poid
+	 73. Field not found : tax_amount
+	 74. Field not found : discount_amount
+	 75. Field not found : cst_amount
+	 76. Field not found : duty
+	 77. Field not found : currency
+	 78. Field not found : currency
+	 79. Field not found : poid
+	 80. Field not found : tax_amount
+	 81. Field not found : discount_amount
+	 82. Field not found : cst_amount
+	 83. Field not found : duty
+	 84. Field not found : poid
+	 85. Field not found : poid
+	 86. Field not found : tax_amount
+	 87. Field not found : discount_amount
+	 88. Field not found : cst_amount
+	 89. Field not found : duty
+	 90. Field not found : currency
+	 91. Field not found : currency
+	 92. Field not found : tax_amount
+	 93. Field not found : discount_amount
+	 94. Field not found : cst_amount
+	 95. Field not found : duty
+	 96. Field not found : poid
+	 97. Field not found : poid
+	 98. Field not found : tax_amount
+	 99. Field not found : discount_amount
+	 100. Field not found : cst_amount
+	 101. Field not found : duty
+	 102. Field not found : currency
+	 103. Field not found : currency
+	 104. Field not found : tax_amount
+	 105. Field not found : discount_amount
+	 106. Field not found : cst_amount
+	 107. Field not found : duty
+	 108. Field not found : poid
+	 109. Field not found : poid
+	 110. Field not found : tax_amount
+	 111. Field not found : discount_amount
+	 112. Field not found : cst_amount
+	 113. Field not found : duty
+	 114. Field not found : currency
+	 115. Field not found : currency
+	 116. Field not found : tax_amount
+	 117. Field not found : discount_amount
+	 118. Field not found : cst_amount
+	 119. Field not found : duty
+	 120. Field not found : poid
+	 121. Field not found : poid
+	 122. Field not found : tax_amount
+	 123. Field not found : discount_amount
+	 124. Field not found : cst_amount
+	 125. Field not found : duty
+	 126. Field not found : currency
+	 127. Field not found : currency
+	 128. Field not found : tax_amount
+	 129. Field not found : discount_amount
+	 130. Field not found : cst_amount
+	 131. Field not found : duty
+	 132. Field not found : poid
+	 133. Field not found : poid
+	 134. Field not found : tax_amount
+	 135. Field not found : discount_amount
+	 136. Field not found : cst_amount
+	 137. Field not found : duty
+	 138. Field not found : currency
+	 139. Field not found : tax_amount
+	 140. Field not found : discount_amount
+	 141. Field not found : cst_amount
+	 142. Field not found : duty
+	 143. Field not found : poid
+	 144. Field not found : poid
+	 145. Field not found : tax_amount
+	 146. Field not found : discount_amount
+	 147. Field not found : cst_amount
+	 148. Field not found : duty
+	 149. Field not found : currency
+	 150. Field not found : currency
+	 151. Field not found : tax_amount
+	 152. Field not found : discount_amount
+	 153. Field not found : cst_amount
+	 154. Field not found : duty
+	 155. Field not found : poid
+	 156. Field not found : postate
+	 157. Field not found : poid
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : poid
+	 5. Field not found : poid
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : tax_amount
+	 9. Field not found : discount_amount
+	 10. Field not found : cst_amount
+	 11. Field not found : duty
+	 12. Field not found : currency
+	 13. Field not found : poid
+	 14. Field not found : tax_amount
+	 15. Field not found : discount_amount
+	 16. Field not found : cst_amount
+	 17. Field not found : duty
+	 18. Field not found : poid
+	 19. Field not found : poid
+	 20. Field not found : poid
+	 21. Field not found : plnotecount
+	 22. Field not found : plnotecount
+	 23. Field not found : plnotecount
+	 24. Field not found : plnotecount
+	 25. Field not found : poid
+	 26. Field not found : payment_terms
+	 27. Field not found : poid
+	 28. Field not found : tax_amount
+	 29. Field not found : discount_amount
+	 30. Field not found : cst_amount
+	 31. Field not found : duty
+	 32. Field not found : tax_amount
+	 33. Field not found : discount_amount
+	 34. Field not found : cst_amount
+	 35. Field not found : duty
+	 36. Field not found : tax_amount
+	 37. Field not found : poid
+	 38. Field not found : amount_in_words
+	 39. Field not found : duty
+	 40. Field not found : total_amount
+	 41. Field not found : duty
+	 42. Field not found : tax_amount
+	 43. Field not found : tax_amount
+	 44. Field not found : cst_amount
+	 45. Field not found : cst_amount
+	 46. Field not found : tax_amount
+	 47. Field not found : cst_amount
+	 48. Field not found : duty
+	 49. Field not found : poid
+	 50. Field not found : poid
+	 51. Field not found : poid
+	 52. Field not found : tax_amount
+	 53. Field not found : cst_amount
+	 54. Field not found : duty
+	 55. Field not found : poid
+	 56. Field not found : tax_amount
+	 57. Field not found : cst_amount
+	 58. Field not found : duty
+	 59. Field not found : poid
+	 60. Field not found : poid
+	 61. Field not found : tax_amount
+	 62. Field not found : discount_amount
+	 63. Field not found : cst_amount
+	 64. Field not found : duty
+	 65. Field not found : currency
+	 66. Field not found : poid
+	 67. Field not found : tax_amount
+	 68. Field not found : discount_amount
+	 69. Field not found : cst_amount
+	 70. Field not found : duty
+	 71. Field not found : poid
+	 72. Field not found : poid
+	 73. Field not found : tax_amount
+	 74. Field not found : discount_amount
+	 75. Field not found : cst_amount
+	 76. Field not found : duty
+	 77. Field not found : currency
+	 78. Field not found : currency
+	 79. Field not found : poid
+	 80. Field not found : tax_amount
+	 81. Field not found : discount_amount
+	 82. Field not found : cst_amount
+	 83. Field not found : duty
+	 84. Field not found : poid
+	 85. Field not found : poid
+	 86. Field not found : tax_amount
+	 87. Field not found : discount_amount
+	 88. Field not found : cst_amount
+	 89. Field not found : duty
+	 90. Field not found : currency
+	 91. Field not found : currency
+	 92. Field not found : tax_amount
+	 93. Field not found : discount_amount
+	 94. Field not found : cst_amount
+	 95. Field not found : duty
+	 96. Field not found : poid
+	 97. Field not found : poid
+	 98. Field not found : tax_amount
+	 99. Field not found : discount_amount
+	 100. Field not found : cst_amount
+	 101. Field not found : duty
+	 102. Field not found : currency
+	 103. Field not found : currency
+	 104. Field not found : tax_amount
+	 105. Field not found : discount_amount
+	 106. Field not found : cst_amount
+	 107. Field not found : duty
+	 108. Field not found : poid
+	 109. Field not found : poid
+	 110. Field not found : tax_amount
+	 111. Field not found : discount_amount
+	 112. Field not found : cst_amount
+	 113. Field not found : duty
+	 114. Field not found : currency
+	 115. Field not found : currency
+	 116. Field not found : tax_amount
+	 117. Field not found : discount_amount
+	 118. Field not found : cst_amount
+	 119. Field not found : duty
+	 120. Field not found : poid
+	 121. Field not found : poid
+	 122. Field not found : tax_amount
+	 123. Field not found : discount_amount
+	 124. Field not found : cst_amount
+	 125. Field not found : duty
+	 126. Field not found : currency
+	 127. Field not found : currency
+	 128. Field not found : tax_amount
+	 129. Field not found : discount_amount
+	 130. Field not found : cst_amount
+	 131. Field not found : duty
+	 132. Field not found : poid
+	 133. Field not found : poid
+	 134. Field not found : tax_amount
+	 135. Field not found : discount_amount
+	 136. Field not found : cst_amount
+	 137. Field not found : duty
+	 138. Field not found : currency
+	 139. Field not found : tax_amount
+	 140. Field not found : discount_amount
+	 141. Field not found : cst_amount
+	 142. Field not found : duty
+	 143. Field not found : poid
+	 144. Field not found : poid
+	 145. Field not found : tax_amount
+	 146. Field not found : discount_amount
+	 147. Field not found : cst_amount
+	 148. Field not found : duty
+	 149. Field not found : currency
+	 150. Field not found : currency
+	 151. Field not found : tax_amount
+	 152. Field not found : discount_amount
+	 153. Field not found : cst_amount
+	 154. Field not found : duty
+	 155. Field not found : poid
+	 156. Field not found : postate
+	 157. Field not found : poid
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+1223987 [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : poid
+	 5. Field not found : poid
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : tax_amount
+	 9. Field not found : discount_amount
+	 10. Field not found : cst_amount
+	 11. Field not found : duty
+	 12. Field not found : currency
+	 13. Field not found : postate
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : poid
+	 5. Field not found : poid
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : tax_amount
+	 9. Field not found : discount_amount
+	 10. Field not found : cst_amount
+	 11. Field not found : duty
+	 12. Field not found : currency
+	 13. Field not found : postate
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : poid
+	 5. Field not found : poid
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : tax_amount
+	 9. Field not found : discount_amount
+	 10. Field not found : cst_amount
+	 11. Field not found : duty
+	 12. Field not found : currency
+	 13. Field not found : postate
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : poid
+	 2. Field not found : poid
+	 3. Field not found : poid
+	 4. Field not found : poid
+	 5. Field not found : poid
+	 6. Field not found : poid
+	 7. Field not found : poid
+	 8. Field not found : tax_amount
+	 9. Field not found : discount_amount
+	 10. Field not found : cst_amount
+	 11. Field not found : duty
+	 12. Field not found : currency
+	 13. Field not found : postate
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+1302170 [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : currency
+	 2. Field not found : postate
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Report design not valid : 
+	 1. Field not found : currency
+	 2. Field not found : postate
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : currency
+	 2. Field not found : postate
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by:
+net.sf.jasperreports.engine.design.JRValidationException: Report design not valid : 
+	 1. Field not found : currency
+	 2. Field not found : postate
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.verifyDesign(JRAbstractCompiler.java:258)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:140)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+1342662 [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PODOC_1429680101046_95533: 1065: unexpected token: ) @ line 1065, column 50.
+1 error
+
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PODOC_1429680101046_95533: 1065: unexpected token: ) @ line 1065, column 50.
+1 error
+
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.JRException: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PODOC_1429680101046_95533: 1065: unexpected token: ) @ line 1065, column 50.
+1 error
+
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:101)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:188)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by: org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PODOC_1429680101046_95533: 1065: unexpected token: ) @ line 1065, column 50.
+1 error
+
+	at org.codehaus.groovy.control.ErrorCollector.failIfErrors(ErrorCollector.java:296)
+	at org.codehaus.groovy.control.ErrorCollector.addFatalError(ErrorCollector.java:143)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:113)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:125)
+	at org.codehaus.groovy.control.SourceUnit.addError(SourceUnit.java:337)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.transformCSTIntoAST(AntlrParserPlugin.java:104)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.parseCST(AntlrParserPlugin.java:71)
+	at org.codehaus.groovy.control.SourceUnit.parse(SourceUnit.java:236)
+	at org.codehaus.groovy.control.CompilationUnit$1.call(CompilationUnit.java:158)
+	at org.codehaus.groovy.control.CompilationUnit.applyToSourceUnits(CompilationUnit.java:814)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:511)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:487)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:464)
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:97)
+	... 18 more
+Caused by:
+net.sf.jasperreports.engine.JRException: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PODOC_1429680101046_95533: 1065: unexpected token: ) @ line 1065, column 50.
+1 error
+
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:101)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:188)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PODOC_1429680101046_95533: 1065: unexpected token: ) @ line 1065, column 50.
+1 error
+
+	at org.codehaus.groovy.control.ErrorCollector.failIfErrors(ErrorCollector.java:296)
+	at org.codehaus.groovy.control.ErrorCollector.addFatalError(ErrorCollector.java:143)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:113)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:125)
+	at org.codehaus.groovy.control.SourceUnit.addError(SourceUnit.java:337)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.transformCSTIntoAST(AntlrParserPlugin.java:104)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.parseCST(AntlrParserPlugin.java:71)
+	at org.codehaus.groovy.control.SourceUnit.parse(SourceUnit.java:236)
+	at org.codehaus.groovy.control.CompilationUnit$1.call(CompilationUnit.java:158)
+	at org.codehaus.groovy.control.CompilationUnit.applyToSourceUnits(CompilationUnit.java:814)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:511)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:487)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:464)
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:97)
+	... 18 more
+1    [XML-RPC-0] ERROR org.apache.xmlrpc.server.XmlRpcErrorLogger - Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PO_Report_1429681906541_185563: 767: unexpected token: ) @ line 767, column 51.
+1 error
+
+org.apache.xmlrpc.common.XmlRpcInvocationException: Failed to invoke method execute in class com.nantic.jasperreports.JasperServer: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PO_Report_1429681906541_185563: 767: unexpected token: ) @ line 767, column 51.
+1 error
+
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:129)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: net.sf.jasperreports.engine.JRException: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PO_Report_1429681906541_185563: 767: unexpected token: ) @ line 767, column 51.
+1 error
+
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:101)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:188)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	... 6 more
+Caused by: org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PO_Report_1429681906541_185563: 767: unexpected token: ) @ line 767, column 51.
+1 error
+
+	at org.codehaus.groovy.control.ErrorCollector.failIfErrors(ErrorCollector.java:296)
+	at org.codehaus.groovy.control.ErrorCollector.addFatalError(ErrorCollector.java:143)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:113)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:125)
+	at org.codehaus.groovy.control.SourceUnit.addError(SourceUnit.java:337)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.transformCSTIntoAST(AntlrParserPlugin.java:104)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.parseCST(AntlrParserPlugin.java:71)
+	at org.codehaus.groovy.control.SourceUnit.parse(SourceUnit.java:236)
+	at org.codehaus.groovy.control.CompilationUnit$1.call(CompilationUnit.java:158)
+	at org.codehaus.groovy.control.CompilationUnit.applyToSourceUnits(CompilationUnit.java:814)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:511)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:487)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:464)
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:97)
+	... 18 more
+Caused by:
+net.sf.jasperreports.engine.JRException: Errors were encountered when compiling report expressions class file:
+org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PO_Report_1429681906541_185563: 767: unexpected token: ) @ line 767, column 51.
+1 error
+
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:101)
+	at net.sf.jasperreports.engine.design.JRAbstractCompiler.compileReport(JRAbstractCompiler.java:188)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReport(JasperCompileManager.java:215)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:131)
+	at net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(JasperCompileManager.java:113)
+	at com.nantic.jasperreports.JasperServer.compile(JasperServer.java:98)
+	at com.nantic.jasperreports.JasperServer.privateExecute(JasperServer.java:137)
+	at com.nantic.jasperreports.JasperServer.execute(JasperServer.java:121)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.invoke(ReflectiveXmlRpcHandler.java:115)
+	at org.apache.xmlrpc.server.ReflectiveXmlRpcHandler.execute(ReflectiveXmlRpcHandler.java:106)
+	at org.apache.xmlrpc.server.XmlRpcServerWorker.execute(XmlRpcServerWorker.java:46)
+	at org.apache.xmlrpc.server.XmlRpcServer.execute(XmlRpcServer.java:86)
+	at org.apache.xmlrpc.server.XmlRpcStreamServer.execute(XmlRpcStreamServer.java:200)
+	at org.apache.xmlrpc.webserver.Connection.run(Connection.java:208)
+	at org.apache.xmlrpc.util.ThreadPool$Poolable$1.run(ThreadPool.java:68)
+Caused by: org.codehaus.groovy.control.MultipleCompilationErrorsException: startup failed:
+calculator_PO_Report_1429681906541_185563: 767: unexpected token: ) @ line 767, column 51.
+1 error
+
+	at org.codehaus.groovy.control.ErrorCollector.failIfErrors(ErrorCollector.java:296)
+	at org.codehaus.groovy.control.ErrorCollector.addFatalError(ErrorCollector.java:143)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:113)
+	at org.codehaus.groovy.control.ErrorCollector.addError(ErrorCollector.java:125)
+	at org.codehaus.groovy.control.SourceUnit.addError(SourceUnit.java:337)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.transformCSTIntoAST(AntlrParserPlugin.java:104)
+	at org.codehaus.groovy.antlr.AntlrParserPlugin.parseCST(AntlrParserPlugin.java:71)
+	at org.codehaus.groovy.control.SourceUnit.parse(SourceUnit.java:236)
+	at org.codehaus.groovy.control.CompilationUnit$1.call(CompilationUnit.java:158)
+	at org.codehaus.groovy.control.CompilationUnit.applyToSourceUnits(CompilationUnit.java:814)
+	at org.codehaus.groovy.control.CompilationUnit.doPhaseOperation(CompilationUnit.java:511)
+	at org.codehaus.groovy.control.CompilationUnit.processPhaseOperations(CompilationUnit.java:487)
+	at org.codehaus.groovy.control.CompilationUnit.compile(CompilationUnit.java:464)
+	at net.sf.jasperreports.compilers.JRGroovyCompiler.compileUnits(JRGroovyCompiler.java:97)
+	... 18 more

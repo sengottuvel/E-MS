@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!-- Product Master form view -->
+
+	<record model="ir.ui.view" id="kg_product_form_inherit">
+        <field name="name">kg.product.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">		
+		
+		<field name="product_code" position="after">
+			<field name="is_accessories" invisible='1'/>
+			<field name="capital" invisible="1"/>
+			<field name="abc" invisible="1"/>
+			<field name="stockable" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+		</field>
+
+		<field name="variants" position="replace">
+		<field name="variants" invisible="1"/>
+		</field>
+		
+		<field name="price_extra" position="replace">
+		<field name="price_extra" invisible="1"/>
+		</field>
+		
+		<field name="price_margin" position="replace">
+		<field name="price_margin" invisible="1"/>
+		</field>
+		
+		<field name="uom_id" position="before">
+		<field name="product_type" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+		<field name="uom_conversation_factor" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" invisible='1'/>
+		</field>
+		
+		<field name="tolerance_plus" position="after">
+		<field name="od" invisible='1'/>
+		<field name="breadth" invisible='1'/>
+		</field>
+		
+		<field name="reorder_qty" position="after">
+		<field name="po_uom_in_kgs" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+		<field name="length" invisible='1'/>
+		<field name="thickness" invisible='1'/>
+		<field name="weight" invisible='1'/>
+		</field>
+		
+		<field name="uom_po_id" position="after">
+		<field name="po_uom_coeff" placeholder="UOM * PO Coeff = 1 POM" attrs="{'readonly':[('state','=','approved')]}"/>
+		</field>
+			
+		<field name="list_price" position="replace">
+		</field>
+		
+		<field name="sale_ok" position="replace">
+        <field name="sale_ok" invisible="1"/>
+        </field>
+        
+        <field name="user_id" position="after">
+			<field name="conf_user_id" attrs="{'invisible':[('state','in',['draft'])]}"/>
+			<field name="app_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','reject'])]}"/>
+			<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','reject','approved'])]}"/>
+			<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>		
+		</field>
+        <field name="crt_date" position="after">
+			<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
+			<field name="approve_date" attrs="{'invisible':[('state','in',['draft', 'confirm','reject'])]}"/>
+			<field name="cancel_date" attrs="{'invisible':[('state','in',['draft', 'confirm','reject','approved'])]}"/>
+			<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirm','approved'])]}"/>				
+		</field>
+
+		<xpath expr = "//page[@string='Entry Info']" position="before">
+				<page string="Coupling Details" attrs="{'invisible':[('product_type','not in',('coupling'))]}">
+					<group>
+						<group>
+							<field name="coupling_type" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="power_kw" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="max_bore" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="spacer_length" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+						</group>
+						<group>
+							<field name="service_factor" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="speed_in_rpm" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="coupling_size" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+						</group>
+					</group>
+				</page>
+		</xpath>
+		
+		<xpath expr = "//page[@string='Coupling Details']" position="before">
+				<page string="Mechanical Seal Details" attrs="{'invisible':[('product_type','not in',('mechanical_seal'))]}">
+					<group>
+						<group>
+							<field name="operating_condition" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="api_plan" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="gland_plate" attrs="{'readonly':[('state','in',('approved','reject'))],'required':[('product_type','=','mechanical_seal')]}"/>
+						</group>
+						<group>
+							<field name="mechanical_type" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="face_combination" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+							<field name="sleeve_dia" attrs="{'readonly':[('state','in',('approved','reject'))]}"/>
+						</group>
+					</group>
+				</page>
+		</xpath>
+		</field>
+	</record>
+	
+	<record model="ir.ui.view" id="kg_product_field_hidden_inherit">
+        <field name="name">kg.product.field.hidden.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_form_view"/>
+        <field name="arch" type="xml">
+		<group>
+		<field name="variants" position="replace">
+		<field name="variants" invisible="1"/>
+		</field>	
+		<field name="price_extra" position="replace">
+		<field name="price_extra" invisible="1"/>
+		</field>
+		<field name="price_margin" position="replace">
+		<field name="price_margin" invisible="1"/>
+		</field>
+		</group>
+		</field>
+	</record>
+	
+	<record model="ir.ui.view" id="kg_product_tree">
+		<field name="name">product.product.tree</field>
+		<field name="model">product.product</field>
+		<field name="inherit_id" ref="product.product_product_tree_view"/>
+		<field name="arch" type="xml">
+			<field name="qty_available" position="after"> 
+			<field name="product_type" invisible="1"/> 
+			</field>					
+		</field>
+	</record>
+			
+
+	<record id="kg_action_product_form" model="ir.actions.act_window">
+		<field name="name">Product Master Design</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">product.product</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form,kanban</field>
+		<field name="context">{'default_product_type': 'ms',}</field>
+	</record>
+	
+	
+	    </data>
+</openerp>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		
+		<!-- Form view starts -->
+		
+		<record id="m_form_v_users" model="ir.ui.view">
+            <field name="name">res.users.form</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <form string="Users" version="7.0">
+                    <field name="id" invisible="1"/>
+                    <sheet>
+                        <field name="image" widget='image' class="oe_avatar oe_left" options='{"preview_image": "image_medium"}'/>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+							<group>
+								<field name="login" string="Login Name"/>
+								<field name="email" string="Email"/>
+							</group>
+							<group>
+								<field name="password" string="Password" password="True"/>
+								<field name="dep_name"/>
+							</group>
+                            <group>
+                                <field name="copy_menus"/>
+                            </group>
+                            <group> 
+								<field name="copy_user_id" attrs="{'invisible':[('copy_menus','!=',True)],'required':[('copy_menus','=',True)]}" />
+                            </group>
+                            <group>
+								<button string="Load User Rights" type="object" name="copy_menus_user_id" help="Press the Button to load the menus of the user" attrs="{'invisible':[('copy_menus','!=',True)]}"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                           
+                            <page string="Access Rights">
+                                <group >
+                                    <field name="groups_id" domain="[('custom_group','=','t')]"  nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="Menus" >
+								<group>
+									<field name="user_menu_access" nolabel="1" widget="many2many_checkboxes"/>
+								</group>
+                            </page>
+                            <page string="Entry Info">								
+								<group>
+										<field name="company_id" readonly='1' context="{'user_preference': 0}"/>
+								</group>
+								<group>
+									<group>
+										<field name="user_id"/>								
+										<field name="update_user_id"/>
+										<field name='active' />
+									</group>
+									<group>
+										<field name="crt_date"/>																		
+										<field name="update_date"/>	
+									</group>
+								</group>
+							</page>	
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Form view ends -->
+
+        <!-- Tree view starts -->
+        
+        <record id="m_tree_view_users" model="ir.ui.view">
+            <field name="name">Users Tree View</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <tree string="Users">
+                    <field name="name"/>
+                    <field name="login"/>
+                    <field name="email"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Tree view ends -->
+        
+		<!-- Search view starts -->
+
+        <record id="m_search_view_users" model="ir.ui.view">
+            <field name="name">Users Search View</field>
+            <field name="model">res.users</field>
+            <field name="arch" type="xml">
+                <search string="Users">
+                    <field name="name" filter_domain="['|', ('name','ilike',self), ('login','ilike',self)]" string="User"/>
+                    <field name="company_ids" string="Company" groups="base.group_multi_company"/>
+                </search>
+            </field>
+        </record>
+        
+		 <!-- Search view ends -->
+		 
+         <!-- action menu starts -->
+
+        <record id="mma_res_users_new" model="ir.actions.act_window">
+            <field name="name">Users</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.users</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="m_tree_view_users"/>
+            <field name="search_view_id" ref="m_search_view_users"/>
+            <field name="help">Create and manage users that will connect to the system. Users can be deactivated should there be a period of time during which they will/should not connect to the system. You can assign them groups in order to give them specific access to the applications they need to use in the system.</field>
+        </record>
+        
+         <!-- action menu ends -->
+         
+         <!-- action menu-tree starts -->
+
+       <record id="res_user_new_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="m_tree_view_users"/>
+            <field name="act_window_id" ref="mma_res_users_new"/>
+        </record>
+        
+         <!-- action menu-tree ends -->
+         
+         <!-- action menu-form starts -->
+
+        <record id="res_user_new_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="m_form_v_users"/>
+            <field name="act_window_id" ref="mma_res_users_new"/>
+        </record>
+        
+         <!-- action menu-form ends -->
+
+	<!--Menu item starts -->
+
+		<menuitem id="menu_user_access_rights" parent="kg_menus.kg_depmaster_parent_menu" name = "User Access Rights" sequence="5" groups="base.group_no_one"/>
+        <menuitem action="mma_res_users_new" name="Users" id="mam_res_usres_form" parent="menu_user_access_rights" sequence="25" groups="base.group_no_one"/>
+
+	<!--Menu item ends -->      
+
+    </data>
+</openerp>
