@@ -92,7 +92,7 @@ def db_list(req, force=False):
 	d = h.split('.')[0]
 	r = openerp.tools.config['dbfilter'].replace('%h', h).replace('%d', d)
 	dbs = [i for i in dbs if re.match(r, i)]
-	#dbs = ['CHIL','Empereal-KGDS','FSL','IIM','IIM_HOSTEL','IIM_HOSTEL_SALE','KGCAS','KGISL','KGISL-SD','KITE','TRUST']
+	dbs = ['machineshop']
 	return dbs
 
 def db_monodb_redirect(req):
