@@ -80,9 +80,9 @@
         <report string="Department Issue Register"
 		model="dep.issue.register.wizard.istl"
 		auto="True"
-		name="jasper_kg_dep_issue"
+		name="jasper_kg_dep_issue_report"
 		rml="kg_reports/warehouse/report/kg_dep_issue.jrxml"
-		id="dep_issue_jasper_register_id"
+		id="dep_issue_jasper_register_id_report"
 		menu="False"
 		/>               
         

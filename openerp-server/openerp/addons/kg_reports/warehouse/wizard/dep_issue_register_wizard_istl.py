@@ -59,7 +59,7 @@ class dep_issue_register_wizard_istl(osv.osv_memory):
 		print data,' create_report('
 		return {
 			'type'		 : 'ir.actions.report.xml',
-			'report_name'   : 'jasper_kg_dep_issue',
+			'report_name'   : 'jasper_kg_dep_issue_report',
 			'datas': {
 					'model':'dep.issue.register.wizard.istl',
 					'id': context.get('active_ids') and context.get('active_ids')[0] or False,

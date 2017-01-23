@@ -91,4 +91,4 @@ class kg_dep_issue(JasperDataParser.JasperDataParser):
 		pool= pooler.get_pool(cr.dbname)
 		return {}
 
-jasper_report.report_jasper('report.jasper_kg_dep_issue', 'kg.department.issue', parser=kg_dep_issue)
+jasper_report.report_jasper('report.jasper_kg_dep_issue_report', 'kg.department.issue', parser=kg_dep_issue)
