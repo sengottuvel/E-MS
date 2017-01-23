@@ -224,7 +224,7 @@ class Report:
 			'csv': dataFile,
 			'dsn': self.dsn(),
 			'user': self.userName(),
-			'password': 'postgres',
+			'password': 'Mko0(ijN',
 			'subreports': subreportDataFiles,
 		}
 		

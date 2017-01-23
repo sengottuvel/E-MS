@@ -85,9 +85,9 @@
         <report string="PO Register"
 		model="kg.po.register.wiz"
 		auto="True"
-		name="jasper_kg_po_register"
+		name="jasper_kg_po_register_report"
 		rml="kg_reports/purchase/report/kg_po_register.jrxml"
-		id="po_jasper_register_id"
+		id="po_jasper_register_id_report"
 		menu="False"
 		/>     
            

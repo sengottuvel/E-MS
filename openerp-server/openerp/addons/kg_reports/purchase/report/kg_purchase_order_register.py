@@ -91,4 +91,4 @@ class kg_purchase_order_register(JasperDataParser.JasperDataParser):
 		pool= pooler.get_pool(cr.dbname)
 		return {}
 
-jasper_report.report_jasper('report.jasper_kg_po_register', 'purchase.order', parser=kg_purchase_order_register)
+jasper_report.report_jasper('report.jasper_kg_po_register_report', 'purchase.order', parser=kg_purchase_order_register)

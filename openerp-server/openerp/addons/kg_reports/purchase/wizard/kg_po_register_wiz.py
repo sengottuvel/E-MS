@@ -68,7 +68,7 @@ class kg_po_register_wiz(osv.osv_memory):
 		print data,' create_report('
 		return {
 			'type'		 : 'ir.actions.report.xml',
-			'report_name'   : 'jasper_kg_po_register',
+			'report_name'   : 'jasper_kg_po_register_report',
 			'datas': {
 					'model':'kg.po.register.wiz',
 					'id': context.get('active_ids') and context.get('active_ids')[0] or False,

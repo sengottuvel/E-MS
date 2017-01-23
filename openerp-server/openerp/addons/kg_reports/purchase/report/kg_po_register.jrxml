@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="kg_po_register" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape"  whenNoDataType="NoDataSection" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="kg_po_register" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="82"/>
+	<property name="ireport.x" value="198"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="date_from" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -21,11 +21,9 @@ SELECT
   to_char(po.date_order,'yyyy-mm-dd') AS po_date,
  to_char(po.date_order,'dd-mm-yyyy') AS pod_date,
   po.date_order AS date,
-  to_char(pol.delivery_date,'dd-mm-yyyy') as delivery_date,
   po.note AS remark,
   to_char(po.amount_total,'99G99G990D99') as total,
   po.add_text as address,
-  case when pol.product_tax_amt is null then '0.00' when pol.ed_tax_amt is null then to_char(pol.product_tax_amt,'99G99G990D99') else  to_char(pol.product_tax_amt,'99G99G990D99') end as taxamt,
   pol.id as pol_id,
  to_char(pol.price_subtotal,'99G99G990D99') as sub_total,
   pol.product_qty AS qty,
@@ -34,7 +32,6 @@ SELECT
 TO_CHAR((case when (pol.kg_discount) is not null then pol.kg_discount  else '0'::float end+(pol.product_qty*pol.price_unit)*(case when (pol.kg_discount_per) is not null then pol.kg_discount_per  else '0'::float end/100)), '99G99G990D99') as discount_amt,
   pol.kg_discount_per as disc1,
   pol.kg_disc_amt_per as disc2,
-  case when pol.ed_tax_amt is null then '0.00' else to_char(pol.ed_tax_amt,'99G99G990D99') end as duty,
   po_ad.advance_amt as po_ad_amt,
   uom.name AS uom,
   pt.name AS pro_name,
@@ -79,7 +76,6 @@ cmp_name.name as company_name
   JOIN product_template pt ON (pt.id=prd.product_tmpl_id)
   JOIN product_uom uom ON (uom.id=pol.product_uom)
   left JOIN kg_brand_master brand ON (pol.brand_id = brand.id)
-  left JOIN kg_project_master project ON (po.dep_project = project.id)
   left JOIN kg_supplier_advance po_ad ON (po_ad.po_id = po.id)
   left JOIN res_company cmp_name on (cmp_name.id=po.company_id)
 
@@ -130,11 +126,9 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 	<field name="po_date" class="java.lang.String"/>
 	<field name="pod_date" class="java.lang.String"/>
 	<field name="date" class="java.sql.Date"/>
-	<field name="delivery_date" class="java.lang.String"/>
 	<field name="remark" class="java.lang.String"/>
 	<field name="total" class="java.lang.String"/>
 	<field name="address" class="java.lang.String"/>
-	<field name="taxamt" class="java.lang.String"/>
 	<field name="pol_id" class="java.lang.Integer"/>
 	<field name="sub_total" class="java.lang.String"/>
 	<field name="qty" class="java.lang.Double"/>
@@ -143,7 +137,6 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 	<field name="discount_amt" class="java.lang.String"/>
 	<field name="disc1" class="java.math.BigDecimal"/>
 	<field name="disc2" class="java.math.BigDecimal"/>
-	<field name="duty" class="java.lang.String"/>
 	<field name="po_ad_amt" class="java.lang.Double"/>
 	<field name="uom" class="java.lang.String"/>
 	<field name="pro_name" class="java.lang.String"/>
@@ -242,29 +235,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["Product"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="186" y="1" width="61" height="32"/>
-				<box>
-					<topPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Delivery Date"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="478" y="1" width="55" height="32"/>
-				<box>
-					<topPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["VAT/CST"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="247" y="1" width="40" height="32"/>
+				<reportElement x="186" y="0" width="40" height="32"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -275,7 +246,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["UOM"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="287" y="1" width="42" height="32"/>
+				<reportElement x="236" y="1" width="42" height="32"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -286,18 +257,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["Qty"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="438" y="1" width="40" height="32"/>
-				<box>
-					<topPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Duty"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="533" y="1" width="56" height="32"/>
+				<reportElement x="423" y="1" width="56" height="32"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -308,7 +268,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["Discount"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="589" y="1" width="62" height="32"/>
+				<reportElement x="503" y="1" width="62" height="32"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -319,7 +279,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["Total Amount"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="383" y="1" width="55" height="32"/>
+				<reportElement x="357" y="1" width="55" height="32"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -330,7 +290,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["Rate"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="651" y="1" width="45" height="32"/>
+				<reportElement x="587" y="1" width="45" height="32"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -341,7 +301,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["State"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="696" y="1" width="56" height="32"/>
+				<reportElement x="651" y="0" width="56" height="32"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -352,7 +312,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["Remarks"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="329" y="1" width="54" height="32"/>
+				<reportElement x="287" y="1" width="54" height="32"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -367,7 +327,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 	<detail>
 		<band height="66" splitType="Stretch">
 			<textField>
-				<reportElement x="247" y="17" width="40" height="18"/>
+				<reportElement x="189" y="17" width="40" height="18"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -381,21 +341,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{uom}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="186" y="17" width="61" height="18"/>
-				<box>
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{delivery_date}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="538" y="17" width="51" height="18"/>
+				<reportElement x="428" y="19" width="51" height="18"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -409,21 +355,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{discount_amt}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="438" y="17" width="40" height="18"/>
-				<box>
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{duty}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="651" y="17" width="45" height="18"/>
+				<reportElement x="587" y="19" width="45" height="18"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -451,7 +383,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{num}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="589" y="17" width="62" height="18"/>
+				<reportElement x="505" y="17" width="62" height="18"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -465,7 +397,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{sub_total}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="696" y="17" width="56" height="18"/>
+				<reportElement x="651" y="17" width="56" height="18"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.0"/>
@@ -490,7 +422,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{pro_name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="287" y="17" width="42" height="18"/>
+				<reportElement x="238" y="17" width="42" height="18"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -504,21 +436,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="478" y="17" width="60" height="18"/>
-				<box>
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{taxamt}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="329" y="17" width="54" height="18"/>
+				<reportElement x="291" y="17" width="54" height="18"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -532,7 +450,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{pending_qty}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="383" y="17" width="55" height="18"/>
+				<reportElement x="360" y="17" width="55" height="18"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -555,7 +473,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{po_cal}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="589" y="51" width="62" height="12" isRemoveLineWhenBlank="true">
+				<reportElement x="505" y="51" width="62" height="12" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$F{split_total}!=null]]></printWhenExpression>
 				</reportElement>
 				<box>
@@ -577,7 +495,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA[$F{tex_total}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="589" y="37" width="62" height="11" isRemoveLineWhenBlank="true">
+				<reportElement x="505" y="37" width="62" height="11" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$F{other_charges}!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -641,7 +559,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 	<summary>
 		<band height="27">
 			<textField>
-				<reportElement x="0" y="6" width="505" height="20"/>
+				<reportElement x="-30" y="6" width="505" height="20"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -652,7 +570,7 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["Grand Total    "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="505" y="6" width="247" height="20"/>
+				<reportElement x="415" y="6" width="247" height="20"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>
@@ -674,5 +592,5 @@ where po_date >=$P{date_from} and po_date <=$P{date_to} and status != 'Draft']]>
 				<textFieldExpression><![CDATA["No Records Found"]]></textFieldExpression>
 			</textField>
 		</band>
-	</noData>		
+	</noData>
 </jasperReport>
