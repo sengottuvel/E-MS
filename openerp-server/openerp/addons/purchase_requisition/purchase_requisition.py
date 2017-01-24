@@ -165,6 +165,12 @@ class purchase_requisition_line(osv.osv):
 		'note': fields.text('Remarks'),
 		'pending_qty': fields.float('Pending Qty'),
 		'indent_state': fields.boolean('Indent State'),
+		'expected_date':fields.date('Expected Date',required=True),
+		'line_state': fields.selection([('process', 'Approved'),('noprocess', 'Confirmed'),('cancel', 'Cancel')], 'Status'),
+		'name': fields.char('Name', size=64),
+		'line_date':fields.datetime('Indent Date'),
+		'draft_flag':fields.boolean('Draft Flag'),
+		'src_type': fields.selection([('direct', 'Direct'),('frompi', 'From PI'),('fromquote', 'From Quotation')], 'Soruce Type'),
 	}
 
 	def onchange_product_id(self, cr, uid, ids, product_id, product_uom_id, context=None):
@@ -179,7 +185,8 @@ class purchase_requisition_line(osv.osv):
 			value = {'product_uom_id': prod.uom_id.id,'product_qty':1.0}
 		return {'value': value}
 	
-
+	def default_get(self, cr, uid, fields, context=None):	
+		return context
 		
 	_defaults = {
 		'company_id': lambda self, cr, uid, c: self.pool.get('res.company')._company_default_get(cr, uid, 'purchase.requisition.line', context=c),

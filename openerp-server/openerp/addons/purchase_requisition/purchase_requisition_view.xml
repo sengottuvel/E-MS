@@ -64,7 +64,7 @@
 				</group>                
                 <notebook>
                     <page string="Indent Item Details" attrs="{'invisible': [('pi_flag', '=', False)]}" default_focus="1">
-                        <field name="line_ids" colspan="4" nolabel="1" context="{'indent_type':indent_type}" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}">
+                        <field name="line_ids" colspan="4" nolabel="1" context="{'indent_type':indent_type,'expected_date':expected_date,'line_state': 'noprocess','name': 'PILINE','line_date':date_start,'draft_flag':'False','src_type':'frompi'}" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}">
                             <tree string="Products" editable='bottom' attrs="{'required':[('indent_type','=','direct')]}">
                                 <field name="product_id" on_change="onchange_product_id(product_id,product_uom_id)" required='1'/>
                                 <field name="product_qty" on_change="onchange_qty(product_qty,pending_qty)" required='1'/>
@@ -72,7 +72,13 @@
                                 <field name="stock_qty" readonly='1'/>
                                 <field name="product_uom_id" string="UOM" groups="product.group_uom" required='1'/>
                                 <field name="brand_id" required='0'/>
+                                <field name="expected_date"/>
                                 <field name="note"/>
+								<field name="line_date" invisible='1'/>
+								<field name="draft_flag" invisible='1'/>
+								<field name="src_type" invisible='1'/>
+								<field name="name" invisible='1'/>
+								<field name="line_state" invisible='1'/>
                             </tree>
                         </field>
                         <div class="oe_right oe_button_box" style="margin-top: 10px">

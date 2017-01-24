@@ -149,7 +149,7 @@ class kg_purchase_order(osv.osv):
 		'add_text': fields.text('Address',readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
 		'type_flag':fields.boolean('Type Flag'),
 		'pi_flag':fields.boolean('Type Flag'),
-		'delivery_address':fields.text('Delivery Address',readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
+		'delivery_address':fields.text('Delivery Address',store=True,readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
 		'term_price':fields.selection([('inclusive','Inclusive of all Taxes and Duties'),('exclusive', 'Exclusive')], 'Price',readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}), 
 		'term_warranty':fields.char('Warranty',readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
 		'term_freight':fields.selection([('Inclusive','Inclusive'),('Extra','Extra'),('To Pay','To Pay'),('Paid','Paid'),
@@ -209,6 +209,7 @@ class kg_purchase_order(osv.osv):
 		'division': 'foundry',
 		'active': True,
 		'closing_flag': False,
+		'delivery_address': lambda self, cr, uid, c: self.pool.get('res.company').browse(cr,uid,1).street,
 	
 	}
 	

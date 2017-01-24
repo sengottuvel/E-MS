@@ -1077,7 +1077,7 @@ class kg_quotation_entry_header(osv.osv):
 					'grn_flag': False,
 					'bill_flag': False,
 					'add_text' : tot_add or False,
-					'delivery_address': address,
+					'delivery_address': self.pool.get('res.company').browse(cr,uid,1).street,
 				}
 				po_id = po_obj.create(cr, uid, po_vals)	
 				if po_id:

@@ -354,12 +354,8 @@ class kg_purchase_indent_line(osv.osv):
 	_columns = {
 	
 	'rate': fields.float('Last Purchase Rate',readonly=True, state={'draft': [('readonly', False)]}),
-	'line_date':fields.datetime('Indent Date'),
-	'line_state': fields.selection([('process', 'Approved'),('noprocess', 'Confirmed'),
-					('cancel', 'Cancel')], 'Status'),
 	'current_qty':fields.float('Current Stock Quantity'),
 	'dep_indent_qty': fields.float('Dep.Indent Qty'),
-	'name': fields.char('Name', size=64),
 	'depindent_line_id':fields.many2one('kg.depindent.line', 'Dep.Indent Line'),
 	'default_uom_id': fields.many2one('product.uom', 'PO UOM'),
 	'po_uom_qty': fields.float('PO.Qty'),
@@ -367,22 +363,11 @@ class kg_purchase_indent_line(osv.osv):
 	'dep_id':fields.many2one('kg.depmaster', 'Department'),
 	'user_id': fields.many2one('res.users', 'Users'),
 	'cancel_remark': fields.text('Cancel Remarks'),
-	'draft_flag':fields.boolean('Draft Flag'),
 	'entry_mode': fields.selection([('auto','Auto'),('manual','Manual')],'Entry Mode'),
-	'src_type': fields.selection([('direct', 'Direct'),('frompi', 'From PI'),('fromquote', 'From Quotation')], 'Soruce Type'),
 	
 	}
 	
-	_defaults = {
-	
-	'line_state' : 'noprocess',
-	'name': 'PILINE',
-	'line_date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
-	'draft_flag': False,
-	'src_type': 'frompi',
-	
-	}		
-	
+
 
 		
 	def onchange_product_id(self, cr, uid, ids, product_id, product_uom_id, context=None):
