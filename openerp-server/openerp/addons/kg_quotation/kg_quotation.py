@@ -85,6 +85,7 @@ class kg_rfq_vendor_selection(osv.osv):
 		if entry.quote_submission_date < entry.quotation_date :
 			return False
 		return True
+	
 	_constraints = [
 		(_line_entry_check, 'You cannot Confirm the record without line entry!', ['id']),
 		(_entry_date_check, 'Due date should be greater than the RFQ date!!!', ['Due Date']),
@@ -194,6 +195,13 @@ class kg_rfq_vendor_selection(osv.osv):
 						for prod in rfq_pi_id:
 							rfq_pi_rec = rfq_pi_obj.browse(cr, uid, prod, context)
 							rfq_pi_obj.write(cr, uid, [rfq_pi_rec.id], {'state':'approved'})
+							pro_price = """ select price from ch_supplier_details where supplier_id=%s and partner_id = %s""" %(rfq_pi_rec.product_id.id,vendor_rec.partner_id.id)
+							cr.execute(pro_price)
+							data = cr.dictfetchall()
+							if data:
+								price_val = data[0]['price']
+							else:
+								price_val = 0
 							merge_vals = {
 								'name': 'name',
 								'rfq_no_id': custom.id ,
@@ -209,7 +217,7 @@ class kg_rfq_vendor_selection(osv.osv):
 								'partner_id':vendor_rec.partner_id.id,
 								'partner_address': vendor_rec.partner_address,
 								'partner_name': vendor_rec.partner_name,	
-								'vendors_price': 0,
+								'vendors_price': price_val,
 																
 							}
 							quote_pi_id = quote_pi_obj.create(cr, uid, merge_vals)							
@@ -484,12 +492,7 @@ class kg_quotation_requisition_line(osv.osv):
 			return True
 	
 	
-	_constraints = [
-		
-		#(_entry_date_check, 'The vendor delivery date should be greater than the RFQ date!!!', ['Vendor Delivery Date']),
-		
-	]
-			
+	
 kg_quotation_requisition_line()
 
 class kg_quote_pi_line(osv.osv):
@@ -540,11 +543,6 @@ class kg_quote_pi_line(osv.osv):
 		val = {'vendors_value':tot}
 		return {'val': val}	
 	
-	#~ def write(self, cr, uid, ids, vals, context=None):	
-		#~ value = 0 
-		#~ value = vals['quotation_qty'] * vals['vendors_price']
-		#~ vals.update({'vendors_value': value})
-		#~ return super(kg_quote_pi_line, self).write(cr, uid, ids, vals, context)
 	
 kg_quote_pi_line()
 
@@ -1005,8 +1003,6 @@ class kg_quotation_entry_header(osv.osv):
 				result = cr.fetchone()
 				if result[0] == 0:
 					raise osv.except_osv(_('Warning'),_('Quotation Validity Days should be Greater than Zero'))
-		#~ if rec.comparison_remarks == False:
-			#~ raise osv.except_osv(_('Warning'),_('Please enter Comparision Remarks'))
 		if len(line_ids) != sum(count_list):
 			raise osv.except_osv(_('Warning'),_('Please Select All Line Items to Proceed'))
 		for loop in line_ids:

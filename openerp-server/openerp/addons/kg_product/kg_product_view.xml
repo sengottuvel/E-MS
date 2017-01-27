@@ -88,6 +88,17 @@
 				</page>
 		</xpath>
 		
+		<xpath expr = "//page[@string='Internal Notes']" position="before">
+			<page string="Supplier Details">
+				<field name="supplier_details" colspan="4" nolabel="1"  >
+					<tree string = "Supplier Details" editable="bottom">
+						<field name="partner_id"/>
+						<field name="price"/>
+					</tree>
+				</field>													
+			</page>
+		</xpath>
+		
 		<xpath expr = "//page[@string='Coupling Details']" position="before">
 				<page string="Mechanical Seal Details" attrs="{'invisible':[('product_type','not in',('mechanical_seal'))]}">
 					<group>

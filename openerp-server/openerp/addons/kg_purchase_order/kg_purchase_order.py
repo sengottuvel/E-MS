@@ -221,7 +221,6 @@ class kg_purchase_order(osv.osv):
 						'name':next_seq_num,
 						
 						})"""
-		
 		order =  super(kg_purchase_order, self).create(cr, uid, vals, context=context)
 		return order
 	
@@ -300,6 +299,18 @@ class kg_purchase_order(osv.osv):
 	def confirm_po(self,cr,uid,ids, context=None):
 		back_list = []
 		obj = self.browse(cr,uid,ids[0])
+		if obj.po_type == 'direct':
+			for i in obj.order_line:
+				pro_price = """ select price from ch_supplier_details where supplier_id=%s and partner_id = %s""" %(i.product_id.id,obj.partner_id.id)
+				cr.execute(pro_price)
+				data = cr.dictfetchall()
+				if data:
+					price_val = data[0]['price']
+				else:
+					price_val = 0.0	
+				print "----------------------iii--------------",i.id
+				print "-------------------price_unit------------",price_val
+				cr.execute(""" update purchase_order_line set price_unit = %d where id = %s """ %(price_val,i.id))							
 		for i in obj.order_line:
 			val = []
 			val_id = []
@@ -373,10 +384,10 @@ class kg_purchase_order(osv.osv):
 			raise osv.except_osv(
 					_('Warning'),
 					_('You should specify Frieght charges!'))"""
-		if obj.amount_total <= 0:
-			raise osv.except_osv(
-					_('Purchase Order Value Error !'),
-					_('System not allow to confirm a Purchase Order with Zero Value'))	
+		#~ if obj.amount_total <= 0:
+			#~ raise osv.except_osv(
+					#~ _('Purchase Order Value Error !'),
+					#~ _('System not allow to confirm a Purchase Order with Zero Value'))	
 		po_lines = obj.order_line
 		cr.execute("""select piline_id from kg_poindent_po_line where po_order_id = %s"""  %(str(ids[0])))
 		data = cr.dictfetchall()
@@ -415,6 +426,12 @@ class kg_purchase_order(osv.osv):
 	def wkf_approve_order(self, cr, uid, ids, context=None):
 		logger.info('[KG OpenERP] Class: kg_purchase_order, Method: wkf_approve_order called...')
 		obj = self.browse(cr,uid,ids[0])
+		if obj.po_type == 'direct':
+			for i in obj.order_line:		
+				if i.price_unit <= 0:
+					raise osv.except_osv(
+						_('Purchase Order Value Error !'),
+						_('System not allow to confirm a Purchase Order with Zero Value'))	
 		user_obj = self.pool.get('res.users').search(cr,uid,[('id','=',uid)])
 		if user_obj:
 			user_rec = self.pool.get('res.users').browse(cr,uid,user_obj[0])
@@ -826,6 +843,7 @@ class kg_purchase_order_line(osv.osv):
 	
 	}
 	
+	
 	def _discount_per(self, cr, uid, ids, context=None):
 		rec = self.browse(cr, uid, ids[0])
 		if rec.kg_discount_per:
@@ -848,8 +866,9 @@ class kg_purchase_order_line(osv.osv):
 							})
 		order =  super(kg_purchase_order_line, self).create(cr, uid, vals, context=context)
 		return order
+		
 	
-	
+			
 	
 	def _check_length(self, cr, uid, ids, context=None):		
 		rec = self.browse(cr, uid, ids[0])

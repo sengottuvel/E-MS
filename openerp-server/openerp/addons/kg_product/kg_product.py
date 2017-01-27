@@ -59,6 +59,7 @@ class kg_product(osv.osv):
 		'sleeve_dia': fields.char('Sleeve dia(MM)'),
 		'company_id': fields.many2one('res.company', 'Company Name',readonly=True),
 		'stockable': fields.selection([('yes','Yes'),('no','No')],'Stockable Item',required=True),
+		'supplier_details': fields.one2many('ch.supplier.details', 'supplier_id', 'Supplier Details'),
 		
 	}
 	
@@ -172,6 +173,26 @@ class kg_product(osv.osv):
 	
 	
 kg_product()
+
+
+
+class ch_supplier_details(osv.osv):
+	
+	_name = "ch.supplier.details"
+	_description = "Supplier Details"
+	
+	
+	_columns = {
+
+	'supplier_id': fields.many2one('product.product', 'Supplier Details', ondelete='cascade',),
+	'partner_id': fields.many2one('res.partner', 'Supplier Name',domain="[('supplier','=',True),('sup_state','=','approved')]"),
+	'price': fields.float('Price'),
+	
+	}
+	
+	
+		
+ch_supplier_details()
 
 
 	

@@ -176,6 +176,18 @@
 			<field eval="1" name="perm_create"/>
 			<field model="res.groups" name="group_id" search="[('name', '=', u'Master Admin')]"/>
 		</record>
+		
+		
+		
+		<record id="kg_ch_supplier_details" model="ir.model.access">
+			<field name="model_id" ref="kg_product.model_ch_supplier_details"/>
+			<field eval="1" name="perm_read"/>
+			<field name="name">Supplier Details</field>
+			<field eval="1" name="perm_unlink"/>
+			<field eval="1" name="perm_write"/>
+			<field eval="1" name="perm_create"/>
+			<field model="res.groups" name="group_id" search="[('name', '=', u'Master Admin')]"/>
+		</record>				
 <!--
 		for product master deletion
 -->

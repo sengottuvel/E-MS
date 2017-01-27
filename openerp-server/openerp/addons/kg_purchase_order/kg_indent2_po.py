@@ -33,6 +33,7 @@ class kg_indent2_po(osv.osv):
 		prod_obj = self.pool.get('product.product')
 		order_line = []			   
 		res={}
+		price_val  = self.browse(cr,uid,ids[0])
 		order_line = []
 		res['order_line'] = []
 		res['po_flag'] = True
@@ -71,6 +72,14 @@ class kg_indent2_po(osv.osv):
 				po_pi_id = group[0].id
 				po_uom = group[0].product_uom_id.id
 				remark = group[0].note
+				pro_price = """ select price from ch_supplier_details where supplier_id=%s and partner_id = %s""" %(prod_browse.id,price_val.partner_id.id)
+				cr.execute(pro_price)
+				data = cr.dictfetchall()
+				if data:
+					price_val = data[0]['price']
+				else:
+					price_val = 0.0
+				
 				#~ max_sql = """ select max(line.price_unit),min(line.price_unit) from purchase_order_line line 
 								#~ left join purchase_order po on (po.id=line.order_id)
 								#~ join kg_brandmoc_rate rate on (rate.product_id=line.product_id)
@@ -114,7 +123,7 @@ class kg_indent2_po(osv.osv):
 				'pi_qty':qty,
 				'group_qty':pi_qty,
 				'pi_line_id':po_pi_id,
-				'price_unit' : 0.0,
+				'price_unit' : price_val,
 				'group_flag': flag,
 				'name':'PO',
 				'line_flag':True,
