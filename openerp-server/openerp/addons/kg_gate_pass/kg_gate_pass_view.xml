@@ -198,22 +198,16 @@
 				<field name="search_view_id" ref="kg_gate_pass_search_view"/>
 		</record>
 		
-<!--
 		<record forcecreate="1" id="seq_gate_pass" model="ir.sequence.type">	
 			<field name="name">Gate Pass</field>
 			<field name="code">kg.gate.pass</field>
 		</record>
--->
 
-<!--
 		<record forcecreate="1" id="gate_pass_id" model="ir.sequence">
 		  <field name="name">Gate Pass</field>
 		  <field name="code">kg.gate.pass</field>
 		  <field name="padding" eval="3"/>
-		  <field name="prefix">GP/%(year)s/</field>
-		  <field name="reset_sequence">fiscal_reset</field>
+		  <field name="prefix">/%(year)s/</field>
 		</record>
-		
--->
     </data>
 </openerp>
