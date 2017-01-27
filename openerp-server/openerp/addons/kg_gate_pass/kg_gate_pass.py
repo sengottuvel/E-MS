@@ -22,7 +22,7 @@ class kg_gate_pass(osv.osv):
 		'name': fields.char('Gate Pass No', size=128, readonly=True),
 		'dep_id': fields.many2one('kg.depmaster','Source Location', select=True,readonly=True, states={'draft':[('readonly',False)]},domain="[('state','=','approved')]"),
 		'date': fields.date('Gate Pass Date',readonly=True, states={'draft':[('readonly',False)]},required=True),
-		'return_date': fields.date('Expected Return Date',readonly=True, states={'draft':[('readonly',False)]},required=True),
+		'return_date': fields.date('Expected Return Date',readonly=True, states={'draft':[('readonly',False)]}),
 		'partner_id': fields.many2one('res.partner', 'Supplier',readonly=True, states={'draft':[('readonly',False)]},domain="[('supplier','=',True),('sup_state','=','approved')]"),
 		'gate_line': fields.one2many('kg.gate.pass.line', 'gate_id', 'Gate Pass Line',readonly=True, states={'draft':[('readonly',False)]}),
 		'out_type': fields.selection([('g-return', 'G-Return'), ('replacement', 'Relacement'), ('rejection', 'Rejection'), ('transfer', 'Transfer')],'Gate Pass Type',readonly=True, states={'draft':[('readonly',False)]},domain="[('state','=','approved')]"),
