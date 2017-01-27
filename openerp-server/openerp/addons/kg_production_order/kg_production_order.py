@@ -90,14 +90,14 @@ class kg_production_order(osv.osv):
 				cr.execute(po_sql)		
 				po_data = cr.dictfetchall()
 				if po_data:
+					kg_depindent_id=self.pool.get('kg.depindent')
+					indent_ids = kg_depindent_id.create(cr,uid,{'dep_name':72,'indent_type':'production','state':'draft','dest_location_id': 277,'src_location_id': 47})
 					for k in po_data:
 						po_qty = """ select qty from ch_production_order_line where header_id = %d and product_id = %d """%(rec.id,j)
 						cr.execute(po_qty)		
 						po_data_qty = cr.dictfetchall()	
 						for l in po_data_qty:
-							kg_depindent_id=self.pool.get('kg.depindent')
 							kg_depindent_line=self.pool.get('kg.depindent.line')
-							indent_ids = kg_depindent_id.create(cr,uid,{'dep_name':72,'indent_type':'production','state':'draft','dest_location_id': 277,'src_location_id': 47})
 							kg_depindent_line.create(cr,uid,
 							{
 							'indent_id':indent_ids,

@@ -194,6 +194,7 @@ class kg_bom_line(osv.osv):
 	_defaults = {
 	
 	'state':'draft',
+	'department_id':72
 	  
 	}
 	
