@@ -72,7 +72,7 @@
                                 <field name="stock_qty" readonly='1'/>
                                 <field name="product_uom_id" string="UOM" groups="product.group_uom" required='1'/>
                                 <field name="brand_id" required='0'/>
-                                <field name="expected_date"/>
+                                <field name="expected_date" options="{'datepicker':{'maxDate': null,'minDate':0}}"/>
                                 <field name="note"/>
 								<field name="line_date" invisible='1'/>
 								<field name="draft_flag" invisible='1'/>

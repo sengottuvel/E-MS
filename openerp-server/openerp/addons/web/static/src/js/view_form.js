@@ -2449,8 +2449,43 @@ instance.web.DateTimeWidget = instance.web.Widget.extend({
         var self = this;
         this.$input = this.$el.find('input.oe_datepicker_master');
         this.$input_picker = this.$el.find('input.oe_datepicker_container');
+		//Add Readonly for Datepicker
+		$(this.$input).attr('readonly',true);
+		/***** Start Ticket 3123 */
+		$(this.$input).attr('autocomplete','off');
+		
+		/***** Start Ticket 3441 */
+		var remove_readonly = $('.oe_datepicker_root').hasClass('remove_readonly');
+		if(remove_readonly){
+			$('span.oe_datepicker_root .oe_datepicker_master').attr('readonly',false);
+		}
+		/***** End Ticket 3441 */
+		
+		var img_click = this.$el.find('img');
+		$(this.$input).on('click', function () {
+            self.picker('setDate', self.get('value') ? instance.web.auto_str_to_date(self.get('value')) : new Date());
+            self.$input_picker.show();
+            self.picker('show');
+            self.$input_picker.hide();
+		});
+		
+		$(document).keyup(function(e) {
+		  if (e.keyCode === 27 || e.keyCode === 13){
+			self.$input_picker.hide();
+			self.picker('hide');
+		  }
+		});
+		
+		$(this.$input).on('blur', function () {
+           /*  self.$input_picker.hide();
+			self.picker('hide'); */
+		});
+		/***** Start Ticket 3123 */
 
         $.datepicker.setDefaults({
+			autoclose:true,
+			//minDate: -5,
+			maxDate: 0,
             clearText: _t('Clear'),
             clearStatus: _t('Erase the current date'),
             closeText: _t('Done'),
@@ -2465,7 +2500,7 @@ instance.web.DateTimeWidget = instance.web.Widget.extend({
             monthNamesShort: Date.CultureInfo.abbreviatedMonthNames,
             monthStatus: _t('Show a different month'),
             yearStatus: _t('Show a different year'),
-            weekHeader: _t('Wk'),
+			weekHeader: _t('W'),
             weekStatus: _t('Week of the year'),
             dayNames: Date.CultureInfo.dayNames,
             dayNamesShort: Date.CultureInfo.abbreviatedDayNames,
@@ -2474,7 +2509,7 @@ instance.web.DateTimeWidget = instance.web.Widget.extend({
             dateStatus: _t('Select D, M d'),
             firstDay: Date.CultureInfo.firstDayOfWeek,
             initStatus: _t('Select a date'),
-            isRTL: false
+			isRTL: false,
         });
         $.timepicker.setDefaults({
             timeOnlyTitle: _t('Choose Time'),
@@ -2483,22 +2518,28 @@ instance.web.DateTimeWidget = instance.web.Widget.extend({
             minuteText: _t('Minute'),
             secondText: _t('Second'),
             currentText: _t('Now'),
-            closeText: _t('Done')
+			closeText: _t('Done'),
+			controlType: 'select',
+			oneLine: true,
+			timeFormat: 'hh:mm tt'
         });
 
         this.picker({
+            //onClose: this.on_picker_close,
             onClose: this.on_picker_select,
             onSelect: this.on_picker_select,
             changeMonth: true,
             changeYear: true,
-            showWeek: true,
+			showWeek: false,
             showButtonPanel: true,
-            firstDay: Date.CultureInfo.firstDayOfWeek
+			firstDay: Date.CultureInfo.firstDayOfWeek,
         });
         // Some clicks in the datepicker dialog are not stopped by the
         // datepicker and "bubble through", unexpectedly triggering the bus's
         // click event. Prevent that.
-        this.picker('widget').click(function (e) { e.stopPropagation(); });
+		this.picker('widget').click(function (e) {
+			e.stopPropagation();
+		});
 
         this.$el.find('img.oe_datepicker_trigger').click(function() {
             if (self.get("effective_readonly") || self.picker('widget').is(':visible')) {
@@ -2510,6 +2551,7 @@ instance.web.DateTimeWidget = instance.web.Widget.extend({
             self.picker('show');
             self.$input_picker.hide();
         });
+
         this.set_readonly(false);
         this.set({'value': false});
     },
@@ -2517,11 +2559,44 @@ instance.web.DateTimeWidget = instance.web.Widget.extend({
         return $.fn[this.jqueryui_object].apply(this.$input_picker, arguments);
     },
     on_picker_select: function(text, instance_) {
+		/* var self = this;
         var date = this.picker('getDate');
         this.$input
             .val(date ? this.format_client(date) : '')
             .change()
-            .focus();
+            .blur(function(){
+				var dd = self.$input.val()
+				var spl = dd.split("/");
+				var inDate = spl[1]+"/"+spl[0]+"/"+spl[2];
+				var inputDate = new Date(inDate);
+				var todaysDate = new Date();
+				if(inputDate.setHours(0,0,0,0) > todaysDate.setHours(0,0,0,0)){
+					//alert()
+					self.$input
+					.val(self.format_client(todaysDate));	
+					//toastr.error('Kindly enter the date not greater than today', 'Error');
+					swal("Error!", "Kindly enter the date not greater than today", "success");
+				}
+			}); */
+		var date = this.picker('getDate');
+		this.$input
+			.val(date ? this.format_client(date) : '')
+			.change()
+			.focus();
+    },
+	on_picker_close: function (text, instance_) {
+		    var dd = this.$input.val()
+			var spl = dd.split("/");
+			var inDate = spl[1]+"/"+spl[0]+"/"+spl[2];
+			var inputDate = new Date(inDate);
+			var todaysDate = new Date();
+			if(inputDate.setHours(0,0,0,0) > todaysDate.setHours(0,0,0,0)){
+				//alert()
+				this.$input
+                .val(this.format_client(todaysDate));	
+				//toastr.error('Kindly enter the date not greater than today', 'Error');
+				swal("Error!", "Kindly enter the date not greater than today", "success");
+			}
     },
     set_value: function(value_) {
         this.set({'value': value_});
@@ -2535,9 +2610,9 @@ instance.web.DateTimeWidget = instance.web.Widget.extend({
         this.set({'value': this.parse_client(value_)});
     },
     set_readonly: function(readonly) {
-        this.readonly = readonly;
+        /* this.readonly = readonly;
         this.$input.prop('readonly', this.readonly);
-        this.$el.find('img.oe_datepicker_trigger').toggleClass('oe_input_icon_disabled', readonly);
+        this.$el.find('img.oe_datepicker_trigger').toggleClass('oe_input_icon_disabled', readonly); */
     },
     is_valid_: function() {
         var value_ = this.$input.val();

@@ -36,7 +36,7 @@
 		
 		<field name="date_start" position="replace">
 			<field name="date_start" required="1" readonly='1' />
-			<field name="expected_date" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+			<field name="expected_date" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" options="{'datepicker':{'maxDate': null,'minDate':0}}"/>
 		</field>
 
 		<field name="user_id" position="replace">
