@@ -116,7 +116,7 @@
 
 					<menuitem 
 							id="menu_production_order" 
-							name="Production Order" 
+							name="Production Indent" 
 							parent="kg_production_order_id"
 							sequence="1"
 							action="kg_production_order_action"
