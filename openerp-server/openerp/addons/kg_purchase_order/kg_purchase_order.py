@@ -89,7 +89,7 @@ class kg_purchase_order(osv.osv):
 			res[order.id]['amount_tax']=(round(val,0))
 			res[order.id]['amount_untaxed']=(round(val5,0))
 			res[order.id]['discount']=(round(val3,0))
-			res[order.id]['amount_total']=res[order.id]['amount_untaxed'] + res[order.id]['amount_tax'] + res[order.id]['other_charge']
+			res[order.id]['amount_total']=(res[order.id]['amount_untaxed'] + res[order.id]['amount_tax'] + res[order.id]['other_charge'] or 0)
 		return res
 		
 	def _get_order(self, cr, uid, ids, context=None):
@@ -106,7 +106,8 @@ class kg_purchase_order(osv.osv):
 	_columns = {
 		
 		'po_type': fields.selection([('direct', 'Direct'),('frompi', 'From PI'),('fromquote', 'From Quote')], 'PO Mode',readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
-		'bill_type': fields.selection([('cash','CASH BILL'),('credit','CREDIT BILL')], 'Bill Type',states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
+		'bill_type': fields.selection([('cash','CASH BILL'),('credit','CREDIT BILL'),('advance','ADVANCE BILL')], 'Bill Type',states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
+		'advance_percen': fields.integer('Advance(%)'),
 		'po_expenses_type1': fields.selection([('freight','Freight Charges'),('others','Others')], 'Expenses Type1', readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)]}),
 		'po_expenses_type2': fields.selection([('freight','Freight Charges'),('others','Others')], 'Expenses Type2', readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)]}),
 		'value1':fields.float('Value1',readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)]}),
@@ -294,23 +295,13 @@ class kg_purchase_order(osv.osv):
 			dep_rec = user_rec.dep_name
 			location = dep_rec.main_location.id
 			value = {'location_id': location}
+			print "--------dep_rec---------",dep_rec
+			print "--------location---------",location			
 		return {'value':value}
 		
 	def confirm_po(self,cr,uid,ids, context=None):
 		back_list = []
 		obj = self.browse(cr,uid,ids[0])
-		if obj.po_type == 'direct':
-			for i in obj.order_line:
-				pro_price = """ select price from ch_supplier_details where supplier_id=%s and partner_id = %s""" %(i.product_id.id,obj.partner_id.id)
-				cr.execute(pro_price)
-				data = cr.dictfetchall()
-				if data:
-					price_val = data[0]['price']
-				else:
-					price_val = 0.0	
-				print "----------------------iii--------------",i.id
-				print "-------------------price_unit------------",price_val
-				cr.execute(""" update purchase_order_line set price_unit = %d where id = %s """ %(price_val,i.id))							
 		for i in obj.order_line:
 			val = []
 			val_id = []
@@ -384,10 +375,10 @@ class kg_purchase_order(osv.osv):
 			raise osv.except_osv(
 					_('Warning'),
 					_('You should specify Frieght charges!'))"""
-		#~ if obj.amount_total <= 0:
-			#~ raise osv.except_osv(
-					#~ _('Purchase Order Value Error !'),
-					#~ _('System not allow to confirm a Purchase Order with Zero Value'))	
+		if obj.amount_total <= 0:
+			raise osv.except_osv(
+					_('Purchase Order Value Error !'),
+					_('System not allow to confirm a Purchase Order with Zero Value'))	
 		po_lines = obj.order_line
 		cr.execute("""select piline_id from kg_poindent_po_line where po_order_id = %s"""  %(str(ids[0])))
 		data = cr.dictfetchall()
@@ -426,6 +417,10 @@ class kg_purchase_order(osv.osv):
 	def wkf_approve_order(self, cr, uid, ids, context=None):
 		logger.info('[KG OpenERP] Class: kg_purchase_order, Method: wkf_approve_order called...')
 		obj = self.browse(cr,uid,ids[0])
+		if obj.bill_type == 'advance':
+			val = (obj.amount_total / 100 ) * obj.advance_percen
+			kg_supplier_adv = self.pool.get('kg.supplier.advance')
+			supplier_ids = kg_supplier_adv.create(cr,uid,{'active':True,'entry_mode':'auto','state':'draft','order_category': 'purchase','advance_amt': val,'order_value': obj.amount_total,'supplier_id':obj.partner_id.id,'po_id':obj.id})
 		if obj.po_type == 'direct':
 			for i in obj.order_line:		
 				if i.price_unit <= 0:

@@ -79,9 +79,10 @@
 		<field name="bill_type" position="replace">
 			 <field name="date_order" required="1"  on_change="onchange_date_order(date_order)"/>
 			 <field name="quotation_date" />
-			 <field name="quot_ref_no"  class="aplhanum_expect"  />
+			 <field name="quot_ref_no" class="aplhanum_expect"  />
 			 <field name="delivery_address"/>
 			 <field name="bill_type" required="1"/>
+			 <field name="advance_percen" attrs="{'invisible': [('bill_type','!=','advance')],'required': [('bill_type','=','advance')]}"/>
 			 <field name="payment_mode" />
 			 <field name="term_warranty" invisible='1'/>
 			 <field name="revision" invisible="1"/>
@@ -285,7 +286,7 @@
 			 <field name="quot_ref_no" />
 			 <field name="delivery_address"/>
 			 <field name="bill_type" required="1"/>
-			 <field name="payment_mode" />
+			 <field name="payment_mode"/>
 			 <field name="term_warranty" />
 			 <field name="purpose" required="1"/>
 			 <field name="revision" invisible="1"/>
@@ -642,11 +643,11 @@
         
     <menuitem action="purchase.purchase_rfq" id="purchase.menu_purchase_rfq"
             parent="purchase.menu_procurement_management" name="Generate PO"
-            sequence="3"/>  
-            
+            sequence="3"/>
             
 <!--
-		<record forcecreate="1" id="seq_kg_purchase_order" model="ir.sequence.type"> 
+            
+                <record forcecreate="1" id="seq_kg_purchase_order" model="ir.sequence.type"> 
 			<field name="name">Purchase Order</field>
 			<field name="code">purchase.order</field>
 		</record>
@@ -657,7 +658,7 @@
 			  <field name="padding" eval="4"/>
 			  <field name="prefix">PO/%(year)s /</field>
 			  <field name="reset_sequence">yearly_reset</field>
-		</record>            
+		</record>
 -->
             
     </data>
