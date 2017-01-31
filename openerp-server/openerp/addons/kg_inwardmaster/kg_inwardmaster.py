@@ -259,5 +259,32 @@ class kg_inwardmaster(osv.osv):
 		return
 		
 		
+	def user_entry_count(self, cr, uid, ids=0, context=None):
+		cr.execute("""SELECT all_daily_scheduler_mails('Daily Userwise Summary List')""") 
+		data = cr.fetchall(); 
+		if data[0][0] is None: 
+			return False		 
+		if data[0][0] is not None:	 
+			maildet = (str(data[0])).rsplit('~'); 
+			cont = data[0][0].partition('UNWANTED.')		 
+			email_from = 'erpmail@kgcloud.org' 
+			email_to = ["dineshkumar.k@kggroup.com"] 
+			email_cc = ["dineshkumar.k@kggroup.com"] 
+			ir_mail_server = self.pool.get('ir.mail_server')	 
+			ir_mail_server = self.pool.get('ir.mail_server')	 
+			msg = ir_mail_server.build_email( 
+				email_from = email_from, 
+				email_to = email_to, 
+				subject = 'Ellen ERP User Entry Count',		 
+				body = cont[0], 
+				email_cc = email_cc, 
+				subtype = 'html', 
+				subtype_alternative = 'plain') 
+			res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=1, context=context) 
+		else: 
+			pass 		
+		return True
+		
+		
 	
 kg_inwardmaster()
