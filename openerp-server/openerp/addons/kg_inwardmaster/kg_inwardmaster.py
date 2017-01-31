@@ -280,7 +280,7 @@ class kg_inwardmaster(osv.osv):
 				email_cc = email_cc, 
 				subtype = 'html', 
 				subtype_alternative = 'plain') 
-			res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=1, context=context) 
+			res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=2, context=context) 
 		else: 
 			pass 		
 		return True
