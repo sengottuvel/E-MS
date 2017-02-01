@@ -41,7 +41,7 @@ class kg_gate_pass(osv.osv):
 		'division':fields.char('Division',size=100,readonly=True,states={'draft':[('readonly',False)]}),
 		'confirm_flag':fields.boolean('Confirm Flag'),
 		'approve_flag':fields.boolean('Expiry Flag'),
-		'mode': fields.selection([('direct', 'Direct'), ('frm_indent', 'From Indent')], 'Entry Mode',required=True,readonly=True, states={'draft':[('readonly',False)]}),
+		'mode': fields.selection([('direct', 'Direct'), ('frm_indent', 'From Indent'), ('from_grn', 'From GRN')], 'Entry Mode',required=True,readonly=True, states={'draft':[('readonly',False)]}),
 		'gp_type': fields.selection([('from_so', 'From SI'), ('direct', 'Direct')], 'GP Type',readonly=True),
 		'remark': fields.text('Remarks'),
 		
@@ -559,7 +559,7 @@ class kg_gate_pass_line(osv.osv):
 	'ser_no':fields.char('Serial No', size=128),
 	'so_flag':fields.boolean('SO Flag'),
 	'serial_no':fields.many2one('stock.production.lot','Serial No',domain="[('product_id','=',product_id)]"),	
-	'mode': fields.selection([('direct', 'Direct'), ('frm_indent', 'From Indent')], 'Mode'),
+	'mode': fields.selection([('direct', 'Direct'), ('frm_indent', 'From Indent'),('from_grn', 'From GRN')], 'Mode'),
 	
 	}
 	

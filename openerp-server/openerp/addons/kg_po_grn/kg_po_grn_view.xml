@@ -220,6 +220,7 @@
 							<field name="length" invisible="1"/>
 							<field name="breadth" invisible="1"/>
 							<field name="tot_price"/>
+							<field name="rejected_items" attrs="{'required': [('rejection_flag','=',True)],'invisible': [('rejection_flag','!=',True)]}"/>
 
 						</group> 
 						<group> 
@@ -227,6 +228,8 @@
 							<field name="price_unit" attrs="{'readonly': [('billing_type','=','cost')]}"/>
 							<field name="billing_type" invisible = "1"/>
 							<field name="inward_type" required="1"/>
+							<field name="rejection_flag"/>
+							<field name="state" invisible="1"/>
 						</group>
 					
 					</group>
@@ -275,8 +278,8 @@
 						<field name="remark"/>
 					</group>
 					
-					<group>
-						<field name="state" invisible="1"/>
+					<group string="Rejection Remarks"  attrs="{'invisible': [('rejection_flag','!=',True)]}">
+						<field name="rej_remark" attrs="{'required': [('rejection_flag','=',True)]}"/>
                     </group> 
        
                   </group>
@@ -317,6 +320,7 @@
 						<field name="order_no"/>
 						
 						<field name="po_grn_qty"/>
+						<field name="rejected_items"/>
 						<field name="po_pending_qty" readonly = "1" invisible="1"/>
 						<field name="price_unit"/>
 						<field name="grn_tax_ids" widget="many2many_tags"/>

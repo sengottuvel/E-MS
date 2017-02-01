@@ -600,6 +600,14 @@ class kg_po_grn(osv.osv):
 	def po_grn_confirm(self, cr, uid, ids,context=None):
 		back_list = []
 		grn_entry = self.browse(cr, uid, ids[0])
+		if grn_entry.line_ids:
+			for i in grn_entry.line_ids:
+				cr.execute(""" select pending_qty from purchase_order_line where order_id = %s """ %(i.po_id.id))
+				data3 = cr.dictfetchall()
+				if (data3[0]['pending_qty']) - (i.po_grn_qty) < i.rejected_items:
+					raise osv.except_osv(
+						_('Unable to confirm this GRN.'),
+						_('Check the rejection quantity lesser than purchase order pending quantity.'))
 		po_obj=self.pool.get('purchase.order')
 		so_obj=self.pool.get('kg.service.order')
 		exp_grn_qty = 0
@@ -686,6 +694,29 @@ class kg_po_grn(osv.osv):
 	def kg_po_grn_approve(self, cr, uid, ids,context=None):
 		user_id = self.pool.get('res.users').browse(cr, uid, uid)
 		grn_entry = self.browse(cr, uid, ids[0])
+		gate_obj = self.pool.get('kg.gate.pass')
+		gate_obj_line = self.pool.get('kg.gate.pass.line')
+		cr.execute(""" select rejection_flag from po_grn_line where rejection_flag='t' and po_id=%s """ %(grn_entry.po_ids[0].id))
+		rej_flag = cr.dictfetchone()
+		if rej_flag:
+			gate_idd = gate_obj.create(cr, uid, {'dep_id': 72,'partner_id': grn_entry.supplier_id.id,'mode': 'from_grn',	'out_type': 'rejection'})
+			for i in grn_entry.line_ids:
+				if i.rejection_flag == True:
+					gate_obj_line.create(cr,uid,
+						{
+						'gate_id':gate_idd,
+						'product_id':i['product_id'].id,
+						'uom':i['uom_id'].id,
+						'qty':i['rejected_items'],
+						'grn_pending_qty':i['rejected_items'],
+						'so_pending_qty':i['rejected_items'],
+						'mode':'from_grn',
+						})	
+					cr.execute(""" select pending_qty from purchase_order_line where order_id = %s """ %(i.po_id.id))
+					pend_qty = cr.dictfetchone()
+					if pend_qty:
+						updated_qty = pend_qty['pending_qty'] - i['rejected_items']
+						cr.execute(""" update purchase_order_line set pending_qty = %s where order_id = %s """ %(updated_qty,i.po_id.id))
 		val = 0
 		gate_obj = self.pool.get('kg.gate.pass')
 		if grn_entry.dc_date and grn_entry.dc_date > grn_entry.grn_date:
@@ -1566,6 +1597,9 @@ class po_grn_line(osv.osv):
 		'length': fields.float('Length'),
 		'breadth': fields.float('Breadth'),
 		'tot_price': fields.float('Total Amount',readonly=True),
+		'rejected_items': fields.float('Rejected Item'),
+		'rej_remark': fields.text('Rejection remarks'),
+		'rejection_flag': fields.boolean('Rejection Flag'),
 	}
 	
 	

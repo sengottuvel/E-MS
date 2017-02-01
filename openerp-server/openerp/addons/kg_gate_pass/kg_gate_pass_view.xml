@@ -80,7 +80,7 @@
 							</form>
 						</field>
 						</page>
-						<page string="Select Service Indent" attrs="{'invisible':[('mode','in',['direct'])]}">
+						<page string="Select Service Indent" attrs="{'invisible':[('mode','in',['direct','from_grn'])]}">
 							<field name="si_indent_ids" colspan="4" nolabel="1"  >
 								<tree string = "Service Indent" editable="bottom">
 									<field name="service_id" readonly="1"/>
