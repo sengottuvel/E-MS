@@ -268,8 +268,8 @@ class kg_inwardmaster(osv.osv):
 			maildet = (str(data[0])).rsplit('~'); 
 			cont = data[0][0].partition('UNWANTED.')		 
 			email_from = 'erpmail@kgcloud.org' 
-			email_to = ["dineshkumar.k@kggroup.com"] 
-			email_cc = ["dineshkumar.k@kggroup.com"] 
+			email_to = ["vignesh@ellengroup.in","info@ellenfoundries.co.in","arasurplant@ellenpumps.com"] 
+			email_cc = ["sengottuvelu.thangamuthu@kggroup.com","gopinath.sundaram@kggroup.com","jayarajmohan@kggroup.com","haribalakumaran.d@kggroup.com","dineshkumar.k@kggroup.com","david.e@kggroup.com"] 
 			ir_mail_server = self.pool.get('ir.mail_server')	 
 			ir_mail_server = self.pool.get('ir.mail_server')	 
 			msg = ir_mail_server.build_email( 
