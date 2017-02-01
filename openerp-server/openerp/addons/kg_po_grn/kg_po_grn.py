@@ -688,6 +688,21 @@ class kg_po_grn(osv.osv):
 		grn_entry = self.browse(cr, uid, ids[0])
 		if grn_entry.line_ids:
 			for i in grn_entry.line_ids:
+				cr.execute(""" select test_certificate from product_product where id = %s """ %(i.product_id.id))
+				data4 = cr.dictfetchall()
+				if data4[0]['test_certificate'] == 'yes':
+					if i.test_cer:
+						pass
+					else:
+						raise osv.except_osv(
+						_('Unable to confirm this GRN.'),
+						_('Test Certificate is mandatory for this product.'))
+					if i.inspec_report:
+						pass
+					else:
+						raise osv.except_osv(
+						_('Unable to confirm this GRN.'),
+						_('Inspection Report is mandatory for this product.'))
 				cr.execute(""" select pending_qty from purchase_order_line where order_id = %s """ %(i.po_id.id))
 				data3 = cr.dictfetchall()
 				if (data3[0]['pending_qty']) - (i.po_grn_qty) < i.rejected_items:
@@ -1600,6 +1615,8 @@ class po_grn_line(osv.osv):
 		'rejected_items': fields.float('Rejected Item'),
 		'rej_remark': fields.text('Rejection remarks'),
 		'rejection_flag': fields.boolean('Rejection Flag'),
+		'test_cer': fields.binary('Test Certificate'),
+		'inspec_report': fields.binary('Inspection Report'),
 	}
 	
 	
