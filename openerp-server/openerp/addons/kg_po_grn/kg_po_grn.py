@@ -600,14 +600,6 @@ class kg_po_grn(osv.osv):
 	def po_grn_confirm(self, cr, uid, ids,context=None):
 		back_list = []
 		grn_entry = self.browse(cr, uid, ids[0])
-		if grn_entry.line_ids:
-			for i in grn_entry.line_ids:
-				cr.execute(""" select pending_qty from purchase_order_line where order_id = %s """ %(i.po_id.id))
-				data3 = cr.dictfetchall()
-				if (data3[0]['pending_qty']) - (i.po_grn_qty) < i.rejected_items:
-					raise osv.except_osv(
-						_('Unable to confirm this GRN.'),
-						_('Check the rejection quantity lesser than purchase order pending quantity.'))
 		po_obj=self.pool.get('purchase.order')
 		so_obj=self.pool.get('kg.service.order')
 		exp_grn_qty = 0
@@ -694,6 +686,14 @@ class kg_po_grn(osv.osv):
 	def kg_po_grn_approve(self, cr, uid, ids,context=None):
 		user_id = self.pool.get('res.users').browse(cr, uid, uid)
 		grn_entry = self.browse(cr, uid, ids[0])
+		if grn_entry.line_ids:
+			for i in grn_entry.line_ids:
+				cr.execute(""" select pending_qty from purchase_order_line where order_id = %s """ %(i.po_id.id))
+				data3 = cr.dictfetchall()
+				if (data3[0]['pending_qty']) - (i.po_grn_qty) < i.rejected_items:
+					raise osv.except_osv(
+						_('Unable to confirm this GRN.'),
+						_('Check the rejection quantity lesser than purchase order pending quantity.'))
 		gate_obj = self.pool.get('kg.gate.pass')
 		gate_obj_line = self.pool.get('kg.gate.pass.line')
 		cr.execute(""" select rejection_flag from po_grn_line where rejection_flag='t' and po_id=%s """ %(grn_entry.po_ids[0].id))
