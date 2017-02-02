@@ -225,35 +225,34 @@ class kg_gate_pass(osv.osv):
 			brand = i.brand_id
 			quantity = i.qty
 			product = i.product_id
-		if product.stockable == 'yes':
-			pending_qty_val , val_id= 0 , 0
-			if location == 'main':
-				sql = """ select pending_qty,id from stock_production_lot where pending_qty > %d and product_id = %d limit 1 """%(quantity,product)
-				cr.execute(sql)
-				data = cr.dictfetchall()
-				for i in data:
-					pending_qty_val = int(i['pending_qty'])
-					val_id = i['id']
-				final_qty_val = pending_qty_val - quantity
-				sql1 = """ update  stock_production_lot set pending_qty = %d  where id = %d """%(final_qty_val,val_id)
-				cr.execute(sql1)
-				stock_move_obj.create(cr,uid,
-					{
-					'gp_id': rec.id,
-					'gp_line_id': rec.gate_line[0].id,
-					'product_id': product.id,
-					'brand_id':brand.id,
-					'name':product.name,
-					'product_qty': quantity,
-					'stock_uom':uom_id.id,
-					'location_id': rec.dep_id.main_location.id,
-					'location_dest_id': rec.dep_id.stock_location.id,
-					'product_uom': uom_id.id,
-					'move_type': 'out',
-					'state': 'done',
-					
-					})
-
+			if product.stockable == 'yes':
+				pending_qty_val , val_id= 0 , 0
+				if location == 'main':
+					sql = """ select pending_qty,id from stock_production_lot where pending_qty > %d and product_id = %d limit 1 """%(quantity,product)
+					cr.execute(sql)
+					data = cr.dictfetchall()
+					for i in data:
+						pending_qty_val = int(i['pending_qty'])
+						val_id = i['id']
+					final_qty_val = pending_qty_val - quantity
+					sql1 = """ update  stock_production_lot set pending_qty = %d  where id = %d """%(final_qty_val,val_id)
+					cr.execute(sql1)
+					stock_move_obj.create(cr,uid,
+						{
+						'gp_id': rec.id,
+						'gp_line_id': rec.gate_line[0].id,
+						'product_id': product.id,
+						'brand_id':brand.id,
+						'name':product.name,
+						'product_qty': quantity,
+						'stock_uom':uom_id.id,
+						'location_id': rec.dep_id.stock_location.id,
+						'location_dest_id': 8,
+						'product_uom': uom_id.id,
+						'move_type': 'out',
+						'state': 'done',
+						
+						})
 		if rec.mode == 'frm_indent':
 			for line in rec.gate_line:
 				indent_pen_qty = line.indent_qty - line.qty
