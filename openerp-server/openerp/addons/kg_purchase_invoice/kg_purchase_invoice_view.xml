@@ -46,7 +46,7 @@
 							<field name="sup_address"/>
 							<field name="payment_type" invisible="1"/>
 							<field name="sup_invoice_date" required="1"/>
-							<field name="payment_due_date"/>
+							<field name="payment_due_date" options="{'datepicker':{'maxDate': null,'minDate':0}}"/>
 							<field name="po_so_date"/>
 						</group>
 					</group>

@@ -703,7 +703,7 @@ class kg_po_grn(osv.osv):
 						raise osv.except_osv(
 						_('Unable to confirm this GRN.'),
 						_('Inspection Report is mandatory for this product.'))
-				cr.execute(""" select pending_qty from purchase_order_line where order_id = %s """ %(i.po_id.id))
+				cr.execute(""" select pending_qty from purchase_order_line where order_id = %s and product_id = %s""" %(i.po_id.id,i.product_id.id))
 				data3 = cr.dictfetchall()
 				if (data3[0]['pending_qty']) - (i.po_grn_qty) < i.rejected_items:
 					raise osv.except_osv(

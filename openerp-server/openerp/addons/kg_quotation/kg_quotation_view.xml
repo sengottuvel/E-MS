@@ -17,7 +17,7 @@
 						</group>
 						<group>
 							<field name="quotation_date" required="1" readonly='1'/>							
-							<field name="quote_submission_date" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+							<field name="quote_submission_date" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'datepicker':{'maxDate': null,'minDate':0}}"/>
 						</group>
 					</group>
 					<notebook colspan="4">
@@ -51,7 +51,7 @@
 									<field name="requested_qty" string="Indent Qty" readonly="1"/>
 									<field name="quotation_qty" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
 									<field name="state" invisible="1" readonly="1"/>
-									<field name="due_date" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+									<field name="due_date" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'datepicker':{'maxDate': null,'minDate':0}}"/>
 									<field name="remarks" widget="char" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
 									<field name="brand_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
 								</tree>
@@ -557,7 +557,7 @@
 							<field name="requested_qty" invisible="1"/>
 							<field name="quotation_qty" />
 							<field name="del_date" />
-							<field name="ven_del_date" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+							<field name="ven_del_date" attrs="{'readonly': [('state', '!=', 'draft')]}" options="{'datepicker':{'maxDate': null,'minDate':0}}"/>
 							<field name="vendors_price" on_change="onchange_price(quotation_qty,vendors_price,vendors_value)" attrs="{'readonly': [('state', '!=', 'draft')]}"  />
 							<field name="state" invisible="1" />
 							<field name="vendors_value" string ="Total" sum="total" readonly="1"/>

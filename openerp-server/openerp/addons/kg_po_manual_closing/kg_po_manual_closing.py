@@ -110,7 +110,7 @@ class kg_po_manual_closing(osv.osv):
 			supplier =  supplier+')'
 		else:
 			supplier = ''
-		sql = """ select * from purchase_order_line where state = 'confirmed' and pending_qty > 0 """
+		sql = """ select * from purchase_order_line where state = 'confirmed' and pending_qty > 0  and partner_id = %s""" %(rec.partner_id.id)
 		
 		cr.execute(sql)
 		data = cr.dictfetchall()

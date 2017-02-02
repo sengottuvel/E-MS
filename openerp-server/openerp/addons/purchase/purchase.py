@@ -884,7 +884,7 @@ class purchase_order_line(osv.osv):
 		'date_planned': fields.date('Scheduled Date', required=True, select=True),
 		'taxes_id': fields.many2many('account.tax', 'purchase_order_taxe', 'ord_id', 'tax_id', 'Taxes'),
 		'product_uom': fields.many2one('product.uom', 'Product Unit of Measure', required=True),
-		'product_id': fields.many2one('product.product', 'Product', required=True, domain=[('purchase_ok','=',True),('state','not in',('reject','cancel'))], change_default=True),
+		'product_id': fields.many2one('product.product', 'Product', required=True, domain=[('purchase_ok','=',True),('state','=','approved')], change_default=True),
 		'move_ids': fields.one2many('stock.move', 'purchase_line_id', 'Reservation', readonly=True, ondelete='set null'),
 		'move_dest_id': fields.many2one('stock.move', 'Reservation Destination', ondelete='set null'),
 		'price_unit': fields.float('Unit Price', required=True, digits_compute= dp.get_precision('Product Price')),

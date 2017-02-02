@@ -292,7 +292,7 @@
 					   <field name="po_exp_id" nolabel="1">
 						  <tree editable="bottom">
 							<field name="product_qty" required="1"/>
-							<field name="exp_date" required="1"/>               
+							<field name="exp_date" required="1" options="{'datepicker':{'maxDate': null,'minDate':0}}"/>               
 							<field name="batch_no" string = 'S/N' required="1"/>
 							
 							

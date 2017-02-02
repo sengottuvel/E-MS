@@ -20,7 +20,7 @@ function aplhanumonly(e) {
 function aplhanum_expect(e) {    
     var keyCode = e.keyCode == 0 ? e.charCode : e.keyCode;
     var ret = ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122) || (specialKeys.indexOf(e.keyCode) != -1 && e.charCode != e.keyCode));
-    if(keyCode == 46 || keyCode == 40 || keyCode == 41 || keyCode == 45){ //allowed keyCode . ( ) -
+    if(keyCode == 46 || keyCode == 40 || keyCode == 41 || keyCode == 45|| keyCode == 32){ //allowed keyCode . ( ) - space
         return true;
     }
     return ret;
@@ -42,7 +42,7 @@ function numberonly(evt) {
 function lettersOnly(evt) {
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
-    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8) {
+    if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8|| charCode == 32) {
         return true;
     }
     return false;
