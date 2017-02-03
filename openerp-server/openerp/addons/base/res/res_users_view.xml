@@ -181,6 +181,13 @@
                                     <field name="groups_id"/>
                                 </group>
                             </page>
+                            <!-- Added by Sangeetha -->
+                            <page string="Menus">
+								<group>
+									<field name="user_menu_access" nolabel="1"/>
+								</group>
+                            </page>
+                            <!-- Ends Here -->
                         </notebook>
                     </sheet>
                 </form>
