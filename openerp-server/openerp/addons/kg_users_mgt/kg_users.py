@@ -29,10 +29,10 @@ class kg_users(osv.osv):
 	'dep_name' : fields.many2one('kg.depmaster', 'Department', required=True),
 	'special_approval': fields.boolean('Special Approval'),	
 	'company_ref_id': fields.many2many('res.company', 'm2m_emp_user_company', 'user_id','company_id', 'Company Mapping'),
-	'crt_date': fields.datetime('Creation Date',readonly=True),
+	'crt_date': fields.datetime('Created Date',readonly=True),
 	'user_id': fields.many2one('res.users', 'Created By', readonly=True),
-	'update_user_id': fields.many2one('res.users', 'Last Update By', readonly=True),
-	'update_date': fields.datetime('Last Update Date', readonly=True),
+	'update_user_id': fields.many2one('res.users', 'Last Updated By', readonly=True),
+	'update_date': fields.datetime('Last Updated Date', readonly=True),
 	'entry_mode': fields.selection([('auto', 'Auto'), ('manual', 'Manual')], 'Entry Mode', readonly=True),
 	'copy_menus':fields.boolean('Copy User'),
 	'copy_user_id':fields.many2one('res.users','User'),
@@ -45,6 +45,7 @@ class kg_users(osv.osv):
 	'user_id': lambda obj, cr, uid, context: uid,
 	'crt_date':fields.datetime.now,
 	'entry_mode': 'manual',
+	
 	 }
 	
 	def copy_menus_user_id(self,cr,uid,ids,context=None):

@@ -2,6 +2,24 @@
 <openerp>
     <data>
 		
+		
+		<record model="ir.ui.view" id="kg_users_form_view">
+        <field name="name">kg_users_form_view</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">	
+        	
+		<field name="company_id" position="after">
+		<field name="dep_name"/>
+		
+		</field>		
+		<field name="active" position="after">
+		<field name="special_approval"/>
+		</field>		
+		
+		</field>
+	</record>
+		
 		<!-- Form view starts -->
 		
 		<record id="m_form_v_users" model="ir.ui.view">
@@ -22,7 +40,7 @@
 								<field name="email" string="Email"/>
 							</group>
 							<group>
-								<field name="password" string="Password" password="True"/>
+								<field name="password" string="Password" required='1' password="True"/>
 								<field name="dep_name"/>
 							</group>
                             <group>
@@ -141,8 +159,10 @@
 
 	<!--Menu item starts -->
 
-		<menuitem id="menu_user_access_rights" parent="kg_menus.kg_depmaster_parent_menu" name = "User Access Rights" sequence="5" groups="base.group_no_one"/>
-        <menuitem action="mma_res_users_new" name="Users" id="mam_res_usres_form" parent="menu_user_access_rights" sequence="25" groups="base.group_no_one"/>
+
+		 <menuitem name="Users Rights" id="mam_user_rights_form_new" parent = "kg_menus.kg_depmaster_parent_menu" sequence="6" />
+        <menuitem action="mma_res_users_new" name="Users" id="mam_res_usres_form_new" parent="mam_user_rights_form_new" sequence="0" />
+
 
 	<!--Menu item ends -->      
 
