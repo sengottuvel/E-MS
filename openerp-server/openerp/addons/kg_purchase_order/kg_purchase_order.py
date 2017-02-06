@@ -431,6 +431,7 @@ class kg_purchase_order(osv.osv):
 		if user_obj:
 			user_rec = self.pool.get('res.users').browse(cr,uid,user_obj[0])
 		for item in obj.order_line:
+			cr.execute("""update purchase_order_line set pending_qty = %s where id = %s""" %(item.product_qty,item.id))
 			price_sql = """ 
 						select line.price_unit
 						from purchase_order_line line

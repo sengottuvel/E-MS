@@ -33,7 +33,7 @@ class kg_indent2_po(osv.osv):
 		prod_obj = self.pool.get('product.product')
 		order_line = []			   
 		res={}
-		price_val  = self.browse(cr,uid,ids[0])
+		rec  = self.browse(cr,uid,ids[0])
 		order_line = []
 		res['order_line'] = []
 		res['po_flag'] = True
@@ -72,46 +72,13 @@ class kg_indent2_po(osv.osv):
 				po_pi_id = group[0].id
 				po_uom = group[0].product_uom_id.id
 				remark = group[0].note
-				pro_price = """ select price from ch_supplier_details where supplier_id=%s and partner_id = %s""" %(prod_browse.id,price_val.partner_id.id)
+				pro_price = """ select price from ch_supplier_details where supplier_id=%s and partner_id = %s""" %(prod_browse.id,rec.partner_id.id)
 				cr.execute(pro_price)
 				data = cr.dictfetchall()
 				if data:
 					price_val = data[0]['price']
 				else:
 					price_val = 0.0
-				
-				#~ max_sql = """ select max(line.price_unit),min(line.price_unit) from purchase_order_line line 
-								#~ left join purchase_order po on (po.id=line.order_id)
-								#~ join kg_brandmoc_rate rate on (rate.product_id=line.product_id)
-								#~ join ch_brandmoc_rate_details det on (det.header_id=rate.id)
-								#~ where po.state = 'approved' and rate.state in ('draft','confirmed','approved') 
-								#~ and line.product_id=%s and line.brand_id = %s and line.moc_id = %s """%(prod_browse.id,brand_id,group[0].moc_id.id)
-				#~ cr.execute(max_sql)		
-				#~ max_data = cr.dictfetchall()
-				#~ recent_sql = """ select line.price_unit from purchase_order_line line 
-								#~ left join purchase_order po on (po.id=line.order_id)
-								#~ join kg_brandmoc_rate rate on (rate.product_id=line.product_id)
-								#~ join ch_brandmoc_rate_details det on (det.header_id=rate.id)
-								#~ where po.state = 'approved' and rate.state in ('draft','confirmed','approved')
-								#~ and line.product_id = %s and line.brand_id = %s 
-								#~ and line.moc_id = %s 
-								#~ order by po.approved_date desc limit 1 """%(prod_browse.id,brand_id,group[0].moc_id.id)
-				#~ cr.execute(recent_sql)		
-				#~ recent_data = cr.dictfetchall()
-				
-				#~ if max_data:
-					#~ max_val = max_data[0]['max']
-					#~ #max_val = max_val.values()[0]
-					#~ min_val = max_data[0]['min']
-				#~ else:
-					#~ max_val = 0
-					#~ min_val = 0
-				
-				#~ if recent_data:
-					#~ recent_val = recent_data[0]['price_unit']
-				#~ else:
-					#~ recent_val = 0
-										#~ 
 				vals = {
 				
 				'order_id': obj.id,
@@ -127,17 +94,13 @@ class kg_indent2_po(osv.osv):
 				'group_flag': flag,
 				'name':'PO',
 				'line_flag':True,
-				#~ 'least_price': min_val or 0,
-				#~ 'high_price': max_val or 0,
-				#~ 'recent_price': recent_val or 0,
-				#~ 'moc_id': group[0].moc_id.id,
-				#~ 'moc_id_temp': group[0].moc_id_temp.id,
 				'uom_conversation_factor':prod_browse.uom_conversation_factor,
 				
 				}
+				
+				
 				poindent_line_obj.write(cr,uid,po_pi_id,{'line_state' : 'process','draft_flag':True})
 				if ids:
-					#~ self.write(cr,uid,ids[0],{'order_line':[(0,0,vals)]})
 					line_id = self.pool.get('purchase.order.line').create(cr,uid,vals)
 					for wo in group[0].line_ids:
 						self.pool.get('ch.purchase.wo').create(cr,uid,{'header_id':line_id,'wo_id':wo.wo_id,'w_order_id':wo.w_order_id.id,'qty':wo.qty})

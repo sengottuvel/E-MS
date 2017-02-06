@@ -25,7 +25,7 @@ class kg_gate_pass(osv.osv):
 		'return_date': fields.date('Expected Return Date',readonly=True, states={'draft':[('readonly',False)]}),
 		'partner_id': fields.many2one('res.partner', 'Supplier',readonly=True, states={'draft':[('readonly',False)]},domain="[('supplier','=',True),('sup_state','=','approved')]"),
 		'gate_line': fields.one2many('kg.gate.pass.line', 'gate_id', 'Gate Pass Line',readonly=True, states={'draft':[('readonly',False)]}),
-		'out_type': fields.selection([('g-return', 'G-Return'), ('replacement', 'Replacement'), ('rejection', 'Rejection'), ('transfer', 'Transfer')],'Gate Pass Type',readonly=True, states={'draft':[('readonly',False)]},domain="[('state','=','approved')]"),
+		'out_type': fields.selection([('g-return', 'G-Return'),('service', 'Service'), ('replacement', 'Replacement'), ('rejection', 'Rejection'), ('transfer', 'Transfer')],'Gate Pass Type',readonly=True, states={'draft':[('readonly',False)]},domain="[('state','=','approved')]"),
 		'origin': fields.many2one('kg.service.indent', 'Origin', readonly=True),
 		'note': fields.text('Remarks',readonly=False, states={'confirmed':[('readonly',False)],'done':[('readonly',False)]}),
 		'state': fields.selection([('draft', 'Draft'), ('confirmed', 'WFA'), ('done', 'Delivered'), ('cancel', 'Cancelled'), ('reject', 'Rejected')], 'Out Status',readonly=True),
@@ -192,6 +192,12 @@ class kg_gate_pass(osv.osv):
 												
 	def confirm_entry(self, cr, uid, ids, context=None):	
 		entry = self.browse(cr,uid,ids[0])
+		if entry.gate_line:
+			pass 
+		else:
+			raise osv.except_osv(_('Warning!'),
+			_('You cannot save Empty Gate pass'))	
+			
 		seq_id = self.pool.get('ir.sequence').search(cr,uid,[('code','=','kg.gate.pass')])
 		seq_rec = self.pool.get('ir.sequence').browse(cr,uid,seq_id[0])
 		cr.execute("""select generatesequenceno(%s,'%s','%s') """%(seq_id[0],seq_rec.code,entry.date))
@@ -203,6 +209,9 @@ class kg_gate_pass(osv.osv):
 							_('You cannot increase qty more than indent qty'))	
 		if entry.out_type == 'g-return':
 			self.write(cr,uid,ids[0],{'state':'confirmed','name':'GR'+seq_name[0],'confirmed_by':uid,
+						'confirm_flag':True,'confirmed_date':time.strftime('%Y-%m-%d %H:%M:%S')})
+		if entry.out_type == 'service':
+			self.write(cr,uid,ids[0],{'state':'confirmed','name':'SR'+seq_name[0],'confirmed_by':uid,
 						'confirm_flag':True,'confirmed_date':time.strftime('%Y-%m-%d %H:%M:%S')})
 		elif entry.out_type == 'replacement':
 			self.write(cr,uid,ids[0],{'state':'confirmed','name':'R'+seq_name[0],'confirmed_by':uid,
