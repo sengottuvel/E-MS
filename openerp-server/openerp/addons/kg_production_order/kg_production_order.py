@@ -12,10 +12,11 @@ today = datetime.now()
 class kg_production_order(osv.osv):
 	
 	_name = "kg.production.order"
+	_order = "creation_date desc"
 	_columns = {
 	
 		'order_lines': fields.one2many('ch.production.order.line', 'header_id', 'Order Lines', readonly=True,required=True),
-		'name': fields.char('No'),
+		'name': fields.char('Order No'),
 		'date':fields.date('Date',readonly=True),
 		'creation_date':fields.datetime('Created Date',readonly=True),
 		'company_id': fields.many2one('res.company', 'Company Name',readonly=True),

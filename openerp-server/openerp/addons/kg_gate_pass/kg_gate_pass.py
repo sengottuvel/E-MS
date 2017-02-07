@@ -49,7 +49,7 @@ class kg_gate_pass(osv.osv):
 		
 		'company_id': fields.many2one('res.company', 'Company Name',readonly=True),		
 		'user_id': fields.many2one('res.users', 'Created By',readonly=True),
-		'creation_date':fields.datetime('Creation Date',readonly=True),
+		'creation_date':fields.datetime('Created Date',readonly=True),
 		'confirmed_by' : fields.many2one('res.users', 'Confirmed By', readonly=True,select=True),
 		'confirmed_date':fields.datetime('Confirmed Date',readonly=True),
 		'reject_date': fields.datetime('Reject Date', readonly=True),

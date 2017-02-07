@@ -172,17 +172,17 @@ class kg_supplier_advance(osv.osv):
 	def entry_confirm(self,cr,uid,ids,context=None):
 		
 		rec = self.browse(cr,uid,ids[0])		
-		cr.execute(""" select sum(advance_amt) from kg_supplier_advance where po_id = %s""" %(rec.po_id.id))
-		data = cr.dictfetchall()
-		cr.execute(""" select advance_percen from purchase_order where id = %s""" %(rec.po_id.id))
-		data1 = cr.dictfetchall()		
-		max_val = (rec.order_value /100 ) *  data1[0]['advance_percen']
-		if rec.advance_amt:
-			if max_val < data[0]['sum']:
-				raise osv.except_osv(_('Advance amount error !!'),
-				_('Please enter a advance amount lessthan the order value !!'))
-		### Sequence Number Generation  ###
 		if rec.order_category == 'purchase':
+			cr.execute(""" select sum(advance_amt) from kg_supplier_advance where po_id = %s""" %(rec.po_id.id))
+			data = cr.dictfetchall()
+			cr.execute(""" select advance_percen from purchase_order where id = %s""" %(rec.po_id.id))
+			data1 = cr.dictfetchall()		
+			max_val = (rec.order_value /100 ) *  data1[0]['advance_percen']
+			if rec.advance_amt:
+				if max_val < data[0]['sum']:
+					raise osv.except_osv(_('Advance amount error !!'),
+					_('Please enter a advance amount lessthan the order value !!'))
+		### Sequence Number Generation  ###
 			if rec.name == '' or rec.name == False:
 				seq_obj_id = self.pool.get('ir.sequence').search(cr,uid,[('code','=','kg.supplier.advance')])
 				seq_rec = self.pool.get('ir.sequence').browse(cr,uid,seq_obj_id[0])

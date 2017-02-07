@@ -114,6 +114,7 @@ class kg_depindent2_poindent(osv.osv):
 				'user_id' : user,
 				'stock_qty': stock_qty,
 				'requisition_id': obj.id,
+				'expected_date': obj.expected_date,
 				
 				}
 				print "vals :", vals

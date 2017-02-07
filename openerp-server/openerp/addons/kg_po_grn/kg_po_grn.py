@@ -738,7 +738,7 @@ class kg_po_grn(osv.osv):
 			raise osv.except_osv(_('DC Date Error!'),_('DC Date Should Be Less Than GRN Date.'))			
 		if grn_entry.sup_invoice_date and grn_entry.sup_invoice_date > grn_entry.grn_date:
 			raise osv.except_osv(_('Supplier Invoice Date Error!'),_('Supplier Invoice Date Should Be Less Than GRN Date.'))				
-		if grn_entry.confirmed_by.id == uid:
+		if grn_entry.confirmed_by.id != uid:
 			raise osv.except_osv(
 					_('Warning'),
 					_('Approve cannot be done by Confirmed user'))
@@ -1148,7 +1148,7 @@ class kg_po_grn(osv.osv):
 								'issue_qty':product_qty,
 								'batch_no':exp.batch_no,
 								'expiry_date':exp.exp_date,
-								'price_unit':price_unit or 0.0,
+								'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
 								'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
 								'po_uom':line.uom_id.id,
 								'grn_type':'material'
@@ -1185,7 +1185,7 @@ class kg_po_grn(osv.osv):
 							'product_qty':product_qty,
 							'pending_qty':product_qty,
 							'issue_qty':product_qty,
-							'price_unit':price_unit or 0.0,
+							'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
 							'po_uom':product_uom,
 							'batch_no':line.po_grn_id.name,
 							'grn_type':'material',
@@ -1227,7 +1227,7 @@ class kg_po_grn(osv.osv):
 								'issue_qty':product_qty,
 								'batch_no':exp.batch_no,
 								'expiry_date':exp.exp_date,
-								'price_unit':price_unit or 0.0,
+								'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
 								'po_uom':line.uom_id.id,
 								'grn_type':'service',
 								'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
@@ -1264,7 +1264,7 @@ class kg_po_grn(osv.osv):
 							'product_qty':product_qty,
 							'pending_qty':product_qty,
 							'issue_qty':product_qty,
-							'price_unit':price_unit or 0.0,
+							'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
 							'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
 							'po_uom':product_uom,
 							'batch_no':line.po_grn_id.name,
@@ -1296,7 +1296,7 @@ class kg_po_grn(osv.osv):
 								'issue_qty':product_qty,
 								'batch_no':exp.batch_no,
 								'expiry_date':exp.exp_date,
-								'price_unit':price_unit or 0.0,
+								'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
 								'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
 								'po_uom':line.uom_id.id,
 								'grn_type':'service'

@@ -77,8 +77,10 @@ class kg_indent2_po(osv.osv):
 				data = cr.dictfetchall()
 				if data:
 					price_val = data[0]['price']
+					to_price = price_val * qty
 				else:
 					price_val = 0.0
+					to_price = 0.0
 				vals = {
 				
 				'order_id': obj.id,
@@ -90,6 +92,7 @@ class kg_indent2_po(osv.osv):
 				'pi_qty':qty,
 				'group_qty':pi_qty,
 				'pi_line_id':po_pi_id,
+				'tot_price' : to_price,
 				'price_unit' : price_val,
 				'group_flag': flag,
 				'name':'PO',

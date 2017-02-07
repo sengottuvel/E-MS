@@ -128,7 +128,7 @@
 		<field name="date_planned" position="replace">
 		</field>
 		<field name="price_unit" position="after">
-		<field name="tot_price"/>
+		<field name="tot_price" invisible='1'/>
 		<field name="kg_discount"/>
 		<field name="kg_discount_per" invisible='1'/>
 		</field>
@@ -332,7 +332,7 @@
 		<field name="date_planned" position="replace">
 		</field>
 		<field name="price_unit" position="after">
-		<field name="tot_price"/>
+		<field name="tot_price" invisible='1'/>
 		<field name="kg_discount"/>
 		<field name="kg_discount_per" invisible='1'/>
 		</field>
