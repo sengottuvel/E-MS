@@ -28,7 +28,7 @@
 				<group string="GRN Details">
 					<group>
 						<field name="name"/>
-						<field name="dc_no"  class="aplhanum_expect"  />
+						<field name="dc_no"  class="aplhanum_expect" attrs="{'required': [('grn_dc','=','only_grn')]}"/>
 						<field name="inward_type" required='1'/>						
 						<field name="invoice_flag" invisible="1"/>
                     </group>

@@ -92,7 +92,7 @@ class kg_purchase_order(osv.osv):
 			res[order.id]['amount_tax']=(round(val,0))
 			res[order.id]['amount_untaxed']=(round(val4,0))
 			res[order.id]['discount']=(round(val3,0))
-			res[order.id]['amount_total']=(round(val5,0)) - (round(val,0))
+			res[order.id]['amount_total']=(round(val5,0)) + (round(val,0))
 		return res
 		
 	def _get_order(self, cr, uid, ids, context=None):
@@ -257,6 +257,7 @@ class kg_purchase_order(osv.osv):
 					_('Warning'),
 					_('PO Date should be less than or equal to current date!'))	
 		return True
+
 		
 	def onchange_frieght_flag(self, cr, uid, ids, term_freight):
 		value = {'frieght_flag':False}
@@ -723,13 +724,16 @@ class kg_purchase_order_line(osv.osv):
 	def onchange_disc_amt(self,cr,uid,ids,kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price):
 		logger.info('[KG OpenERP] Class: kg_purchase_order_line, Method: onchange_disc_amt called...')
 		disc_per = 0.00
-		if kg_discount:
-			disc_per = (kg_discount*100)/tot_price
-			kg_discount = kg_discount + 0.00
-			amt_to_per = (kg_discount / (product_qty * price_unit or 1.0 )) * 100.00
-			return {'value': {'kg_disc_amt_per': amt_to_per,'kg_discount_per': disc_per}}	
+		if tot_price:
+			if kg_discount:
+				disc_per = (kg_discount*100)/tot_price
+				kg_discount = kg_discount + 0.00
+				amt_to_per = (kg_discount / (product_qty * price_unit or 1.0 )) * 100.00
+				return {'value': {'kg_disc_amt_per': amt_to_per,'kg_discount_per': disc_per}}	
+			else:
+				return {'value': {'kg_disc_amt_per': 0.0,'kg_discount_per': disc_per}}	
 		else:
-			return {'value': {'kg_disc_amt_per': 0.0,'kg_discount_per': disc_per}}			
+			raise osv.except_osv(_(' Warning!!'),_("Total amount must be greater than Zreo!") )			
 	
 
 		

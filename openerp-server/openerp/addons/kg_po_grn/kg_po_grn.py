@@ -167,7 +167,7 @@ class kg_po_grn(osv.osv):
 		'grn_type': fields.selection([('from_po','Purchase Order'),('from_so','Service Order'),('from_gp','Gate Pass')], 'GRN From', 
 										required=True, readonly=True, states={'item_load':[('readonly',False)],'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),			  		
 		'grn_dc': fields.selection([('dc_invoice','DC & Invoice'),('only_grn','Only grn')], 'GRN Type', 
-										required=True, readonly=True, states={'item_load':[('readonly',False)],'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),			  										
+										required=False, readonly=True, states={'item_load':[('readonly',False)],'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),			  										
 		'so_id':fields.many2one('kg.service.order', 'SO NO',
 					domain="[('state','=','approved'), '&', ('service_order_line.pending_qty','>','0'), '&', ('grn_flag','=',False), '&', ('partner_id','=',supplier_id),'&',('so_type','=','service')]"), 
 		'so_ids':fields.many2many('kg.service.order', 'multiple_so', 'grn_id', 'so_id', 'SO NO',
@@ -738,7 +738,7 @@ class kg_po_grn(osv.osv):
 			raise osv.except_osv(_('DC Date Error!'),_('DC Date Should Be Less Than GRN Date.'))			
 		if grn_entry.sup_invoice_date and grn_entry.sup_invoice_date > grn_entry.grn_date:
 			raise osv.except_osv(_('Supplier Invoice Date Error!'),_('Supplier Invoice Date Should Be Less Than GRN Date.'))				
-		if grn_entry.confirmed_by.id != uid:
+		if grn_entry.confirmed_by.id == uid:
 			raise osv.except_osv(
 					_('Warning'),
 					_('Approve cannot be done by Confirmed user'))

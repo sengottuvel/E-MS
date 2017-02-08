@@ -103,9 +103,9 @@
 					<field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 					<field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 					<div class="oe_subtotal_footer_separator oe_inline">
-					<label for="amount_total"/>
 					<button name="button_dummy"
-						states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+						states="draft" string="Update" type="object"/>
+					<label for="amount_total"/>
 					</div>
 					<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 				</group>
@@ -199,8 +199,10 @@
 					<field name="grn_qty"/>
 					<field name="price_unit"/>
 					<field name="kg_discount"/>
-					<field name="tot_price"/>
-					<field name="inward_type"/>
+					<field name="tot_price" invisible='1'/>
+					<field name="inward_type" invisible='1'/>
+					<field name="grn_tax_ids"/>
+					<field name="price_subtotal"/>
 					<field name="state" invisible="1"/>
                 </tree> 
             </field>

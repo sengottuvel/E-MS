@@ -242,9 +242,9 @@
 							</div>
 							<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 							<div class="oe_subtotal_footer_separator oe_inline">
-							<label for="bal_amt"/>
+							<label for="bal_amt" invisible='1'/>
 							</div>
-								<field name="bal_amt" nolabel="1" class="oe_subtotal_footer_separator"/>
+								<field name="bal_amt" nolabel="1" class="oe_subtotal_footer_separator" invisible='1'/>
 								<button name="compute_values" string="Compute" type="object" attrs="{'invisible': [('state','in','approved')]}" />
 						</group>
 					</form>
