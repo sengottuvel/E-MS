@@ -135,7 +135,7 @@ class kg_depindent_manual_closing(osv.osv):
 					if pi_line_id:
 						raise osv.except_osv(
 						_('You cannot close this indent'),
-						_('Because it was refered in Purchase Indent  %s.' %(pi_line_id[0].requisition_id.name)))
+						_('Because it was refered in Purchase Indent  Line Id %s.' %(pi_line_id[0])))
 					else:
 					
 						pass

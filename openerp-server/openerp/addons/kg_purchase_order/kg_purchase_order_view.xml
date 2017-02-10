@@ -13,7 +13,7 @@
 			<field name="kg_seq_id" invisible="1"/>
 			<field name="name" readonly="1"/>
 			<field name="division" invisible="1"/>
-			 <field name="po_type" required="1" on_change="onchange_type_flag(po_type)" attrs="{'readonly':[('po_type','=','fromquote')],'readonly':[('state','in',('approved','done','cancel'))]}"/>
+			 <field name="po_type" required="1" on_change="onchange_type_flag(po_type)" attrs="{'readonly': [('po_type','!=',False)]}"/>
 			<field name="partner_id" on_change="onchange_partner_id(partner_id,add_text)" context="{'search_default_supplier':1,'default_supplier':1,'default_customer':0}" />
 		</field>
         <field name="partner_ref" position="replace">

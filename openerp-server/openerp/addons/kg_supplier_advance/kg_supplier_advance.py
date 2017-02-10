@@ -177,11 +177,16 @@ class kg_supplier_advance(osv.osv):
 			data = cr.dictfetchall()
 			cr.execute(""" select advance_percen from purchase_order where id = %s""" %(rec.po_id.id))
 			data1 = cr.dictfetchall()		
-			max_val = (rec.order_value /100 ) *  data1[0]['advance_percen']
-			if rec.advance_amt:
-				if max_val < data[0]['sum']:
-					raise osv.except_osv(_('Advance amount error !!'),
-					_('Please enter a advance amount lessthan the order value !!'))
+			if rec.po_id.bill_type == 'advance' or rec.po_id.payment_mode.term_category == 'advance':
+				max_val = (rec.order_value /100 ) *  data1[0]['advance_percen']
+				if rec.advance_amt:
+					if max_val < data[0]['sum']:
+						raise osv.except_osv(_('Advance amount error !!'),
+						_('Please enter a advance amount lessthan the order value !!'))
+			else:
+				raise osv.except_osv(_('Advance error !!'),
+						_('Cannot pay the advance for the above purchase order !!'))
+				
 		### Sequence Number Generation  ###
 			if rec.name == '' or rec.name == False:
 				seq_obj_id = self.pool.get('ir.sequence').search(cr,uid,[('code','=','kg.supplier.advance')])

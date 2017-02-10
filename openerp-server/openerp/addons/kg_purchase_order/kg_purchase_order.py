@@ -199,7 +199,6 @@ class kg_purchase_order(osv.osv):
 	
 		'bill_type' :'credit',
 		'date_order': lambda * a: time.strftime('%Y-%m-%d'),
-		'po_type': 'frompi',
 		'name': lambda self, cr, uid, c: self.pool.get('purchase.order').browse(cr, uid, id, c).id,
 		'user_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).id,
 		'creation_date':lambda * a: time.strftime('%Y-%m-%d %H:%M:%S'),

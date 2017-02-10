@@ -79,7 +79,6 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 			lo_type = 'in'
 		else:
 			lo_type = 'out'
-		
 		self.cr.execute('''		
 		
 			   SELECT 
@@ -95,8 +94,8 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 			   left JOIN product_category pc ON (pc.id=pt.categ_id)
 
 			   
-			   where sm.product_qty != 0 and sm.state=%s and sm.move_type =%s and sm.date::date <=%s '''+ where_sql + major + product + pro_type +'''
-			   group by sm.product_id,pc.name,pt.categ_id,pt.name''',('done',lo_type,form['date']))
+			   where sm.product_qty != 0 and sm.state=%s and sm.date::date <=%s and (sm.location_dest_id =%s or sm.location_id = %s) '''+ where_sql + major + product + pro_type +'''
+			   group by sm.product_id,pc.name,pt.categ_id,pt.name''',('done',form['date'],location,location))
 				   
 			   
 		data=self.cr.dictfetchall()
@@ -136,7 +135,6 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 					op_qty = in_qty		
 					
 				item['close_qty'] = op_qty
-				print "====================================================",item['close_qty']
 				
 				
 				#####
@@ -169,7 +167,6 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 						
 						
 						value += price
-					print "=============================",	price_list
 					if price_list:
 						item['unit_price'] = sum(price_list) / len(price_list)
 					else:
@@ -203,8 +200,6 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 				cat_rec = self.pool.get('product.category').browse(self.cr,self.uid,item1['cat_id'])
 				category = cat_rec.complete_name
 				cat = category.split("/")
-				print  "------------------------------------>",cat[0]
-				print  "------------------------------------>",cat_rec.complete_name
 				
 				
 				data_renew1.append({'product_name':cat[0],'type':1})

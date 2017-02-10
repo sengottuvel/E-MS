@@ -232,22 +232,50 @@
 			<field name='type'>ir.actions.act_window</field>
 			<field name='res_model'>kg.stock.movement</field>
 			<field name='view_type'>form</field>
-			<field name='view_id' ref='t_tree_v_stock_movement'/>
+            <field name="view_mode">tree,form</field>
 			<field name="domain">[('process_type','=','excess_sub2main')]</field>
 			<field name="context">{'default_process_type':'excess_sub2main'}</field>
 			<field name="search_view_id" ref="t_search_v_stock_movement"/>		
 		</record>
+		
+		<record id="tma_stock_movement_er_main_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="t_tree_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_stock_movement"/>
+        </record>
+        
+        <record id="tma_stock_movement_er_main_action_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="t_form_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_stock_movement"/>
+        </record>
 			
 		<record id='tma_sm_damage_fromsub' model='ir.actions.act_window'>
 			<field name='name'>Demage Return SS</field>
 			<field name='type'>ir.actions.act_window</field>
 			<field name='res_model'>kg.stock.movement</field>
 			<field name='view_type'>form</field>
-			<field name='view_id' ref='t_tree_v_stock_movement'/>
+            <field name="view_mode">tree,form</field>
 			<field name="domain">[('process_type','=','damage_fromsub')]</field>
 			<field name="context">{'default_process_type':'damage_fromsub'}</field>
 			<field name="search_view_id" ref="t_search_v_stock_movement"/>		
 		</record>	
+		
+		<record id="tma_stock_movement_drss_main_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="t_tree_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_sm_damage_fromsub"/>
+        </record>
+        
+        <record id="tma_stock_movement_drss_main_action_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="t_form_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_sm_damage_fromsub"/>
+        </record>
 		
 		<record id='tma_sm_purchase_fromsub' model='ir.actions.act_window'>
 			<field name='name'>Purchase Return SS</field>
@@ -276,11 +304,25 @@
 			<field name='type'>ir.actions.act_window</field>
 			<field name='res_model'>kg.stock.movement</field>
 			<field name='view_type'>form</field>
-			<field name='view_id' ref='t_tree_v_stock_movement'/>
+            <field name="view_mode">tree,form</field>
 			<field name="domain">[('process_type','=','stock_transfer')]</field>
 			<field name="context">{'default_process_type':'stock_transfer'}</field>
 			<field name="search_view_id" ref="t_search_v_stock_movement"/>		
 		</record>	
+		
+		<record id="tma_stock_movement_st_main_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="t_tree_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_sm_stock_transfer"/>
+        </record>
+        
+        <record id="tma_stock_movement_st_main_action_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="t_form_v_stock_movement"/>
+            <field name="act_window_id" ref="tma_sm_stock_transfer"/>
+        </record>
 		
 		<record id="tma_stock_movement_main" model="ir.actions.act_window">
             <field name="name">Damage Return MS</field>
