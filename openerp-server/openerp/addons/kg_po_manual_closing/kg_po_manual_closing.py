@@ -162,6 +162,8 @@ class kg_po_manual_closing(osv.osv):
 		rec =  self.browse(cr,uid,ids[0])
 		for line in rec.line_ids:
 			if line.close_state == 'close':
+				sql = """ update purchase_order_line set pending_qty = 0 where order_id = %s"""%(line.po_id.id)
+				cr.execute(sql)
 				po_line_obj.write(cr,uid,line.po_line_id.id, {'state':'cancel'})
 				po_record = po_obj.browse(cr,uid,line.po_id.id)
 				po_line_record = po_line_obj.browse(cr,uid,line.po_line_id.id)

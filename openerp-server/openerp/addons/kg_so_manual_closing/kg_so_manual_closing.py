@@ -111,8 +111,7 @@ class kg_so_manual_closing(osv.osv):
 			supplier =  supplier+')'
 		else:
 			supplier = ''
-		
-		sql = """ select *,sol.id as id,so.partner_id as partner_id from kg_service_order_line sol join kg_service_order so on (so.id = sol.service_id) where sol.service_flag='t' and sol.pending_qty > 0 and so.date >='"""+rec.trans_date+"""'"""+ supplier +""" """
+		sql = """ select *,sol.id as id,so.partner_id as partner_id from kg_service_order_line sol join kg_service_order so on (so.id = sol.service_id) where sol.service_flag='t' and sol.pending_qty > 0 and so.partner_id = %s"""%(rec.partner_id.id)
 		
 		cr.execute(sql)
 		data = cr.dictfetchall()
@@ -164,6 +163,8 @@ class kg_so_manual_closing(osv.osv):
 		rec =  self.browse(cr,uid,ids[0])
 		for line in rec.line_ids:
 			if line.close_state == 'close':
+				sql = """ update kg_service_order_line set pending_qty = 0 where service_id = %s"""%(line.sos_id.id)
+				cr.execute(sql)
 				so_line_obj.write(cr,uid,line.sos_line_id.id, {'state':'cancel'})
 				so_record = so_obj.browse(cr,uid,line.sos_id.id)
 				so_line_record = so_line_obj.browse(cr,uid,line.sos_line_id.id)
