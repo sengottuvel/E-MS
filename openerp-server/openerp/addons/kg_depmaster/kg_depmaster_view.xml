@@ -60,7 +60,7 @@
 						<field name="app_user_id" attrs="{'invisible':[('state','in',['draft','reject','confirmed'])]}"/>
 						<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft', 'confirmed','reject','approved'])]}" invisible='1'/>
 						<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirmed','approved','cancel'])]}"/>
-						<field name="update_user_id" invisible='1'/>
+						<field name="update_user_id"/>
 					</group>
 					<group>
 						<field name="creation_date"/>
@@ -68,7 +68,7 @@
 						<field name="approve_date" attrs="{'invisible':[('state','in',['draft','reject','confirmed'])]}"/>
 						<field name="cancel_date" attrs="{'invisible':[('state','in',['draft', 'confirmed','reject','approved'])]}" invisible='1'/>
 						<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirmed','approved','cancel'])]}"/>
-						<field name="update_date" invisible='1'/>
+						<field name="update_date"/>
 					</group>
 				</group>
 			</page>

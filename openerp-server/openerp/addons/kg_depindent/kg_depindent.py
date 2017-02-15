@@ -80,6 +80,23 @@ class kg_depindent(osv.osv):
 		
 			}
 	
+	def _check_lineitem(self, cr, uid, ids, context=None):
+		indent = self.browse(cr,uid,ids[0])
+		if indent.dep_indent_line:
+			for line in indent.dep_indent_line:
+				if line.qty <= 0:
+					raise osv.except_osv(
+					_('Warning'),
+					_('Indent Qty should be greater than zero'))
+		if not indent.dep_indent_line:
+			return False
+		return True
+	
+	_constraints = [
+					(_check_lineitem,'Please enter the Item Details',['']),
+					]		
+	
+	
 	def onchange_ticket_date(self, cr, uid, ids, ticket_date):
 		today_date = today.strftime('%Y-%m-%d')
 		bk_date = date.today() - timedelta(days=2)

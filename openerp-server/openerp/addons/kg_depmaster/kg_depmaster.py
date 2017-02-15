@@ -151,10 +151,14 @@ class kg_depmaster(osv.osv):
 		return order
 	
 	def entry_confirm(self,cr,uid,ids,context=None):
-		self.write(cr, uid, ids, {'state': 'confirmed','conf_user_id': uid, 'confirm_date': dt_time})
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')
+		self.write(cr, uid, ids, {'state': 'confirmed','conf_user_id': uid, 'confirm_date': d_time})
 		return True
 
 	def entry_approve(self,cr,uid,ids,context=None):
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')
 		rec = self.browse(cr,uid,ids[0])
 		
 		if rec.item_request == True:
@@ -172,13 +176,16 @@ class kg_depmaster(osv.osv):
 				if con_stock_obj:
 					con_stock_rec = self.pool.get('stock.location').browse(cr,uid,con_stock_obj[0])
 					self.write(cr,uid,ids,{'used_location':con_stock_rec.id})
-		self.write(cr, uid, ids, {'state': 'approved','app_user_id': uid, 'approve_date': dt_time})
+		self.write(cr, uid, ids, {'state': 'approved','app_user_id': uid, 'approve_date': d_time})
 		return True
 
 	def entry_reject(self,cr,uid,ids,context=None):
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')
+		
 		rec = self.browse(cr,uid,ids[0])
 		if rec.remark:
-			self.write(cr, uid, ids, {'state': 'reject','rej_user_id': uid, 'reject_date': dt_time})
+			self.write(cr, uid, ids, {'state': 'reject','rej_user_id': uid, 'reject_date': d_time})
 		else:
 			raise osv.except_osv(_('Rejection remark is must !!'),
 				_('Enter rejection remark in remark field !!'))

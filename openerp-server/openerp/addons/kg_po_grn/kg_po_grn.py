@@ -65,11 +65,11 @@ class kg_po_grn(osv.osv):
 				val4 += line.tot_price
 			tax_am = val + tax_amt
 			val1 = val1 + vals
-			res[order.id]['line_amount_total']= (round(val4,0))
+			res[order.id]['line_amount_total']= ((round(val4,0)) - (round(val3,0)))
 			res[order.id]['other_charge']=(round(po_charges,0))
 			res[order.id]['amount_tax']=(round(tax_am,0))
 			res[order.id]['additional_charge']=(round(vals,0))
-			res[order.id]['amount_untaxed']=((round(val4,0)) - (round(val3,0)))
+			res[order.id]['amount_untaxed']=(round(val4,0))
 			res[order.id]['amount_total']=((round(val1 + res[order.id]['other_charge'] + tax_am,0)) - (round(val3,0)))
 			res[order.id]['discount']=(round(val3,0))   
 		return res
@@ -152,10 +152,16 @@ class kg_po_grn(osv.osv):
 				'po.grn.line': (_get_order, ['price_unit', 'grn_tax_ids', 'kg_discount', 'po_grn_qty'], 10),
 			}, multi="sums", help="The amount without tax", track_visibility='always'),
 	
-		'amount_tax': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Taxes',store=True,
-			 multi="sums", help="The tax amount"),
+		'amount_tax': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Taxes',
+			 store={
+				'kg.po.grn': (lambda self, cr, uid, ids, c={}: ids, ['line_ids'], 10),
+				'po.grn.line': (_get_order, ['price_unit', 'grn_tax_ids', 'kg_discount', 'po_grn_qty'], 10),
+			},multi="sums", help="The tax amount", track_visibility='always'),
 		'amount_total': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Total',
-			store=True,multi="sums",help="The total amount"),
+			store={
+				'kg.po.grn': (lambda self, cr, uid, ids, c={}: ids, ['line_ids'], 10),
+				'po.grn.line': (_get_order, ['price_unit', 'grn_tax_ids', 'kg_discount', 'po_grn_qty'], 10),
+			},multi="sums",help="The total amount", track_visibility='always'),
 		'pricelist_id':fields.many2one('product.pricelist', 'Pricelist'),
 		'currency_id': fields.many2one('res.currency', 'Currency', readonly=True, states={'item_load':[('readonly',False)],'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'po_expenses_type1': fields.selection([('freight','Freight Charges'),('others','Others')], 'Expenses Type1', 
@@ -201,7 +207,10 @@ class kg_po_grn(osv.osv):
 		'additional_charge': fields.function(_amount_all,  string='Additional Charges(+)',
 			 multi="sums", track_visibility='always'),	  
 		'line_amount_total': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Net Amount',
-			store=True, multi="sums",help="The total amount"),		
+			store={
+				'kg.po.grn': (lambda self, cr, uid, ids, c={}: ids, ['line_ids'], 10),
+				'po.grn.line': (_get_order, ['price_unit', 'grn_tax_ids', 'kg_discount', 'po_grn_qty'], 10),
+				}, multi="sums",help="The total amount", track_visibility='always'),		
 			 
 		}
 	
@@ -1558,7 +1567,7 @@ class po_grn_line(osv.osv):
 		for line in self.browse(cr, uid, ids, context=context):
 			amt_to_per = (line.kg_discount / (line.po_grn_qty * line.price_unit or 1.0 )) * 100
 			kg_discount_per = line.kg_discount_per
-			tot_discount_per = amt_to_per + kg_discount_per
+			tot_discount_per = amt_to_per
 			price = line.price_unit * (1 - (tot_discount_per or 0.0) / 100.0)
 			taxes = tax_obj.compute_all(cr, uid, line.grn_tax_ids, price, line.po_grn_qty, line.product_id, line.po_grn_id.supplier_id)
 			cur = line.po_grn_id.supplier_id.property_product_pricelist_purchase.currency_id

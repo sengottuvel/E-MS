@@ -83,7 +83,23 @@ class kg_gate_pass(osv.osv):
 		'gp_type':'from_so',
 	}	
 	
+	def _check_lineitem(self, cr, uid, ids, context=None):
+		indent = self.browse(cr,uid,ids[0])
+		if indent.gate_line:
+			for line in indent.gate_line:
+				if line.qty <= 0:
+					raise osv.except_osv(
+					_('Warning'),
+					_('Gate pass Qty should be greater than zero'))
+		if not indent.gate_line:
+			return False
+		return True
 	
+	_constraints = [
+					(_check_lineitem,'Please enter the Item Details',['']),
+					]
+
+
 	def email_ids(self,cr,uid,ids,context = None):
 		email_from = []
 		email_to = []

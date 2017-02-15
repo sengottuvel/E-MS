@@ -12,7 +12,7 @@ pass_line.product_id as product_id,
 pro_temp.name as product_name,
 pro_uom.name as product_uom,
 pass_line.qty as qty,
-out.name as remarks,
+pass1.out_type as remarks,
 brand.name as brand_name,
 pass_line.ser_no as serial_no
 
@@ -29,7 +29,7 @@ left join product_uom pro_uom on (pro_uom.id = pass_line.uom)
 left join kg_gate_pass pass on (pass.id = pass_line.gate_id)
 
 
-left join kg_outwardmaster out on (out.id = pass.out_type)
+left join kg_gate_pass pass1 on (pass1.id = pass_line.gate_id)
 
 left join kg_brand_master brand on (pass_line.brand_id = brand.id)
 
@@ -273,7 +273,7 @@ where pass.id = $P{pass_id}]]>
 				<reportElement x="0" y="0" width="554" height="802">
 					<printWhenExpression><![CDATA[new Boolean(($F{status}.equals("draft"))) || new Boolean(($F{status}.equals("confirmed")))]]></printWhenExpression>
 				</reportElement>
-				<imageExpression><![CDATA["/home/dinesh/OpenERP_Projects/ellen_machineshop/openerp-server/openerp/addons/kg_gate_pass/report/Draft.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["/OpenERP/E-MS/openerp-server/openerp/addons/kg_gate_pass/report/Draft.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</background>

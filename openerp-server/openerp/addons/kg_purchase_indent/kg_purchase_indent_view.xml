@@ -57,7 +57,7 @@
 		<field name="user_id" invisible="1"/>
 		<field name="kg_store" invisible="1"/>
 		<field name="pi_flag" invisible="1"/>
-		<field name="indent_type" on_change="onchange_indent_type(indent_type,pi_flag)" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+		<field name="indent_type" on_change="onchange_indent_type(indent_type,pi_flag)" attrs="{'readonly': [('indent_type','!=',False)]}"/>
 		<field name="entry_mode" on_change="onchange_entry_mode(entry_mode,pi_flag)" invisible="1"/>
 		</field>
 		

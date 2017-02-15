@@ -40,7 +40,7 @@ class kg_service_indent(osv.osv):
 		'remark': fields.text('Remarks'),
 		'confirmed_by' : fields.many2one('res.users', 'Confirmed By', readonly=True),
 		'approved_by' : fields.many2one('res.users', 'Approved By', readonly=True),
-		'approved_date' : fields.date('Approved Date',readonly=True),
+		'approved_date' : fields.datetime('Approved Date',readonly=True),
 
 #added by dinesh
 		'cancel_remark': fields.text('Cancel Remarks'),
@@ -83,7 +83,7 @@ class kg_service_indent(osv.osv):
 			elif rec.cancel_remark:
 				self.write(cr, uid,ids,{'state' : 'cancel',
 								'cancel_user_id': uid,
-								'cancel_date': time.strftime("%Y-%m-%d"),
+								'cancel_date': time.strftime('%Y-%m-%d %H:%M:%S'),
 								})
 			else:
 				raise osv.except_osv(_('Cancel remark is must !!'),
@@ -96,7 +96,7 @@ class kg_service_indent(osv.osv):
 		if rec.remark:
 			self.write(cr,uid,ids,{'state': 'reject',
 								'rej_user_id': uid,
-								'reject_date': time.strftime("%Y-%m-%d"),
+								'reject_date': time.strftime('%Y-%m-%d %H:%M:%S'),
 							})
 		else:
 			raise osv.except_osv(_('Rejection remark is must !!'),
@@ -131,6 +131,11 @@ class kg_service_indent(osv.osv):
 		self.write(cr,uid,ids,{'state':'draft'})
 		return True
 		
+		
+	def write(self, cr, uid, ids, vals, context=None):		
+		vals.update({'update_date': time.strftime('%Y-%m-%d %H:%M:%S'),'update_user_id':uid})
+		return super(kg_service_indent, self).write(cr, uid, ids, vals, context)		
+		
 	def confirm_indent(self, cr, uid, ids,context=None):
 		obj = self.browse(cr,uid,ids[0])
 		indent_name = ''		
@@ -141,23 +146,23 @@ class kg_service_indent(osv.osv):
 			cr.execute("""select generatesequenceno(%s,'%s','%s') """%(indent_no_id[0],rec.code,obj.date))
 			indent_name = cr.fetchone();
 			self.write(cr,uid,ids,{'name':str(indent_name[0])})
-			self.write(cr, uid, ids, {'state': 'confirm','confirmed_by': uid, 'confirm_date': dt_time})			
+			self.write(cr, uid, ids, {'state': 'confirm','confirmed_by': uid, 'confirm_date': time.strftime('%Y-%m-%d %H:%M:%S')})			
 		return True
 			
 	def approve_indent(self, cr, uid, ids,context=None):
 		obj = self.browse(cr,uid,ids[0])
-		self.write(cr, uid, ids, {'state': 'approved','approved_by': uid, 'approved_date': dt_time})		
+		self.write(cr, uid, ids, {'state': 'approved','approved_by': uid, 'approved_date': time.strftime('%Y-%m-%d %H:%M:%S')})		
 		line_obj = self.pool.get('kg.service.indent.line')
 
 		for line in obj.service_indent_line:
 			line_obj.write(cr,uid,line.id,{'pending_qty' : line.qty, 'issue_pending_qty' : line.qty,'gate_pending_qty':line.qty})
-		self.write(cr,uid,ids,{'state':'approved','approved_by':uid,'approved_date':time.strftime('%Y-%m-%d')})
+		self.write(cr,uid,ids,{'state':'approved','approved_by':uid,'approved_date':time.strftime('%Y-%m-%d %H:%M:%S')})
 		return True
 	
 	def entry_cancel(self,cr,uid,ids,context=None):
 		rec = self.browse(cr,uid,ids[0])
 		if rec.cancel_remark:
-			self.write(cr, uid, ids, {'state': 'cancel','cancel_user_id': uid, 'cancel_date': dt_time})
+			self.write(cr, uid, ids, {'state': 'cancel','cancel_user_id': uid, 'cancel_date': time.strftime('%Y-%m-%d %H:%M:%S')})
 		else:
 			raise osv.except_osv(_('Cancel remark is must !!'),
 				_('Enter the remarks in Cancel remarks field !!'))

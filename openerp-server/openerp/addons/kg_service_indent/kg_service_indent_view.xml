@@ -86,17 +86,17 @@
 					<group>
 						<field name="user_id"/>
 						<field name="confirmed_by" attrs="{'invisible':[('state','in',['draft'])]}"/>
-						<field name="approved_by" attrs="{'invisible':[('state','in',['draft', 'reject','confirmed'])]}"/>
-						<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft', 'confirmed','reject','approved'])]}"/>
-						<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirmed','approved','cancel'])]}"/>
+						<field name="approved_by" attrs="{'invisible':[('state','in',['draft', 'reject','confirm'])]}"/>
+						<field name="cancel_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','reject','approved'])]}"/>
+						<field name="rej_user_id" attrs="{'invisible':[('state','in',['draft', 'confirm','approved','cancel'])]}"/>
 						<field name="update_user_id"/>
 					</group>
 					<group>
 						<field name="creation_date"/>
 						<field name="confirm_date" attrs="{'invisible':[('state','in',['draft'])]}"/>
-						<field name="approved_date" attrs="{'invisible':[('state','in',['draft','reject', 'confirmed'])]}"/>
-						<field name="cancel_date" attrs="{'invisible':[('state','in',['draft', 'confirmed','reject','approved'])]}"/>
-						<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirmed','approved','cancel'])]}"/>
+						<field name="approved_date" attrs="{'invisible':[('state','in',['draft','reject', 'confirm'])]}"/>
+						<field name="cancel_date" attrs="{'invisible':[('state','in',['draft', 'confirm','reject','approved'])]}"/>
+						<field name="reject_date" attrs="{'invisible':[('state','in',['draft', 'confirm','approved','cancel'])]}"/>
 						<field name="update_date"/>
 					</group>
 					</group>

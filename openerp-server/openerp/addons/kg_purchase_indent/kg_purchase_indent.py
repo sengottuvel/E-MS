@@ -63,9 +63,10 @@ class kg_purchase_indent(osv.osv):
 		'created_by': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).id,
 		'active': True,
 		'entry_mode': 'manual',
-		'indent_type': 'direct',
 			
 			}
+			
+
 			
 	def set_to_draft(self, cr, uid, ids,context=None):
 		rec = self.browse(cr, uid,ids[0])
@@ -141,7 +142,7 @@ class kg_purchase_indent(osv.osv):
 		seq_name = cr.fetchone();
 		
 		self.write(cr,uid,ids,{'name':seq_name[0]})
-		self.write(cr,uid,ids,{'state':'in_progress','confirmed_by':uid,'confirmed_date':time.strftime("%Y-%m-%d")})
+		self.write(cr,uid,ids,{'state':'in_progress','confirmed_by':uid,'confirmed_date':time.strftime('%Y-%m-%d %H:%M:%S')})
 		return True
 		   
 	def tender_for_approve(self, cr, uid, ids,kg_seq_id, context=None):

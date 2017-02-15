@@ -43,11 +43,11 @@
                 </group>
                 <group>
 					<group string="Type">
-						<field name="grn_type" />
-						<field name="grn_dc"/>
+						<field name="grn_type" attrs="{'readonly': [('grn_type','!=',False)]}"/>
+						<field name="grn_dc" attrs="{'readonly': [('grn_dc','!=',False)]}"/>
                     </group>
                     <group string="Supplier">
-						<field name="supplier_id" attrs="{'readonly': [('confirm_flag','=',True)]}"/>
+						<field name="supplier_id" attrs="{'readonly': [('supplier_id','!=',False)]}"/>
 						<field name="sup_invoice_no" attrs="{'invisible': [('grn_dc','!=','dc_invoice')],'required': [('grn_dc','=','dc_invoice')]}"/>
 						<field name="sup_invoice_date"  attrs="{'invisible': [('grn_dc','!=','dc_invoice')],'required': [('grn_dc','=','dc_invoice')]}"/>
                     </group>
@@ -56,7 +56,7 @@
                  <group string="PO Details" attrs="{'invisible': [('grn_type','!=','from_po')]}">
 					<group>
 						<field name="po_id" on_change="onchange_po_id(po_id)" invisible="1"/>
-						<field name="po_ids" widget="many2many_tags"/>
+						<field name="po_ids" widget="many2many_tags" attrs="{'readonly': [('confirm_flag','=',True)]}"/>
                     </group>
                     <group>
 						<field name="confirm_flag" invisible="1"/>
@@ -68,7 +68,7 @@
                 <group string="SO Details" attrs="{'invisible': [('grn_type','!=','from_so')]}">
 					<group>
 						<field name="so_id" invisible="1"/>
-						<field name="so_ids" widget="many2many_tags"/>
+						<field name="so_ids" widget="many2many_tags" attrs="{'readonly': [('confirm_flag','=',True)]}"/>
                     </group>
                     <group>
 						<field name="so_date" invisible="1"/>
@@ -77,7 +77,7 @@
                 </group>
                 <group string="Gate Pass Details" attrs="{'invisible': [('grn_type','!=','from_gp')]}">
 					<group>
-						<field name="gp_ids" widget="many2many_tags"/>
+						<field name="gp_ids" widget="many2many_tags" attrs="{'readonly': [('confirm_flag','=',True)]}"/>
                     </group>
                     <group>
 						<field name="gp_date"/>
@@ -92,7 +92,7 @@
 					<page string="Products">
 						<field name="line_ids" nolabel="1" attrs="{'readonly':[('state','=','done')]}"/>
 						<group class="oe_subtotal_footer oe_right">
-							<field name="line_amount_total"/>
+							<field name="line_amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 							<field name="discount"/>
 							<field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
 							<field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -213,7 +213,7 @@
 				  <group string="Product Details">
 					  
 						<group>
-							<field name="product_id" on_change="onchange_product_id(product_id,uom_id)"/>
+							<field name="product_id" on_change="onchange_product_id(product_id,uom_id)" readonly='1'/>
 							<field name="brand_id" attrs="{'readonly': [('billing_type','=','cost')]}"/>      
 							<field name="uom_id" readonly="1"/>
 							<field name="price_type" invisible="1"/>

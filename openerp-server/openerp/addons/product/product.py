@@ -213,17 +213,23 @@ class product_uom(osv.osv):
 	]
 
 	def entry_confirm(self,cr,uid,ids,context=None):
-		self.write(cr, uid, ids, {'dummy_state': 'confirm','confirm_user_id': uid, 'confirm_date': dt_time})
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')	
+		self.write(cr, uid, ids, {'dummy_state': 'confirm','confirm_user_id': uid, 'confirm_date': d_time})
 		return True
 
 	def entry_approve(self,cr,uid,ids,context=None):
-		self.write(cr, uid, ids, {'dummy_state': 'approved','app_user_id': uid, 'approve_date': dt_time})
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')	
+		self.write(cr, uid, ids, {'dummy_state': 'approved','app_user_id': uid, 'approve_date': d_time})
 		return True
 
 	def entry_reject(self,cr,uid,ids,context=None):
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')	
 		rec = self.browse(cr,uid,ids[0])
 		if rec.remark:
-			self.write(cr, uid, ids, {'dummy_state': 'reject','ap_rej_user_id': uid, 'ap_rej_date': dt_time})
+			self.write(cr, uid, ids, {'dummy_state': 'reject','ap_rej_user_id': uid, 'ap_rej_date': d_time})
 		else:
 			raise osv.except_osv(_('Rejection remark is must !!'),
 				_('Enter rejection remark in remark field !!'))
@@ -231,9 +237,11 @@ class product_uom(osv.osv):
 	
 	
 	def entry_cancel(self,cr,uid,ids,context=None):
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')	
 		rec = self.browse(cr,uid,ids[0])
 		if rec.cancel_remark:
-			self.write(cr, uid, ids, {'dummy_state': 'cancel','cancel_user_id': uid, 'cancel_date': dt_time})
+			self.write(cr, uid, ids, {'dummy_state': 'cancel','cancel_user_id': uid, 'cancel_date': d_time})
 		else:
 			raise osv.except_osv(_('Cancel remark is must !!'),
 				_('Enter the remarks in Cancel remarks field !!'))
@@ -437,26 +445,34 @@ class product_category(osv.osv):
 	_order = 'parent_left'
 	
 	def entry_confirm(self,cr,uid,ids,context=None):
-		self.write(cr, uid, ids, {'state': 'confirm','conf_user_id': uid, 'confirm_date': dt_time})
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')
+		self.write(cr, uid, ids, {'state': 'confirm','conf_user_id': uid, 'confirm_date': d_time})
 		return True
 
 	def entry_approve(self,cr,uid,ids,context=None):
-		self.write(cr, uid, ids, {'state': 'approved','app_user_id': uid, 'approve_date': dt_time})
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')
+		self.write(cr, uid, ids, {'state': 'approved','app_user_id': uid, 'approve_date': d_time})
 		return True
 
 	def entry_reject(self,cr,uid,ids,context=None):
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')
 		rec = self.browse(cr,uid,ids[0])
 		if rec.remark:
-			self.write(cr, uid, ids, {'state': 'reject','rej_user_id': uid, 'reject_date': dt_time})
+			self.write(cr, uid, ids, {'state': 'reject','rej_user_id': uid, 'reject_date': d_time})
 		else:
 			raise osv.except_osv(_('Rejection remark is must !!'),
 				_('Enter rejection remark in remark field !!'))
 		return True
 		
 	def entry_cancel(self,cr,uid,ids,context=None):
+		b = datetime.now()		
+		d_time = b.strftime('%m/%d/%Y %H:%M:%S')
 		rec = self.browse(cr,uid,ids[0])
 		if rec.cancel_remark:
-			self.write(cr, uid, ids, {'state': 'cancel','cancel_user_id': uid, 'cancel_date': dt_time})
+			self.write(cr, uid, ids, {'state': 'cancel','cancel_user_id': uid, 'cancel_date': d_time})
 		else:
 			raise osv.except_osv(_('Cancel remark is must !!'),
 				_('Enter the remarks in Cancel remarks field !!'))

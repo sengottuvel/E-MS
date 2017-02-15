@@ -49,6 +49,22 @@ class kg_production_order(osv.osv):
 		
 	}
 	
+	def _check_lineitem(self, cr, uid, ids, context=None):
+		indent = self.browse(cr,uid,ids[0])
+		if indent.order_lines:
+			for line in indent.order_lines:
+				if line.qty <= 0:
+					raise osv.except_osv(
+					_('Warning'),
+					_('Production indent Qty should be greater than zero'))
+		if not indent.order_lines:
+			return False
+		return True
+	
+	_constraints = [
+					(_check_lineitem,'Please enter the Item Details',['']),
+					]	
+	
 	def write(self, cr, uid, ids, vals, context=None):
 		vals.update({'updated_date': time.strftime('%Y-%m-%d %H:%M:%S'),'updated_by':uid})
 		return super(kg_production_order, self).write(cr, uid, ids, vals, context)	
@@ -60,7 +76,7 @@ class kg_production_order(osv.osv):
 			for i in rec.order_lines:
 				lis.append(i.product_id.id)
 			for j in lis:
-				po_sql = """ select * from mrp_bom_line where bom_id = (select id from mrp_bom where product_id = %d and state = 'approved') """%(j)
+				po_sql = """ select * from mrp_bom_line where bom_id = (select id from mrp_bom where product_id = %d and state = 'approved' limit 1) """%(j)
 				cr.execute(po_sql)		
 				po_data = cr.dictfetchall()
 				if po_data:
@@ -87,7 +103,7 @@ class kg_production_order(osv.osv):
 			for i in rec.order_lines:
 				lis.append(i.product_id.id)
 			for j in lis:
-				po_sql = """ select * from mrp_bom_line where bom_id = (select id from mrp_bom where product_id = %d and state = 'approved') """%(j)
+				po_sql = """ select * from mrp_bom_line where bom_id = (select id from mrp_bom where product_id = %d and state = 'approved' limit 1) """%(j)
 				cr.execute(po_sql)		
 				po_data = cr.dictfetchall()
 				if po_data:
