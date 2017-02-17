@@ -29,12 +29,12 @@
                     <field name="pricelist_id" invisible="1"/>                    
                     <field name="name"/>
                     <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
-                    <field name="payment_mode"/>
+                    <field name="payment_mode" attrs="{'readonly': [('payment_mode','!=',False)]}"/>
                     <field name="freight_charges"/>
-                    <field name="so_type" required="1" on_change="onchange_type(so_type,so_flag)" attrs="{'readonly': [('so_reonly_flag', '=', True)]}"/>
+                    <field name="so_type" required="1" on_change="onchange_type(so_type,so_flag)" attrs="{'readonly': [('so_type','!=',False)]}"/>
                     <field name="amc_from" attrs="{'invisible': [('so_type','!=','amc')],'required':[('so_type','=','amc')]}"/>
                     <field name="amc_to" attrs="{'invisible': [('so_type','!=','amc')],'required':[('so_type','=','amc')]}" options="{'datepicker':{'maxDate': null,'minDate':null}}"/>
-                    <field name="gp_id" attrs="{'invisible': [('so_type','!=','service')],'required':[('so_type','=','service')]}"/>
+                    <field name="gp_id" attrs="{'readonly': [('gp_id','!=',False)],'invisible': [('so_type','!=','service')],'required':[('so_type','=','service')]}"/>
 					<field name="delivery_mode"/>
                     <field name="so_bill" invisible="1"/>
                     <field name="so_reonly_flag" invisible="1"/>
@@ -72,7 +72,7 @@
 						<field name="product_uom"/>
 						<field name="product_qty" required = "1" />
 						<field name="price_unit"/>
-						<field name="tot_price"/>
+						<field name="tot_price" invisible='1'/>
 						<field name="kg_discount"/>
 						<field name="kg_discount_per" invisible='1'/>
 						<field name="taxes_id"/>

@@ -10,8 +10,8 @@
 				<field name="arch" type="xml">
 				<form string="SO Amendment Form" version="7.0">
 				<header>
-					<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
 					<button name="approve_amend" type="object" string="Approve" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
 					<button name="entry_draft" type="object" string="Set Draft" states="cancel" class="oe_highlight"/>
 					<button name="confirm_amend" type="object" string="Confirm" states="draft" class="oe_highlight"/>
 					<button name="entry_cancel" type="object" string="Cancel" states="approved" class="oe_highlight" confirm="Are you sure to proceed ?"/>
@@ -122,16 +122,16 @@
 					</notebook>					
 					
 					<group class="oe_subtotal_footer oe_right">
-								<field name="discount"/>
-								<field name="other_charge"/>
-                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+								<field name="discount" invisible='1'/>
+								<field name="other_charge" invisible='1'/>
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" invisible='1'/>
+                                <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}" invisible='1'/>
                                 <div class="oe_subtotal_footer_separator oe_inline">
-                                    <label for="amount_total"/>
+                                    <label for="amount_total" invisible='1'/>
                                     <button name="button_dummy"
-                                        states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                                        states="draft" string="(update)" type="object" class="oe_edit_only oe_link" invisible='1'/>
                                 </div>
-                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" invisible='1' widget="monetary" options="{'currency_field': 'currency_id'}"/>
                             </group>
 				</form>
 			</field>

@@ -81,9 +81,9 @@
 			 <field name="quotation_date" />
 			 <field name="quot_ref_no" class="aplhanum_expect"  />
 			 <field name="delivery_address"/>
-			 <field name="bill_type" required="1"/>
-			 <field name="advance_percen" attrs="{'invisible': [('bill_type','!=','advance')],'required': [('bill_type','=','advance')]}"/>
-			 <field name="payment_mode" />
+			 <field name="bill_type" required="1" attrs="{'readonly': [('bill_type','!=',False)]}"/>
+			 <field name="advance_percen" attrs="{'invisible': [('bill_type','!=','advance')],'required': [('bill_type','=','advance')],'readonly': [('state','!=','draft')]}"/>
+			 <field name="payment_mode" required='1' attrs="{'readonly': [('payment_mode','!=',False)]}"/>
 			 <field name="term_warranty" invisible='1'/>
 			 <field name="revision" invisible="1"/>
 			<field name="grn_flag" invisible="1"/>
@@ -217,7 +217,7 @@
 		<field name="partner_id" context="{'search_default_supplier':1,'default_supplier':1,'default_customer':0}" domain="[('supplier','=',True)]" position="replace">
 			<field name="kg_seq_id" invisible="1"/>
 			<field name="name" readonly="1"/>
-			<field name="division" required="1"/>
+			<field name="division" invisible="1"/>
 			 <field name="po_type" required="1" on_change="onchange_type_flag(po_type)" attrs="{'readonly':[('po_type','=','fromquote')],'readonly':[('state','in',('approved','done','cancel'))]}"/>
 			<field name="partner_id" on_change="onchange_partner_id(partner_id,add_text)" context="{'search_default_supplier':1,'default_supplier':1,'default_customer':0}" />
 		</field>
@@ -227,8 +227,9 @@
 			<field name="term_price" invisible='1'/>
 			<field name="delivery_mode" />
 			<field name="term_freight" on_change="onchange_frieght_flag(term_freight)" invisible='1'/>
-			<field name="insurance"/>
+			<field name="insurance" invisible='1'/>
 			<field name="excise_duty" invisible='1'/>
+			<field name="purpose" required="1"/>
 			<field name="type_flag" invisible="1" />
 			<field name="confirm_flag" invisible="1"/>
 			<field name="approve_flag" invisible="1"/>	
@@ -285,10 +286,10 @@
 			 <field name="quotation_date" />
 			 <field name="quot_ref_no" />
 			 <field name="delivery_address"/>
-			 <field name="bill_type" required="1"/>
-			 <field name="payment_mode"/>
-			 <field name="term_warranty" />
-			 <field name="purpose" required="1"/>
+			 <field name="bill_type" required="1" attrs="{'readonly': [('bill_type','!=',False)]}"/>
+			 <field name="advance_percen" readonly='1' attrs="{'invisible': [('bill_type','!=','advance')],'required': [('bill_type','=','advance')]}"/>
+			 <field name="payment_mode" required='1' attrs="{'readonly': [('payment_mode','!=',False)]}"/>
+			 <field name="term_warranty" invisible='1'/>
 			 <field name="revision" invisible="1"/>
 			<field name="grn_flag" invisible="1"/>
 		</field>

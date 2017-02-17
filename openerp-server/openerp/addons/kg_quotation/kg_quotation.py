@@ -150,10 +150,10 @@ class kg_rfq_vendor_selection(osv.osv):
 				raise osv.except_osv(_('Invalid action !'), _('Please Add Purchase Indent Lines To Generate RFQ'))
 			if not custom.vendor_ids:
 				raise osv.except_osv(_('Invalid action !'), _('Please Add Vendor list '))
-			if custom.name == '/':
-				name = self.pool.get('ir.sequence').get(cr, uid, 'kg.rfq.vendor.selection')
-			else:
-				name = custom.name
+			seq_id = self.pool.get('ir.sequence').search(cr,uid,[('code','=','kg.rfq.vendor.selection')])
+			seq_rec = self.pool.get('ir.sequence').browse(cr,uid,seq_id[0])
+			cr.execute("""select generatesequenceno(%s,'%s','%s') """%(seq_id[0],seq_rec.code,custom.quotation_date))
+			seq_name = cr.fetchone();
 			duplicate_ids = quote_header_obj.search(cr, uid, [('rfq_no_id','=',custom.id)])
 			if duplicate_ids == []:
 				header_vals = {
@@ -177,7 +177,7 @@ class kg_rfq_vendor_selection(osv.osv):
 					for line in vendor_line_ids:
 						vendor_rec = quote_ven_obj.browse(cr, uid, line, context)
 						quote_ven_obj.write(cr, uid, [vendor_rec.id], {'state':'approved'})
-						name_ref = self.pool.get('ir.sequence').get(cr, uid, 'kg.quotation.requisition.line')
+						name_ref = seq_name[0]
 						line_vals = {
 							'header_id': quote_header_id,
 							'user_id': custom.user_id.id,
@@ -221,7 +221,7 @@ class kg_rfq_vendor_selection(osv.osv):
 																
 							}
 							quote_pi_id = quote_pi_obj.create(cr, uid, merge_vals)							
-			self.write(cr, uid, ids, {'state':'approved', 'name':name})
+			self.write(cr, uid, ids, {'state':'approved', 'name':seq_name[0]})
 		return True
 	
 	def write(self, cr, uid, ids, vals, context=None):		
@@ -1086,6 +1086,31 @@ class kg_quotation_entry_header(osv.osv):
 					resultant = cr.dictfetchall()	
 					
 					for items in resultant:
+						max_sql = """ select max(line.price_unit),min(line.price_unit) from purchase_order_line line 
+										left join purchase_order po on (po.id=line.order_id)
+										where po.state = 'approved' and line.product_id=%s """%(items['product_id'])
+						cr.execute(max_sql)		
+						max_data = cr.dictfetchall()
+						recent_sql = """ select line.price_unit from purchase_order_line line 
+										left join purchase_order po on (po.id=line.order_id)
+										where po.state = 'approved' and line.product_id = %s 
+										order by po.date_order desc limit 1 """%(items['product_id'])
+						cr.execute(recent_sql)		
+						recent_data = cr.dictfetchall()
+						
+						if max_data:
+							max_val = max_data[0]['max']
+							#max_val = max_val.values()[0]
+							min_val = max_data[0]['min']
+						else:
+							max_val = 0
+							min_val = 0
+						
+						if recent_data:
+							recent_val = recent_data[0]['price_unit']
+						else:
+							recent_val = 0
+						
 						po_line_vals = {
 							'product_id': items['product_id'],
 							'product_uom_id': items['product_uom_id'],
@@ -1103,6 +1128,9 @@ class kg_quotation_entry_header(osv.osv):
 							'po_type' :'fromquote',
 							'pi_qty': items['pi_qty'],
 							'line_state':'draft',
+							'high_price':max_val,
+							'least_price':min_val,
+							'recent_price':recent_val,
 							'pending_qty': items['pending_qty'],
 							'cancel_flag': False,
 							'line_flag': False,

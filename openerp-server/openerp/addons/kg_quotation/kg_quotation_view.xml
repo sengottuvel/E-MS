@@ -212,7 +212,7 @@
 				<form string="Quotation Entry and Comparison" version="7.0">
 					<group>
 						<group>
-						<field name="rfq_no_id" on_change="onchange_partner_id(rfq_no_id)" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+						<field name="rfq_no_id" on_change="onchange_partner_id(rfq_no_id)" attrs="{'readonly': [('rfq_no_id','!=',False)]}" />
 						<field name="rfq_name" readonly="1"/>
 						<field name="quote_list_flag" invisible="1"/>
 						</group>

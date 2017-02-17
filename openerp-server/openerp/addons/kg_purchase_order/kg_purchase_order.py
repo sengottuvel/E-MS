@@ -197,7 +197,6 @@ class kg_purchase_order(osv.osv):
 	
 	_defaults = {
 	
-		'bill_type' :'credit',
 		'date_order': lambda * a: time.strftime('%Y-%m-%d'),
 		'name': lambda self, cr, uid, c: self.pool.get('purchase.order').browse(cr, uid, id, c).id,
 		'user_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).id,
@@ -300,30 +299,7 @@ class kg_purchase_order(osv.osv):
 		for i in obj.order_line:
 			val = []
 			val_id = []
-			line_id = i.id
-			cr.execute(""" select id from ch_invoice_line where approved_status = 't' and product_id = %s """ %(i.product_id.id))
-			data1 = cr.dictfetchall()
-			if data1:
-				for k in data1:
-					val_id.append(k["id"])
-				if val_id:
-					cr.execute(""" select price_unit from ch_invoice_line where approved_status = 't' and id = %s """ %(max(val_id)))
-					data2 = cr.dictfetchall()			
-					if data2:
-						for m in data2:
-							recent_price =  m['price_unit']
-					else: 
-						recent_price = 0.00
-				else: 
-					recent_price = 0.00
-				cr.execute(""" select price_unit from ch_invoice_line where approved_status = 't' and product_id = %s """ %(i.product_id.id))
-				data = cr.dictfetchall()
-				for j in data:
-					val.append(j["price_unit"])
-				if val:
-					cr.execute(""" update purchase_order_line set least_price = %d , high_price = %d , recent_price = %d where id = %s """ %(int(min(val)),int(max(val)),recent_price,i.id))			
-			else:
-				cr.execute(""" update purchase_order_line set least_price = %d , high_price = %d , recent_price = %d where id = %s """ %(0.00,0.00,0.00,i.id))							
+			line_id = i.id						
 		approval = ''
 		user_obj = self.pool.get('res.users').search(cr,uid,[('id','=',uid)])
 		if user_obj:

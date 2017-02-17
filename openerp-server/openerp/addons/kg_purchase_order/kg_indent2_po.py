@@ -81,6 +81,32 @@ class kg_indent2_po(osv.osv):
 				else:
 					price_val = 0.0
 					to_price = 0.0
+					
+				max_sql = """ select max(line.price_unit),min(line.price_unit) from purchase_order_line line 
+								left join purchase_order po on (po.id=line.order_id)
+								where po.state = 'approved' and line.product_id=%s """%(prod_browse.id)
+				cr.execute(max_sql)		
+				max_data = cr.dictfetchall()
+				recent_sql = """ select line.price_unit from purchase_order_line line 
+								left join purchase_order po on (po.id=line.order_id)
+								where po.state = 'approved' and line.product_id = %s 
+								order by po.date_order desc limit 1 """%(prod_browse.id)
+				cr.execute(recent_sql)		
+				recent_data = cr.dictfetchall()
+				
+				if max_data:
+					max_val = max_data[0]['max']
+					#max_val = max_val.values()[0]
+					min_val = max_data[0]['min']
+				else:
+					max_val = 0
+					min_val = 0
+				
+				if recent_data:
+					recent_val = recent_data[0]['price_unit']
+				else:
+					recent_val = 0
+										
 				vals = {
 				
 				'order_id': obj.id,
@@ -96,6 +122,9 @@ class kg_indent2_po(osv.osv):
 				'price_unit' : price_val,
 				'group_flag': flag,
 				'name':'PO',
+				'high_price':max_val,
+				'least_price':min_val,
+				'recent_price':recent_val,
 				'line_flag':True,
 				'uom_conversation_factor':prod_browse.uom_conversation_factor,
 				

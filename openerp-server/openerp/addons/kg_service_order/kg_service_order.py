@@ -67,7 +67,7 @@ class kg_service_order(osv.osv):
 				val3 += line.kg_discount
 				val4 += line.tot_price
 				val5 += line.price_subtotal	
-			res[order.id]['line_amount_total']= (round(val4,0))
+			res[order.id]['line_amount_total']= (round(val5,0))
 			res[order.id]['other_charge']=(round(other_charges_amt,0))
 			res[order.id]['discount']=(round(val3,0))
 			res[order.id]['amount_tax']=(round(val,0))

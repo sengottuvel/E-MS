@@ -17,7 +17,7 @@
 					<group>
 						<group>
 							<field name="name"/>
-							<field name="type" required="1"/>
+							<field name="type" required="1" attrs="{'readonly': [('type','!=',False)]}"/>
 							<field name="grn_type" required="1" attrs="{'readonly': [('load_items_flag','=',True)]}"/>
 							<field name="conf_user_id" attrs="{'invisible': [('confirm_flag','=',False)]}"/>
 							<field name="app_user_id" attrs="{'invisible': [('approve_flag','=',False)]}"/>
@@ -36,7 +36,7 @@
 					
 					<group string = "Supplier Information">
 						<group>
-							<field name="supplier_id"  on_change="onchange_supplier_id(supplier_id)" required="1"/>
+							<field name="supplier_id"  on_change="onchange_supplier_id(supplier_id)" required="1" attrs="{'readonly': [('supplier_id','!=',False)]}"/>
 							<field name="sup_invoice_no" required="1"/>
 							<field name="payment_id"/>
 							<field name="po_so_name"/>
