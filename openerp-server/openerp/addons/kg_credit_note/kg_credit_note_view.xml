@@ -10,7 +10,7 @@
 			<form string='Credit Note' version='7.0' >					
 					<header>
 						<button name="entry_approve" type="object" string="Approve" state="approved" attrs="{'invisible':[('state','in',('draft','approved','reject'))]}" class="oe_highlight"  confirm="Are you sure to proceed ?"/>				
-						<button name="entry_reject" type="object" string="Cancel" state="confirm" attrs="{'invisible':[('state','in',('reject','confirm','draft'))]}" class="oe_highlight"  confirm="Are you sure to proceed ?"/>
+						<button name="entry_reject" type="object" string="Cancel" state="confirm" invisible='1' attrs="{'invisible':[('state','in',('reject','confirm','draft'))]}" class="oe_highlight"  confirm="Are you sure to proceed ?"/>
 						<button name="entry_confirm" type="object" string="Confirm" state="draft" attrs="{'invisible':[('state','in',('reject','confirm','approved'))]}" class="oe_highlight"/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,reject" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","reject":"red"}' readonly="1"/>
 					</header>				

@@ -11,7 +11,7 @@
 				<header>
 					<button name="entry_approve" type="object" string="Approve" states="confirmed" class="oe_highlight" confirm="Are you sure to proceed ?"/>
 					<button name="entry_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
-					<button name="entry_cancel" type="object" string="Cancel" states="approved" class="oe_highlight"/>
+					<button name="entry_cancel" type="object" string="Cancel" states="approved" class="oe_highlight" invisible='1'/>
 					<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirmed,cancel" statusbar_colors='{"draft":"blue","approved":"blue","confirmed":"red","cancel":"red","reject":"red"}' readonly="1"/>
 				</header>
 					<group>
@@ -90,7 +90,7 @@
 											<field name="order_no" readonly="1"/>
 											<field name="product_id" readonly="1"/>
 											<field name="qty" readonly="1"/>
-											<field name="rec_qty" on_change="onchange_qty(rec_qty,price_unit)"/>
+											<field name="rec_qty" on_change="onchange_qty(rec_qty,price_unit)" readonly='1'/>
 											<field name="uom_id" readonly="1"/>
 											<field name="price_unit"/>
 											<field name="total_amt" readonly="1" on_change="onchange_price(total_amt,kg_discount_per)"/>
@@ -141,7 +141,7 @@
 											<field name="order_no" readonly="1"/>
 											<field name="product_id" readonly="1"/>
 											<field name="qty" readonly="1"/>
-											<field name="rec_qty" on_change="onchange_qty(rec_qty,price_unit)"/>
+											<field name="rec_qty" on_change="onchange_qty(rec_qty,price_unit)" readonly='1'/>
 											<field name="uom_id" readonly="1"/>
 											<field name="price_unit"/>
 											<field name="total_amt" readonly="1" on_change="onchange_price(total_amt,kg_discount_per)"/>

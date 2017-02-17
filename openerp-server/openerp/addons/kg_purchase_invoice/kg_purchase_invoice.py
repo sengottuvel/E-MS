@@ -121,7 +121,7 @@ class kg_purchase_invoice(osv.osv):
 		'invoice_date':fields.date('Invoice Date',readonly=True,required=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'type': fields.selection([('from_po', 'Product'), ('from_so', 'Service'),('from_gp','Gate Pass')], 'Product/Service',readonly=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'purpose': fields.selection([('consu', 'Consumables'), ('project', 'Project'), ('asset', 'Asset')], 'Purpose',readonly=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
-		'grn_type': fields.selection([('from_po_grn', 'PO/SO GRN'), ('from_general_grn', 'General GRN'), ('others', 'Others')], 'GRN Type',readonly=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
+		'grn_type': fields.selection([('from_po_grn', 'PO/SO GRN'), ('from_general_grn', 'General GRN')], 'GRN Type',readonly=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'state': fields.selection([('draft','Draft'),('confirmed','WFA'),('approved','Approved'),
 				('reject','Rejected'),('cancel','Cancelled')],'Status', readonly=True,track_visibility='onchange',select=True),	
 		'his_state':fields.selection([('pending', 'Pending'), ('paid', 'Paid')],'Payment Status'),
@@ -214,7 +214,7 @@ class kg_purchase_invoice(osv.osv):
 				'ch.invoice.line': (_get_order, ['price_unit', 'invoice_tax_ids', 'kg_discount', 'rec_qty'], 10),
 			}, multi="sums", help="The tax amount"),
 		'amount_total': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Total',
-			store=True,multi="sums",help="The total amount"),
+			multi="sums",help="The total amount"),
 				
 		'round_off_amt': fields.float('Round off(+/-)',readonly=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'net_amt': fields.float('Net Amount',readonly=True),
@@ -242,7 +242,7 @@ class kg_purchase_invoice(osv.osv):
 		'supplier_advance_line_ids':fields.one2many('kg.supplier.advance.invoice.line','invoice_header_id','Supplier Advance Line Id',readonly=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'supplier_advance_line_ids_a':fields.one2many('kg.supplier.advance.invoice.line','invoice_header_id','Supplier Advance Line Id',readonly=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'line_amount_total': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Net Amount',
-			store=True, multi="sums",help="The total amount"),		
+			 multi="sums",help="The total amount"),		
 		
 		
 	
@@ -542,40 +542,7 @@ class kg_purchase_invoice(osv.osv):
 							'discount': grn_line_record.kg_discount,
 							'kg_discount_per': grn_line_record.kg_discount_per,
 							'invoice_tax_ids': [(6, 0, [x.id for x in grn_line_record.grn_tax_ids])],
-							})
-		if invoice_rec.grn_type == 'others':
-			self.write(cr, uid, ids[0], {'load_items_flag' : True})
-			cr.execute(""" select service_id from service_invoice_grn_ids where invoice_id = %s """ %(invoice_rec.id))
-			service_grn_data = cr.dictfetchall()
-			
-			for item in service_grn_data:
-				service_id = item['service_id']
-				service_record = service_grn_obj.browse(cr, uid, service_id)
-				self.write(cr, uid, ids[0], {'payment_type' : service_record.payment_type})
-				cr.execute(""" select id from kg_service_invoice_line where service_id = %s order by id """ %(service_id))
-				service_line_data = cr.dictfetchall()
-				for line_item in service_line_data:
-					
-					service_line_record = service_grn_line_obj.browse(cr, uid, line_item['id'])
-					invoice_line_obj.create(cr, uid, {
-							'header_id': invoice_rec.id,
-							'order_no': service_record.service_order_id.name or '',
-							'grn_no': '',
-							'soi_id': service_record.id or False,
-							'so_id': service_record.service_order_id.id or False,
-							'soi_line_id': service_line_record.id or False,
-							'dc_no': '',
-							'product_id': service_line_record.product_id.id,
-							'qty':service_line_record.product_qty,
-							'rec_qty':service_line_record.product_qty,
-							'uom_id': service_line_record.product_uom.id,
-							'price_unit': service_line_record.price_unit,
-							'total_amt':service_line_record.product_qty * service_line_record.price_unit,
-							'discount': service_line_record.kg_discount,
-							'kg_discount_per': service_line_record.kg_discount_per,
-							'invoice_tax_ids': [(6, 0, [x.id for x in service_line_record.taxes_id])],
-							})
-			
+							})			
 		return True
 		
 	

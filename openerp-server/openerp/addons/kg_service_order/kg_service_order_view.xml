@@ -17,7 +17,7 @@
 				<button name="draft_order" states="cancel" string="Draft" type="object" class="oe_highlight"/>
                 <button name="confirm_order" states="draft" string="Confirm" type="object" />
                 <button name="approve_order" states="confirm" string="Approve" type="object" confirm="Are you sure to proceed ?"/>
-                <button name="cancel_order" states="approved" string="Cancel" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+                <button name="cancel_order" states="approved" string="Cancel" type="object" class="oe_highlight" confirm="Are you sure to proceed ?" invisible='1'/>
                 <button name="reject_order" states="confirm" string="Reject" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
                 <button name="so_register_scheduler" states="approved" string="SO Register" type="object"  invisible="1"/>
 				<button name="kg_email_attachment" states="approved" string="Send by Mail" type="object" class="oe_highlight" invisible="1"/>

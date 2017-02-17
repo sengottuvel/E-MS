@@ -16,7 +16,7 @@
 			<header>
                 <button name="approve_amend" states="confirm" string="Approve" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
                 <button name="confirm_amend" states="draft" string="Confirm" type="object" class="oe_highlight"/>
-                <button name="cancel_amend" states="approved" string="Cancel" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+                <button name="cancel_amend" states="approved" string="Cancel" type="object" class="oe_highlight" confirm="Are you sure to proceed ?" invisible='1'/>
                 <button name="make_amend" string="Load PO Data" type="object" class="oe_highlight"
 							attrs = "{'invisible':[('amend_flag','=',True)]}"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,confirm,approved,cancel" statusbar_colors='{"draft":"blue"}'/>

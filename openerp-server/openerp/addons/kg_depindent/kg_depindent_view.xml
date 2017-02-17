@@ -17,8 +17,8 @@
                 <button name="confirm_indent" states="draft" string="Confirm" type="object" class="oe_highlight"/>
                 <button name="approve_indent" states="confirm" string="Approve" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
                 <button name="reject_indent" states="confirm" string="Reject" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
-                <button name="cancel_indent" states="approved" string="Cancel" type="object" class="oe_highlight" confirm="Are you sure to proceed ?"/>
-                <button name="set_to_draft" states="cancel" string="Set To Draft" type="object" class="oe_highlight"/>
+                <button name="cancel_indent" states="approved" string="Cancel" type="object" class="oe_highlight" confirm="Are you sure to proceed ?" invisible='1'/>
+                <button name="set_to_draft" states="cancel" string="Set To Draft" type="object" class="oe_highlight" invisible='1'/>
 				<field name="state" widget="statusbar" statusbar_visible="draft,approved,confirm,cancel,rejected" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","rejected":"red"}' readonly="1"/>
 			</header>
 			   <sheet>

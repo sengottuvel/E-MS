@@ -15,7 +15,7 @@
 				<header>
 					<button name="entry_confirm" string="Confirm" type="object" states="confirmed" class="oe_highlight"/>
 					<button name="action_process" states="approve" string="Issue to Substore" type="object" class="oe_highlight"/>
-					<button name="entry_cancel" states="done" string="Cancel" type="object" class="oe_highlight"/>
+					<button name="entry_cancel" states="done" string="Cancel" type="object" class="oe_highlight" invisible='1'/>
 					<button name="entry_reject" states="approve" string="Reject" type="object" class="oe_highlight"/>
 					<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,approve,done,reject" statusbar_colors='{"draft":"red","confirmed":"red","done":"blue"}'/>
 				</header>
@@ -24,8 +24,8 @@
 						<group>
 							<field name="name"/>
 							<field name="user_id" invisible="1"/>
-							<field name="department_id"/>
-							<field name="dep_issue_type" on_change = "onchange_direct_issue(dep_issue_type,products_flag)"/>
+							<field name="department_id" attrs="{'readonly': [('department_id','!=',False)]}"/>
+							<field name="dep_issue_type" on_change = "onchange_direct_issue(dep_issue_type,products_flag)" attrs="{'readonly': [('dep_issue_type','!=',False)]}"/>
 							<field name="confirm_flag" invisible="1"/>
 							<field name="products_flag" invisible="1"/>
 							<field name="project" invisible="1"/>

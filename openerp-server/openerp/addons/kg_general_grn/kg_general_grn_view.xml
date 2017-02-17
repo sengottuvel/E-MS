@@ -16,7 +16,7 @@
 				<header>
 					<button name="entry_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" confirm="Are you sure to proceed ?"/>
 					<button name="entry_approve" string="Approve" type="object" states="confirmed" class="oe_highlight" confirm="Are you sure to proceed ?"/>
-					<button name="entry_cancel" string="Cancel" type="object" states="done" class="oe_highlight"/>
+					<button name="entry_cancel" string="Cancel" type="object" states="done" class="oe_highlight" invisible='1'/>
 					<button name="entry_reject" string="Reject" type="object" states="confirmed" class="oe_highlight"/>
 					<field name="state" widget="statusbar" statusbar_visible="draft,done,confirmed,cancel,reject" statusbar_colors='{"draft":"blue","done":"blue","confirmed":"red","cancel":"red","reject":"red"}' readonly="1"/>
 				</header>

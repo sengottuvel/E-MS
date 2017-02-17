@@ -1135,6 +1135,7 @@ class kg_quotation_entry_header(osv.osv):
 							'cancel_flag': False,
 							'line_flag': False,
 							'product_qty': items['product_qty'],
+							'tot_price': items['price_unit'] * items['product_qty']
 						}
 						po_line_id = po_lin_obj.create(cr, uid, po_line_vals)						
 						cr.execute('insert into kg_poindent_po_line(po_order_id,piline_id) values(%s,%s)', (po_id,items['pi_line_id']))	

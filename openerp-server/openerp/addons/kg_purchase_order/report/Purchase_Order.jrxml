@@ -552,7 +552,7 @@ where po.id = $P{po_id}]]>
 				<reportElement x="-1" y="0" width="554" height="802">
 					<printWhenExpression><![CDATA[(new Boolean(($F{status}.equals("draft"))) || new Boolean(($F{status}.equals("sent"))) || new Boolean(($F{status}.equals("confirmed"))))]]></printWhenExpression>
 				</reportElement>
-				<imageExpression><![CDATA["/home/dinesh/OpenERP_Projects/ellen_machineshop/openerp-server/openerp/addons/kg_purchase_order/report/Draft.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["/OpenERP/E-MS/openerp-server/openerp/addons/kg_purchase_order/report/Draft.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</background>
@@ -672,7 +672,7 @@ where po.id = $P{po_id}]]>
 			</staticText>
 			<image>
 				<reportElement x="9" y="14" width="77" height="55"/>
-				<imageExpression><![CDATA["/home/dinesh/OpenERP_Projects/ellen_machineshop/openerp-server/openerp/addons/web/static/src/img/ellen_logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["/OpenERP/E-MS/openerp-server/openerp/addons/web/static/src/img/ellen_logo.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>

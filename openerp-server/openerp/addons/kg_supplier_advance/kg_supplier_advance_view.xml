@@ -11,7 +11,7 @@
 				<form string="Supplier Advance" version="7.0">
 					<header>
 						<button name="entry_confirm" type="object" string="Confirm" states="draft" class="oe_highlight" confirm="Are you sure to proceed ?"/>
-						<button name="entry_cancel" type="object" string="Cancel" states="confirmed" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+						<button name="entry_cancel" type="object" string="Cancel" states="confirmed" class="oe_highlight" confirm="Are you sure to proceed ?" invisible='1'/>
 						<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancel" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>
 					</header>
 						<group>

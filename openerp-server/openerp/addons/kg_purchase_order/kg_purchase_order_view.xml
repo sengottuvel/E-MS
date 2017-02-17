@@ -64,7 +64,7 @@
 		<button name="purchase_confirm" states="draft" string="Confirm Order" position="replace">
 			<button name="purchase_confirm" states="confirmed" string="Approve" confirm="Are you sure to proceed ?" />
 			<button name="entry_reject" string="Reject" confirm="Are you sure to proceed ?" type="object" states="confirmed" />
-			<button name="action_cancel" string="Cancel" confirm="Are you sure to proceed ?" type="object" states="approved"/>
+			<button name="action_cancel" string="Cancel" confirm="Are you sure to proceed ?" type="object" states="approved" invisible='1'/>
 			<button name="action_set_to_draft" string="Set To Draft" type="object" states="cancel"/>
 		</button>
 		<button name="purchase_confirm" states="confirmed" string="Approve" position="after">
@@ -269,7 +269,7 @@
 		<button name="purchase_confirm" states="draft" string="Confirm Order" position="replace">
 			<button name="purchase_confirm" states="confirmed" string="Approve" confirm="Are you sure to proceed ?" />
 			<button name="entry_reject" string="Reject" confirm="Are you sure to proceed ?" type="object" states="confirmed" />
-			<button name="action_cancel" string="Cancel" confirm="Are you sure to proceed ?" type="object" states="approved"/>
+			<button name="action_cancel" string="Cancel" confirm="Are you sure to proceed ?" type="object" states="approved" invisible='1'/>
 			<button name="action_set_to_draft" string="Set To Draft" type="object" states="cancel"/>
 		</button>
 		<button name="purchase_confirm" states="confirmed" string="Approve" position="after">

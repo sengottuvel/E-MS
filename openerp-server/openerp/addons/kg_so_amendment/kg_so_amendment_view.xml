@@ -14,7 +14,7 @@
 					<button name="entry_reject" type="object" string="Reject" states="confirm" class="oe_highlight" confirm="Are you sure to proceed ?"/>
 					<button name="entry_draft" type="object" string="Set Draft" states="cancel" class="oe_highlight"/>
 					<button name="confirm_amend" type="object" string="Confirm" states="draft" class="oe_highlight"/>
-					<button name="entry_cancel" type="object" string="Cancel" states="approved" class="oe_highlight" confirm="Are you sure to proceed ?"/>
+					<button name="entry_cancel" type="object" string="Cancel" states="approved" class="oe_highlight" confirm="Are you sure to proceed ?" invisible='1'/>
 					<button name="make_amend" string="Load SO Data" type="object" states="amend" class="oe_highlight"/>
 					<field name="state" widget="statusbar" statusbar_visible="draft,confirm,approved,reject,cancel" statusbar_colors='{"draft":"blue","approved":"blue","confirm":"red","cancel":"red","reject":"red"}' readonly="1"/>
 				</header>		
