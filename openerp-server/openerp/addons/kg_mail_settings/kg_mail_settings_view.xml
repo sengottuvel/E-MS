@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<record id="kg_mail_settings_form_view" model="ir.ui.view">       
+			<field name="name">HRM Mail Settings</field>
+			<field name="model">kg.mail.settings</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="general_mail_settings" version="7.0">
+					<header>
+						<button name="confirm_entry" states="draft" string="Confirm" type="object" class="oe_highlight"/>
+						<button name="approve_entry" states="confirm" string="Approve" type="object" class="oe_highlight"/>
+					</header>
+					<sheet>				
+						<group>
+							<group>
+								<field name="creation_time" readonly="1"/>
+								<field name="sch_type"/>
+								<field name="doc_name" attrs="{'invisible': [('sch_type','=','scheduler')], 'required': [('sch_type','=','transaction')]}"/>
+								<field name="sch_name" attrs="{'invisible': [('sch_type','=','transaction')], 'required': [('sch_type','=','scheduler')]}"/>
+								<field name="active"/>
+								<field name="state" invisible="1"/>
+							</group>
+							<group>
+								<field name="created_by" required="1"/>
+								<field name="sch_interval" attrs="{'invisible': [('sch_type','=','transaction')], 'required': [('sch_type','=','scheduler')]}"/>
+								<field name="subject" attrs="{'invisible': [('sch_type','=','transaction')], 'required': [('sch_type','=','scheduler')]}"/>
+								<field name="name"/>
+								<field name="expiry_date" attrs="{'invisible':[('active','==',True)]}"/>
+							</group>
+							<field name="line_ids" colspan="4" nolabel="1">
+								<tree string="email settings" editable="bottom" >
+									<field name="mail_id" required="1"/>
+									<field name="to_address"/>
+									<field name="cc_address"/>									
+								</tree>
+							</field>
+						</group>
+					</sheet>
+				</form>
+			</field>					
+		</record>
+		<record id="kg_mail_settings_tree_view" model="ir.ui.view">
+			<field name="name">Mail Settings</field>
+			<field name="model">kg.mail.settings</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Mail Settings">
+					<field name="created_by"/>
+					<field name="doc_name"/>
+					<field name="sch_type"/>
+					<field name="subject"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_mail_settings">
+			<field name="name">Mail Settings</field>
+			<field name="res_model">kg.mail.settings</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_mail_settings_tree_view"/>
+		</record>
+		
+		<menuitem id="kg_mail_setting_menu" name= "Mail Setting" sequence="0" />
+		<menuitem id="kg_mail_setting_submenu" name= "Mail Setting" sequence="0" parent="kg_mail_setting_menu" />
+		<menuitem id="kg_mail_setting_actionmenu" name= "Mail Setting" sequence="0" parent="kg_mail_setting_submenu" action="action_mail_settings"/>
+	
+	</data>
+</openerp>
