@@ -552,6 +552,9 @@ class kg_purchase_invoice(osv.osv):
 		
 	def entry_confirm(self, cr, uid, ids,context=None):
 		invoice_rec = self.browse(cr,uid,ids[0])
+		a = datetime.now()
+		today_date = a.strftime('%m/%d/%Y %H:%M:%S')		
+
 		### Credit Note Checking ###
 		credit_amt = 0
 
@@ -565,7 +568,6 @@ class kg_purchase_invoice(osv.osv):
 
 		### Checking Advance date ###
 		
-		today_date = today.strftime('%Y-%m-%d')
 		
 		if invoice_rec.invoice_date > today_date:
 			raise osv.except_osv(

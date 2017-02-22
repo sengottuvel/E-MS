@@ -120,7 +120,7 @@
                 <sheet>
                         <group>
 							<group>
-								<field name="name" class="aplhanum_expect" default_focus="1" placeholder="Name" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
+								<field name="name" default_focus="1" placeholder="Name" attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>
 							</group>
 							<group>
 								<field name="code" class="aplhanum_expect" placeholder="Code" required='1' attrs="{'readonly':[('sup_state','in',('approved','reject','cancel'))]}"/>								
