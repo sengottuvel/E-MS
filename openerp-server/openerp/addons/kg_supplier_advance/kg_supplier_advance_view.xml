@@ -18,14 +18,14 @@
 							<group>
 								<field name="name"/>
 								<field name="supplier_id" required="1" on_change="onchange_supplier_id(supplier_id)" attrs="{'readonly': [('state','in',['confirmed'])]}" />
-								<field name="po_id" on_change="onchange_order_value(po_id,so_id)" attrs="{'invisible': [('order_category','!=','purchase')],'readonly': [('state','in',['confirmed'])],'required': [('order_category','=','purchase')]}" />
-								<field name="so_id" on_change="onchange_order_value(po_id,so_id)" attrs="{'invisible': [('order_category','!=','service')],'readonly': [('state','in',['confirmed'])],'required': [('order_category','=','service')]}"/>
+								<field name="po_id" on_change="onchange_order_value(po_id,so_id)" attrs="{'invisible': [('order_category','!=','purchase')],'readonly': [('po_id','!=',False)],'required': [('order_category','=','purchase')]}" />
+								<field name="so_id" on_change="onchange_order_value(po_id,so_id)" attrs="{'invisible': [('order_category','!=','service')],'readonly': [('so_id','!=',False)],'required': [('order_category','=','service')]}"/>
 								<field name="order_value" readonly="1"/>
 								<field name="balance_amt" readonly="1"/>								
 							</group>											
 							<group>
 								<field name="entry_date" attrs="{'readonly': [('state','in',['confirmed'])]}"/>
-								<field name="order_category" required="1" attrs="{'readonly': [('state','in',['confirmed'])]}"/>
+								<field name="order_category" required="1" attrs="{'readonly': [('order_category','!=',False)]}"/>
 								<field name="advance_amt" required="1" attrs="{'readonly': [('state','in',['confirmed'])]}"/>
 								<field name="adjusted_amt" readonly="1"/>
 								<field name="order_no" invisible="1"/>								

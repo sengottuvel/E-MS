@@ -372,6 +372,8 @@ class kg_general_grn(osv.osv):
 					elif line.uom_id.id == line.product_id.uom_id.id:
 						product_uom = line.product_id.uom_id.id
 						product_qty = exp.product_qty
+						if product_qty <= 0:
+							raise osv.except_osv(_('Check Expiry Quantity !!'), _('Expiry product quantity must be greater than Zero !!!'))
 						price_unit = line.price_subtotal / product_qty
 					if grn_entry.grn_line[0].product_id.stockable == 'yes':															
 						lot_obj.create(cr,uid,
