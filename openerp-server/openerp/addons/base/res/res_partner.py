@@ -474,14 +474,14 @@ class res_partner(osv.osv, format_address):
 	
 	_constraints = [
 		(osv.osv._check_recursion, 'You cannot create recursive Partner hierarchies.', ['parent_id']),
-		#~ (_name_validate, 'Name must be unique.Please enter a valid Name in Name field!!', ['name']),
-		#~ (_validate_email, 'Enter a valid Email in the Email Field!!', ['email']),
-		#~ (_validate_phone, 'Enter a correct Mobile Number in Mobile Number Field!!', ['mobile']),
-		#~ (_check_phone, 'Enter a correct Phone Number in Phone Number field!!', ['phone']),
-		#~ (_check_tin, 'Enter a 11 Digit Tin Number in TIN field!!', ['tin_no']),
-		#~ (_check_cst, 'Enter a correct CST Number in CST field!!', ['cst_no']),
-		#~ (_check_vat, 'Enter a correct VAT Number in VAT Field!!', ['vat_no']),
-		#~ (_check_website, 'Enter a correct URL in Website Field!!', ['website']),
+		(_name_validate, 'Name must be unique.Please enter a valid Name in Name field!!', ['name']),
+		(_validate_email, 'Enter a valid Email in the Email Field!!', ['email']),
+		(_validate_phone, 'Enter a correct Mobile Number in Mobile Number Field!!', ['mobile']),
+		(_check_phone, 'Enter a correct Phone Number in Phone Number field!!', ['phone']),
+		(_check_tin, 'Enter a 11 Digit Tin Number in TIN field!!', ['tin_no']),
+		(_check_cst, 'Enter a correct CST Number in CST field!!', ['cst_no']),
+		(_check_vat, 'Enter a correct VAT Number in VAT Field!!', ['vat_no']),
+		(_check_website, 'Enter a correct URL in Website Field!!', ['website']),
 		(_check_job_position, 'Special characters are not allowed in the job position Field!!', ['function']),
        	]
 	

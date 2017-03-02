@@ -93,6 +93,10 @@ class kg_bom(osv.osv):
 	  
 	}
 	
+	_sql_constraints = [
+		('product_id', 'unique(product_id)', 'Product Name must be unique!'),
+	]
+	
 	def copy_bom(self, cr, uid, ids, context=None):
 		rec = self.browse(cr,uid,ids[0])		
 		mrp_bom_line_obj = self.pool.get('mrp.bom.line')

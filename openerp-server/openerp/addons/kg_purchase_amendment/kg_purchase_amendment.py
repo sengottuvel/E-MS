@@ -594,6 +594,7 @@ class kg_purchase_amendment(osv.osv):
 					disc_value = (amend_line.product_qty_amend * amend_line.price_unit_amend) * amend_line.kg_discount_per_amend / 100
 					po_line_obj.write(cr,uid,po_line_id,{
 							'product_qty': amend_line.product_qty_amend,
+							'tot_price': amend_line.product_qty_amend * amend_line.price_unit_amend,
 							'pending_qty': amend_line.pending_qty_amend,
 							'kg_discount_per_value' : disc_value,
 								})
@@ -661,6 +662,7 @@ class kg_purchase_amendment(osv.osv):
 					disc_value = (amend_line.product_qty_amend * amend_line.price_unit_amend) * amend_line.kg_discount_per_amend / 100
 					po_line_obj.write(cr,uid,po_line_id,{
 							'product_qty': amend_line.product_qty_amend,
+							'tot_price': amend_line.product_qty_amend * amend_line.price_unit_amend,
 							'pending_qty': amend_line.pending_qty_amend,
 							'kg_discount_per_value' : disc_value,
 								})

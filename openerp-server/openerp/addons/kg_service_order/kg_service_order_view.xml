@@ -71,6 +71,7 @@
 						<field name="brand_id"/>
 						<field name="product_uom"/>
 						<field name="product_qty" required = "1" />
+						<field name="gate_id" invisible='1'/>
 						<field name="price_unit"/>
 						<field name="tot_price" invisible='1'/>
 						<field name="kg_discount"/>
@@ -91,13 +92,13 @@
 					</group>					
 				</group>
 				</page>
-			   <page string="Select Service Indent" attrs="{'invisible':[('so_type','!=','service')]}">
-					<field name="kg_serindent_lines" >
-						<tree string="Service Indent Line" editable="bottom">
-						<field name="service_id" readonly="1"/>
-						<field name="product_id" readonly="1"/>
-						<field name="uom" readonly="1"/>
-						<field name="pending_qty" readonly="1"/>
+			   <page string="Select Gate Pass" attrs="{'invisible':[('so_type','!=','service')]}">
+					<field name="kg_gate_pass_line_items" >
+						<tree string="Gate Pass" editable="bottom">
+						<field name="name" readonly="1"/>
+						<field name="out_type" readonly="1"/>
+						<field name="mode" readonly="1"/>
+						<field name="date" readonly="1"/>
 						</tree>
 					</field>
 					<button name="update_soindent" type='object' string="Save Record"/>					
@@ -164,19 +165,20 @@
 				<group>
 					<group>
 					<field name="product_id" required="1"  attrs = "{'readonly':[('service_flag','=',True)]}" on_change="onchange_product_id(product_id,product_uom)"/>
-					<field name="product_qty" required="1" on_change="onchange_qty(product_qty,soindent_qty,pending_qty,service_flag,price_unit)"/>
+					<field name="product_qty" required="1" attrs="{'readonly': [('gate_id', '!=', False)]}" on_change="onchange_qty(product_qty,soindent_qty,pending_qty,service_flag,price_unit)"/>
 					<field name="price_unit" attrs = "{'readonly':[('so_type_flag','=',True)]}" required="1" on_change="onchange_unit_price(price_unit,product_qty)"/>
 					<field name="soindent_line_id" invisible="1"/>
 					<field name="service_flag" invisible="1"/>
 					<field name="so_type_flag" invisible="1"/>
 					<field name="serial_number"/>
+					<field name="gate_id" invisible='1'/>
 					<field name="note"/>
 					</group>
 					<group>
 					<field name="taxes_id" widget="many2many_tags" attrs = "{'readonly':[('so_type_flag','=',True)]}"
                         domain="[('parent_id','=',False),('type_tax_use','!=','sale')]"/>
 					<field name="tot_price"/>
-					<field name="product_uom" required="1" attrs = "{'readonly':[('so_type_flag','=',True)]}"/>
+					<field name="product_uom" required="1" attrs="{'readonly': [('gate_id', '!=', False)]}"/>
 					<field name="brand_id" attrs = "{'readonly':[('so_type_flag','=',True)]}"/>
 					<field name="soindent_qty" readonly="1"/>
 					<field name="kg_discount" attrs = "{'readonly':[('so_type_flag','=',True)]}" on_change="onchange_disc_amt(kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price)"/>

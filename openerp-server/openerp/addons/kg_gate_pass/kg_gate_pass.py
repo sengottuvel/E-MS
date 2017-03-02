@@ -342,6 +342,7 @@ class kg_gate_pass(osv.osv):
 				'note':remark,
 				'ser_no':ser_no,
 				'serial_no':serial_no,
+				'mode':obj.mode,
 				}
 				
 				if pending_qty == 0:				

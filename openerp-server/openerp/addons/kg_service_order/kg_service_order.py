@@ -143,6 +143,7 @@ class kg_service_order(osv.osv):
 		'kg_serindent_lines':fields.many2many('kg.service.indent.line','kg_serindent_so_line' , 'so_id', 'serindent_line_id', 'ServiceIndent Lines',
 			domain="[('service_id.state','=','approved'), '&', ('pending_qty','>','0')]", 
 			readonly=True, states={'draft': [('readonly', False)],'confirm':[('readonly',False)]}),
+		'kg_gate_pass_line_items':fields.many2many('kg.gate.pass','kg_gatepass_detail','gp_id','gpindents_id','Gate Pass',domain="[ ('gate_line.so_pending_qty','>','0'),'&',('id','=',gp_id)]]"),
 		'so_flag': fields.boolean('SO Flag'),
 		'amend_flag': fields.boolean('Amend Flag'),
 		
@@ -161,7 +162,7 @@ class kg_service_order(osv.osv):
 		'amc_from': fields.date('AMC From Date',readonly=True,states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'amc_to': fields.date('AMC To Date',readonly=True,states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'origin': fields.char('Project', size=256,readonly=True,states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
-		'gp_id': fields.many2one('kg.gate.pass', 'Gate Pass No',domain="[('state','=','done'), '&',('closing_state','!=','t'), '&',('partner_id','=',partner_id),'&',('mode','=','frm_indent')]",
+		'gp_id': fields.many2one('kg.gate.pass', 'Gate Pass No',domain="[('state','=','done'),'&',('out_type','=','service'),'&',('gate_line.so_pending_qty','>',0), '&',('closing_state','!=','t'), '&',('partner_id','=',partner_id),'&',('mode','=','frm_indent')]",
 					readonly=True,states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'warranty': fields.char('Warranty', size=256,readonly=True,states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'grn_flag':fields.boolean('GRN Flag'),
@@ -303,17 +304,17 @@ class kg_service_order(osv.osv):
 		
 	def confirm_order(self, cr, uid, ids,context=None):
 		service_line_obj = self.pool.get('kg.service.order.line')
-		today_date = datetime.date(today)
 		rec = self.browse(cr,uid,ids[0])
 		
 		for t in self.browse(cr,uid,ids):
-			date_order = t.date
-			date_order1 = datetime.strptime(date_order, '%Y-%m-%d')
-			date_order1 = datetime.date(date_order1)
-			if date_order1 > today_date:
-				raise osv.except_osv(
-						_('Warning'),
-						_('SO Date should be less than or equal to current date!'))	
+			if t.so_type == 'service':
+				for i in t.service_order_line:
+					if i.gate_id:
+						pass
+					else:
+						raise osv.except_osv(
+							_('Warning'),
+							_('You can not allowed to add line items Manually'))						
 			if not t.service_order_line:
 				raise osv.except_osv(
 						_('Empty Service Order'),
@@ -345,12 +346,13 @@ class kg_service_order(osv.osv):
 								    'so_reonly_flag':'True',
 								    'name': seq_name[0],
 								    })
-		
 			return True
 			
 	def approve_order(self, cr, uid, ids,context=None):
 		rec = self.browse(cr,uid,ids[0])
-	
+		for val in rec.service_order_line:
+			if val.gate_id:
+				cr.execute("""update kg_gate_pass_line set so_pending_qty = 0 where gate_id= %s"""  %(val.gate_id.id))
 		if rec.payment_mode.term_category == 'advance':
 			cr.execute("""select * from kg_supplier_advance where state='confirmed' and so_id= %s"""  %(str(ids[0])))
 			data = cr.dictfetchall()
@@ -395,9 +397,7 @@ class kg_service_order(osv.osv):
 						sql2 = """ update kg_service_order_line set gp_line_id=(select id from kg_gate_pass_line where si_line_id = %s and gate_id = %s limit 1)"""%(soindent_line_id.id,obj.gp_id.id)
 						cr.execute(sql2)
 					else:
-						raise osv.except_osv(
-							_('Direct Service Order Not Allow'),
-							_('System not allow to raise a Service Order with out Service Indent for %s' %(product)))
+						pass
 				else:
 					rec.write({'button_flag':True})
 		for line in rec.service_order_line:
@@ -491,74 +491,44 @@ class kg_service_order(osv.osv):
 				res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=1, context=context)			
 		return True
 
-	def update_soindent(self,cr,uid,ids,context=False,):
-
-		soindent_line_obj = self.pool.get('kg.service.indent.line')
+	def update_soindent(self,cr,uid,ids,context=None):
+		cr.execute("""delete from kg_service_order_line where service_id=%s"""%(ids[0]))
+		gate_line_id = self.pool.get('kg.gate.pass.line')
 		so_line_obj = self.pool.get('kg.service.order.line')
 		prod_obj = self.pool.get('product.product')
-		res={}
-		service_order_line = []
-		res['service_order_line'] = []
-		res['so_flag'] = True
-		res['so_reonly_flag'] = True
-		obj =  self.browse(cr,uid,ids[0])
-		if obj.service_order_line:
-			service_order_line = map(lambda x:x.id,obj.service_order_line)
-			so_line_obj.unlink(cr,uid,service_order_line)
-		if obj.kg_serindent_lines:
-			soindent_line_ids = map(lambda x:x.id,obj.kg_serindent_lines)
-			soindent_line_browse = soindent_line_obj.browse(cr,uid,soindent_line_ids)
-			soindent_line_browse = sorted(soindent_line_browse, key=lambda k: k.product_id.id)
-			groups = []
-			for key, group in groupby(soindent_line_browse, lambda x: x.product_id.id and x.ser_no):
-				groups.append(map(lambda r:r,group))
-			for key,group in enumerate(groups):
-				qty = sum(map(lambda x:float(x.qty),group)) #TODO: qty
-				for val in group:
-					brand = val.brand_id.id
-				soindent_line_ids = map(lambda x:x.id,group)
-				prod_browse = group[0].product_id
-				serial_no = group[0].serial_no.id
-				ser_no = group[0].ser_no			
-				uom =False
-				for ele in group:
-					uom = (ele.uom.id) or False
-					qty = sum(map(lambda x:float(x.pending_qty),group))
-					soindent_id= ele.id
-					break
-				vals = {
-				'product_id':prod_browse.id,
-				'brand_id':brand,
-				'product_uom':uom,
-				'product_qty':qty,
-				'pending_qty':qty,
-				'soindent_qty':qty,
-				'soindent_line_id':soindent_id,
+		rec = self.browse(cr,uid,ids[0])
+		cr.execute("""select * from kg_gate_pass_line where gate_id=%s"""%(rec.kg_gate_pass_line_items[0].id))
+		data = cr.dictfetchall()
+		for j in data:
+			vals = {
+				'product_id':j['product_id'],
+				'brand_id':j['brand_id'],
+				'product_uom':j['uom'],
+				'product_qty':j['qty'],
+				'pending_qty':j['qty'],
+				'soindent_qty':j['qty'],
+				'soindent_line_id':j['si_line_id'],
+				'gate_id':j['gate_id'],
 				'service_flag':'False',
-				'ser_no':ser_no,
-				'serial_no':serial_no,
-				}				
-				
-				if ids:
-					self.write(cr,uid,ids[0],{'service_order_line':[(0,0,vals)]})
-			if ids:
-				if obj.service_order_line:
-					service_order_line = map(lambda x:x.id,obj.service_order_line)
-					for line_id in service_order_line:
-						self.write(cr,uid,ids,{'service_order_line':[]})
-		self.write(cr,uid,ids,res)			
+				'ser_no':j['ser_no'],
+				'serial_no':j['serial_no'],
+				}
+			self.write(cr,uid,ids[0],{'service_order_line':[(0,0,vals)],'so_flag':True,'so_reonly_flag':True})
 		return True
 
 		
 	def _check_line(self, cr, uid, ids, context=None):
 		for so in self.browse(cr,uid,ids):
-			if so.kg_serindent_lines==[]:
-				tot = 0.0
-				for line in so.service_order_line:
-					tot += line.product_qty
-				if tot <= 0.0:			
-					return False
-			return True
+			if so.so_type != 'service':
+				if so.kg_serindent_lines==[]:
+					tot = 0.0
+					for line in so.service_order_line:
+						tot += line.product_qty
+					if tot <= 0.0:			
+						return False
+				return True
+			else:
+				return True
 			
 	def so_direct_print(self, cr, uid, ids, context=None):
 		assert len(ids) == 1, 'This option should only be used for a single id at a time'
@@ -602,7 +572,6 @@ class kg_service_order(osv.osv):
 		line_rec = self.pool.get('kg.service.order').search(cr, uid, [('state','=','approved'),('approved_date','=',time.strftime('%Y-%m-%d'))])
 		
 		
-		print "---------------------------->",line_rec
 		
 		if line_rec:
 			pass
@@ -667,6 +636,7 @@ class kg_service_order_line(osv.osv):
 			else:
 				pending_qty = product_qty
 				value = {'pending_qty' : pending_qty,'tot_price':(round(tot_price,2)),'kg_discount': 0.00}
+		value = {'pending_qty' : product_qty}
 		return {'value' : value}
 		
 	def _amount_line(self, cr, uid, ids, prop, arg, context=None):
@@ -686,6 +656,7 @@ class kg_service_order_line(osv.osv):
 	
 	_columns = {
 
+	'gate_id': fields.many2one('kg.gate.pass', 'Gate Pass NO', ondelete='cascade'),
 	'service_id': fields.many2one('kg.service.order', 'Service.order.NO', required=True, ondelete='cascade'),
 	'price_subtotal': fields.function(_amount_line, string='Linetotal', digits_compute= dp.get_precision('Account')),
 	'product_id': fields.many2one('product.product', 'Product', domain=[('state','not in',('cancel','reject'))]),

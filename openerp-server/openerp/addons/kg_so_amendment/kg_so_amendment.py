@@ -487,7 +487,8 @@ class kg_so_amendment(osv.osv):
 				disc_value = (amend_line.product_qty_amend * amend_line.price_unit_amend) * amend_line.kg_discount_per_amend / 100
 				so_line_obj.write(cr,uid,so_line_id,{'product_qty': amend_line.product_qty_amend,'brand_id': amend_line.brand_id_amend.id,
 														'note': amend_line.note_amend,'taxes_id': [(6, 0, [x.id for x in amend_line.taxes_id_amend])],
-														'price_unit' : amend_line.price_unit_amend or 0.0,'pending_qty': amend_line.pending_qty_amend,
+														'price_unit' : amend_line.price_unit_amend or 0.0,'pending_qty': amend_line.product_qty_amend,
+														'tot_price' : amend_line.product_qty_amend * amend_line.price_unit_amend,
 														'kg_discount_per_value' : disc_value,'kg_discount': amend_line.kg_discount_amend,
 														'kg_discount_per': amend_line.kg_discount_per_amend,'kg_disc_amt_per': amend_line.kg_disc_amt_per_amend,
 														'kg_discount_per_value': amend_line.kg_discount_per_value_amend,
@@ -683,5 +684,18 @@ class kg_so_amendment_line(osv.osv):
 				domain="[('service_id.state','=','approved'), '&', ('pending_qty','>','0'),'&',('product_id','=',product_id)]"),
 		
 	}	
+	
+	def onchange_qty(self, cr, uid, ids,product_qty,product_qty_amend,pending_qty,pending_qty_amend):	
+		value = {'pending_qty_amend': ''}
+		if product_qty == pending_qty:
+			value = {'pending_qty_amend': product_qty_amend }			
+		else:
+			if product_qty != product_qty_amend:
+				po_pen_qty = product_qty - pending_qty
+				amend_pen_qty = product_qty_amend - po_pen_qty
+				value = {'pending_qty_amend': amend_pen_qty}
+			else:
+				value = {'pending_qty_amend': pending_qty}
+		return {'value': value}
 	
 kg_so_amendment_line()

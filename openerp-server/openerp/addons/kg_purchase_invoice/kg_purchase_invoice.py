@@ -566,19 +566,7 @@ class kg_purchase_invoice(osv.osv):
 					_('Warning!'),
 					_('Credit Note amount should not be greater than Invoice amount'))
 
-		### Checking Advance date ###
-		
-		
-		if invoice_rec.invoice_date > today_date:
-			raise osv.except_osv(
-					_('Warning!'),
-					_('Invoice Date should not be greater than current date'))
 					
-		if invoice_rec.sup_invoice_date > today_date:
-			raise osv.except_osv(
-					_('Warning!'),
-					_('Supplier Invoice Date should not be greater than current date'))
-			
 		### Check Advance Amount greater than Zero ###
 			
 		if not invoice_rec.line_ids:

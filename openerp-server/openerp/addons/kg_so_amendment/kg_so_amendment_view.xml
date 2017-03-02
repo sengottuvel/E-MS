@@ -72,6 +72,7 @@
 									<group>
 										<field name="product_id"/>										
 										<field name="product_qty" readonly='1'/>
+										<field name="pending_qty" invisible='1'/>											
 										<field name="brand_id" readonly='1'/>											
 										<field name="note"/>											
 										<field name="price_unit" readonly='1'/>	
@@ -79,7 +80,8 @@
 									</group>
 									<group>
 										<field name="uom_id" invisible='1'/>
-										<field name="product_qty_amend"/>	
+										<field name="product_qty_amend" readonly='1'  on_change="onchange_qty(product_qty,product_qty_amend,pending_qty,pending_qty_amend)"/>	
+										<field name="pending_qty_amend" invisible='1'/>		
 										<field name="brand_id_amend"/>		
 										<field name="note_amend"/>		
 										<field name="discount" invisible="1"/>	
