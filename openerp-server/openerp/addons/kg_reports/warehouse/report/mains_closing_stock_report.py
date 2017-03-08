@@ -94,8 +94,8 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 			   left JOIN product_category pc ON (pc.id=pt.categ_id)
 
 			   
-			   where sm.product_qty != 0 and sm.state=%s and sm.date::date <=%s and (sm.location_dest_id =%s or sm.location_id = %s) '''+ where_sql + major + product + pro_type +'''
-			   group by sm.product_id,pc.name,pt.categ_id,pt.name''',('done',form['date'],location,location))
+			   where sm.product_qty != 0 and sm.state=%s and sm.date::date <=%s and sm.location_dest_id =%s '''+ where_sql + major + product + pro_type +'''
+			   group by sm.product_id,pc.name,pt.categ_id,pt.name''',('done',form['date'],location))
 				   
 			   
 		data=self.cr.dictfetchall()
@@ -122,7 +122,7 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 				
 				out_date = "'"+form['date']+"'"
 				
-				out_sql = """ select product_id,sum(product_qty) from stock_move where product_id=%s and move_type='out' and state='done' and date::date <=%s  group by product_id """%(product_id,out_date)
+				out_sql = """ select product_id,sum(product_qty) from stock_move where product_id=%s and location_id=%s and state='done' and date::date <=%s  group by product_id """%(product_id,location,out_date)
 				self.cr.execute(out_sql)			
 				out_data = self.cr.dictfetchall()
 			
