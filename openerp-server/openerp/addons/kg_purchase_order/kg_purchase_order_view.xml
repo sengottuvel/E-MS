@@ -77,7 +77,7 @@
 		</field>
 		
 		<field name="bill_type" position="replace">
-			 <field name="date_order" required="1"  on_change="onchange_date_order(date_order)"/>
+			 <field name="date_order" required="1" readonly='1'  on_change="onchange_date_order(date_order)"/>
 			 <field name="quotation_date" />
 			 <field name="quot_ref_no" class="aplhanum_expect"  />
 			 <field name="delivery_address"/>

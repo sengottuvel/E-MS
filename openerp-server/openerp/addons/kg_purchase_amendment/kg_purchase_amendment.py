@@ -69,7 +69,7 @@ class kg_purchase_amendment(osv.osv):
 		'name': fields.char('Amendment NO', size=128, readonly=True),
 		'date':fields.date('Amendment Date',readonly=False,states={'draft':[('readonly',False)]}),
 		'po_id':fields.many2one('purchase.order','PO.NO', required=True,
-			domain="[('state','=','approved'),'&',('order_line.line_state','!=','cancel'),'&',('order_line.line_bill','=', False),'&',('order_line.pending_qty','>',0)]",
+			domain="[('state','=','approved'),'&',('po_type','!=','fromquote'),'&',('order_line.line_state','!=','cancel'),'&',('order_line.line_bill','=', False),'&',('order_line.pending_qty','>',0)]",
 			readonly=True,states={'amend':[('readonly',False)]}),
 		'po_date':fields.date('PO Date', readonly=True),
 		'partner_id':fields.many2one('res.partner', 'Supplier', readonly=True),

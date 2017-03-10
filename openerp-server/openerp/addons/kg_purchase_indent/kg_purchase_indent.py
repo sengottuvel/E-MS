@@ -157,7 +157,7 @@ class kg_purchase_indent(osv.osv):
 				else:
 					raise osv.except_osv(
 							_('Warning'),
-							_('You can not allowed to create a Manual Line Entry'))
+							_('You can not create a manual entry with Indent type as From Dept.'))
 		for t in self.browse(cr,uid,ids):
 			indent_line_obj = self.pool.get('kg.depindent.line')
 			if not t.line_ids:

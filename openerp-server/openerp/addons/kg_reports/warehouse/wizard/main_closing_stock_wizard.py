@@ -14,9 +14,9 @@ class main_closing_stock_wizard(osv.osv_memory):
 		
 		'filter': fields.selection([('filter_date', 'Date')], "Filter by", required=True),
 		'date': fields.date("Date"),
-		'location_dest_id': fields.many2one('stock.location', 'Stores', required=True, domain="[('location_type','=', 'main')]"),
-		'major_name':fields.many2one('product.category', 'Product Category'),
-		'product':fields.many2many('product.product','main_close_stock_product','stock_product_id','close_stock_id','Product'),
+		'location_dest_id': fields.many2one('stock.location', 'Stores', required=True, domain="[('location_type','=', 'main'),('state','=','approved')]"),
+		'major_name':fields.many2one('product.category', 'Product Category',domain="[('state','=','approved')]"),
+		'product':fields.many2many('product.product','main_close_stock_product','stock_product_id','close_stock_id','Product',domain="[('state','=','approved')]"),
 		'product_type': fields.selection([('consu', 'Consumable Items'),('cap','Capital Goods'),('service','Service Items')], 'Product Type'),
 		'company_id': fields.many2one('res.company', 'Company Name'),
 		'pro_cat': fields.boolean('Stock by category'),

@@ -27,8 +27,8 @@ class dep_issue_register_wizard_istl(osv.osv_memory):
 				'company_id': fields.many2one('res.company', 'Company Name',required=True),
 				'from_date': fields.date('From Date'),
 				'to_date': fields.date('To Date'),
-				'dep_id':fields.many2many('kg.depmaster','dep_issue_register1','wiz_id','dep_id','Department Name'),
-				'product':fields.many2many('product.product','dep_issue_product1','product_wiz_id','product_dep_id','Product'),
+				'dep_id':fields.many2many('kg.depmaster','dep_issue_register1','wiz_id','dep_id','Department Name',domain="[('state','=','approved')]"),
+				'product':fields.many2many('product.product','dep_issue_product1','product_wiz_id','product_dep_id','Product',domain="[('state','=','approved')]"),
 				'issue_status': fields.selection([('approved', 'Approved'),('cancelled','Cancelled')], "Status"),
 				'filter': fields.selection([('filter_no', 'No Filters'), ('filter_date', 'Date')], "Filter by")
 				

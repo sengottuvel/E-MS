@@ -22,8 +22,8 @@ class kg_so_register_wiz(osv.osv_memory):
 	_name = 'kg.so.register.wiz'
 	_columns = {
 		
-		'product_id':fields.many2many('product.product','kg_so_stm_pro','order_id','product_id','Product Name'),
-		'supplier':fields.many2many('res.partner','kg_so_stm_sup','order_id','supplier_id','Supplier'),
+		'product_id':fields.many2many('product.product','kg_so_stm_pro','order_id','product_id','Product Name',domain="[('state','=','approved')]"),
+		'supplier':fields.many2many('res.partner','kg_so_stm_sup','order_id','supplier_id','Supplier',domain="[('supplier','=',True),('sup_state','=','approved')]"),
 		'filter': fields.selection([('filter_no', 'No Filters'), ('filter_date', 'Date')], "Filter by", required=True),
 		'date_from': fields.date("Start Date"),
 		'date_to': fields.date("End Date"),

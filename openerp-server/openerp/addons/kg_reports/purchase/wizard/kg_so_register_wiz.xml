@@ -26,7 +26,7 @@
                         <page string="Supplier" name="supplier">
                             <group colspan="2" col="2">
 								<separator string="Supplier" colspan="2" col="2" />
-								<field name = "supplier" domain="[('supplier','=',True)]"/>
+								<field name = "supplier"/>
 							</group>
                         </page>
                         <page string="Product Name" name="product_id">

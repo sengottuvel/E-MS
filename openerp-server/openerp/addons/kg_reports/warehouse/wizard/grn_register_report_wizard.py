@@ -23,20 +23,20 @@ class grn_register_report_wizard(osv.osv_memory):
 	_name = 'grn.register.report.wizard'
 	_columns = {
 		
-		'supplier':fields.many2many('res.partner','grn_register_supplier','grn_id','supplier_id','Supplier'),
+		'supplier':fields.many2many('res.partner','grn_register_supplier','grn_id','supplier_id','Supplier',domain="[('supplier','=',True),('sup_state','=','approved')]"),
 		'filter': fields.selection([('filter_no', 'No Filters'), ('filter_date', 'Date')], "Filter by", required=True),
 		'product_type': fields.selection([('consu', 'Consumable Items'),('cap','Capital Goods'),('service','Service Items')], 
 					'Product Type'),
 	    
 	    #'product':fields.many2many('product.product','purchase_requisition_line','product_id','Product','Product'),
-	    'product':fields.many2many('product.product','wizard_id','product_id','grn_product_map','Product'),				
+	    'product':fields.many2many('product.product','wizard_id','product_id','grn_product_map','Product',domain="[('state','=','approved')]"),				
 		'date_from': fields.date("Start Date"),
 		'date_to': fields.date("End Date"),
 		'company_id': fields.many2one('res.company', 'Company Name'),
 		'print_date': fields.datetime('Creation Date', readonly=True),
 		'printed_by': fields.many2one('res.users','Printed By',readonly=True),
 		'status': fields.selection([('done', 'Approved'),('inv', 'Invoiced'),('cancel','Cancelled')], "Status"),
-		'inward_type': fields.many2one('kg.inwardmaster', 'Inward Type'),
+		'inward_type': fields.many2one('kg.inwardmaster', 'Inward Type',domain="[('state','=','approved')]"),
 		'inward_type1': fields.char('Inward Type'),
 
 	}

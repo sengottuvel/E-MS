@@ -5,7 +5,8 @@
       <frame id="first" x1="15.0" y1="15.0" width="890" height="560"/>
         <pageGraphics>
         	<setFont name="Helvetica" size="9"/>
-            <drawCentredString x="16.5cm" y="0.5cm"> [[ data['form']['printed_by'] ]] [[ data['form']['print_date'] ]] Page No.<pageNumber/></drawCentredString>
+            <drawCentredString x="3.0cm" y="0.5cm"> [[ data['form']['printed_by'] ]] [[ data['form']['print_date'] ]]</drawCentredString>
+            <drawCentredString x="16.5cm" y="0.5cm">Page No.<pageNumber/></drawCentredString>
         </pageGraphics>      
     </pageTemplate>
   </template>
