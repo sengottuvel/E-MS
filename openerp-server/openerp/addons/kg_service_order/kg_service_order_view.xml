@@ -44,7 +44,7 @@
 					<field name="payment_type" attrs="{'invisible': [('so_type','=','service')],'required':[('so_type','!=','service')]}"/>
                     </group> 
                     <group>					
-					<field name="date"/>
+					<field name="date" readonly='1'/>
 					<field name="partner_address"  class="aplhanum_expect"  />
 					<field name="quot_ref_no" class="aplhanum_expect"  />
 					<field name="dep_name"/>

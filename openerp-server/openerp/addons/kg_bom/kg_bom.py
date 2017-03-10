@@ -201,6 +201,9 @@ class kg_bom_line(osv.osv):
 	'department_id':72
 	  
 	}
+	_sql_constraints = [
+		('product_id', 'unique(product_id)', 'Product Name must be unique!'),
+	]	
 	
 	def onchange_uom_id(self, cr, uid, ids, product_id, context=None):
 		value = {'product_uom': ''}

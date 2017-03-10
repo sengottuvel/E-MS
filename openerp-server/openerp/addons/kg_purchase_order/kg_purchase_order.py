@@ -289,8 +289,6 @@ class kg_purchase_order(osv.osv):
 			dep_rec = user_rec.dep_name
 			location = dep_rec.main_location.id
 			value = {'location_id': location}
-			print "--------dep_rec---------",dep_rec
-			print "--------location---------",location			
 		return {'value':value}
 		
 	def confirm_po(self,cr,uid,ids, context=None):
@@ -420,15 +418,6 @@ class kg_purchase_order(osv.osv):
 						raise osv.except_osv(
 							_('Warning'),
 							_('%s price is exceeding last purchase price. It should be approved by Admin User'%(item.product_id.name)))
-		if obj.payment_mode.term_category == 'advance':
-			cr.execute("""select * from kg_supplier_advance where state='confirmed' and po_id= %s"""  %(str(ids[0])))
-			data = cr.dictfetchall()
-			if not data:
-				raise osv.except_osv(
-					_('Warning'),
-					_('Advance is mandate for this PO'))
-			else:
-				pass		
 		text_amount = number_to_text_convert_india.amount_to_text_india(obj.amount_total,"INR:")
 		self.write(cr,uid,ids[0],{'text_amt':text_amount})
 		line_obj = self.pool.get('purchase.order.line')
@@ -692,7 +681,6 @@ class kg_purchase_order_line(osv.osv):
 			raise osv.except_osv(_(' Warning!!'),_("Discount percentage must be lesser than 25 % !") )			
 		if kg_discount_per:
 			discount_value_price = (tot_price/100.00)*kg_discount_per
-		print "=====discount_value_price======",discount_value_price
 		discount_value = (product_qty * price_unit) * kg_discount_per / 100.00
 		return {'value': {'kg_discount_per_value': discount_value,'kg_discount': discount_value_price}}
 		

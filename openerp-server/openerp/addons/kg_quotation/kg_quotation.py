@@ -1018,6 +1018,7 @@ class kg_quotation_entry_header(osv.osv):
 	
 	def po_record_create(self, cr, uid, ids, vendor_id, vendor_count, context=None):
 		quo_obj = self.pool.get('kg.rfq.vendor.selection')
+		rec = self.browse(cr,uid,ids[0])
 		quo_line_obj = self.pool.get('kg.rfq.vendor.selection.line')
 		po_obj = self.pool.get('purchase.order')
 		po_lin_obj = self.pool.get('purchase.order.line')
@@ -1064,6 +1065,7 @@ class kg_quotation_entry_header(osv.osv):
 					'amount_total': res['vendor_value'],
 					'pricelist_id': 2,
 					'po_type': 'fromquote',
+					'quotation_date':rec.rfq_date,
 					'company_id': 1,
 					'state': 'draft',
 					'entry_mode': 'auto',
@@ -1175,24 +1177,20 @@ class kg_quotation_entry_header(osv.osv):
 		
 	def _future_entry_date_check(self,cr,uid,ids,context=None):
 		rec = self.browse(cr,uid,ids[0])		
-		cr.execute(""" select purchase_requisition_id from kg_rfq_vendor_selection_line where header_id = %s """ %(rec.rfq_no_id.id))
-		data = cr.dictfetchall()		
-		cr.execute(""" select date_start from purchase_requisition where id = %s """ %(data[0]['purchase_requisition_id']))
-		data1 = cr.dictfetchall()	
 		if rec.vendor_reference_date_vendor_1 != False:
-			if rec.vendor_reference_date_vendor_1 < data1[0]['date_start']:
+			if rec.vendor_reference_date_vendor_1 < rec.rfq_date:
 				return False
 		if rec.vendor_reference_date_vendor_2 != False:
-			if rec.vendor_reference_date_vendor_2 < data1[0]['date_start']:
+			if rec.vendor_reference_date_vendor_2 < rec.rfq_date:
 				return False
 		if rec.vendor_reference_date_vendor_3 != False:
-			if rec.vendor_reference_date_vendor_3 < data1[0]['date_start']:
+			if rec.vendor_reference_date_vendor_3 < rec.rfq_date:
 				return False
 		if rec.vendor_reference_date_vendor_4 != False:
-			if rec.vendor_reference_date_vendor_4 < data1[0]['date_start']:
+			if rec.vendor_reference_date_vendor_4 < rec.rfq_date:
 				return False
 		if rec.vendor_reference_date_vendor_5 != False:
-			if rec.vendor_reference_date_vendor_5 < data1[0]['date_start']:
+			if rec.vendor_reference_date_vendor_5 < rec.rfq_date:
 				return False
 		return True
 		
