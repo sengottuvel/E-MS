@@ -79,7 +79,7 @@
 				</group>				
 				<notebook>
 				<page string="Product">
-					<field colspan="4" mode="tree" name="amendment_line" nolabel="1" widget="one2many_list" attrs = "{'readonly':[('state','=','approved')]}">
+					<field colspan="4" mode="tree" name="amendment_line" nolabel="1" widget="one2many_list" attrs = "{'readonly':[('state','=','approved')]}" context="{'line_state':'draft','qty_flag':True,'po_type':po_type_amend}">
 						  <tree  string="Purchase Amendment Line" delete="false" create="false"> 
 								<field name="product_id"/>
 								<field name="brand_id_amend"/>
@@ -133,6 +133,7 @@
 				<group>
 					<group>
 						<field name="product_id" readonly="1"/>
+						<field name="po_type" invisible="1"/>
 						<field name="product_qty" readonly="1"/>
 						<field name="brand_id" readonly="1"/>
 						<field name="pending_qty" readonly="1" invisible="1"/>
@@ -171,7 +172,7 @@
 					<field name="cancel_flag" invisible="1"/>
 					<field name="qty_flag" invisible="1"/>
 					<field name="line_state" invisible="1"/>
-					<field name="kg_poindent_lines" nolabel="1"/>
+					<field name="kg_poindent_lines" nolabel="1" attrs="{'invisible': [('po_type','!=','frompi')]}"/>
 					<button name="pol_cancel" type="object" string="Cancel" icon="gtk-cancel"
 							attrs="{'invisible': [('line_state','!=','draft')]}"
 							class="oe_highlight" invisible="1"/>

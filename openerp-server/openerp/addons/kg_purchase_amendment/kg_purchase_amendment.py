@@ -69,7 +69,7 @@ class kg_purchase_amendment(osv.osv):
 		'name': fields.char('Amendment NO', size=128, readonly=True),
 		'date':fields.date('Amendment Date',readonly=False,states={'draft':[('readonly',False)]}),
 		'po_id':fields.many2one('purchase.order','PO.NO', required=True,
-			domain="[('state','=','approved'),'&',('po_type','!=','fromquote'),'&',('order_line.line_state','!=','cancel'),'&',('order_line.line_bill','=', False),'&',('order_line.pending_qty','>',0)]",
+			domain="[('state','=','approved'),('order_line.line_state','!=','cancel'),('order_line.line_bill','=', False),('order_line.pending_qty','>',0)]",
 			readonly=True,states={'amend':[('readonly',False)]}),
 		'po_date':fields.date('PO Date', readonly=True),
 		'partner_id':fields.many2one('res.partner', 'Supplier', readonly=True),
@@ -207,6 +207,7 @@ class kg_purchase_amendment(osv.osv):
 		return {
 		
 			'order_id':po_order.id,
+			'po_type': po_order.po_type,
 			'product_id': order_line.product_id.id,
 			'product_uom': order_line.product_uom.id,
 			'brand_id':order_line.brand_id.id,
@@ -270,6 +271,8 @@ class kg_purchase_amendment(osv.osv):
 			
 						'amend_flag': True,
 						'name' : amend_no, 
+						'po_type': po_order.po_type,
+						'po_type_amend': po_order.po_type,
 						'po_date': po_order.date_order,
 						'po_date_amend': po_order.date_order,
 						'partner_id': po_order.dest_address_id.id or po_order.partner_id.id,
@@ -790,6 +793,7 @@ class kg_purchase_amendment_line(osv.osv):
 	
 	_columns = {
 	
+	'po_type': fields.selection([('direct', 'Direct'),('frompi', 'From PI'),('fromquote', 'From Quote')], 'PO Type',readonly=True),
 	'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute= dp.get_precision('Account')),
 	'order_id': fields.many2one('purchase.order', 'Order ID'),
 	'amendment_id':fields.many2one('kg.purchase.amendment','Amendment', select=True, required=True, ondelete='cascade'),

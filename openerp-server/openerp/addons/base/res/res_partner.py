@@ -434,7 +434,7 @@ class res_partner(osv.osv, format_address):
 	def _check_cst(self, cr, uid, ids, context=None):		
 		rec = self.browse(cr, uid, ids[0])
 		if rec.cst_no:
-			if len(str(rec.cst_no)) == 11 and rec.cst_no.isdigit() == True:
+			if len(str(rec.cst_no)) >= 6 and rec.cst_no.isdigit() == True:
 				return True
 			else:
 				return False

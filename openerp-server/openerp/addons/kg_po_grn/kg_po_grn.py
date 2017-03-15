@@ -283,28 +283,6 @@ class kg_po_grn(osv.osv):
 		val['email_cc'] = email_cc
 		return val
 	
-	def onchange_grn_date(self, cr, uid, ids, grn_date):
-		today_date = today.strftime('%Y-%m-%d')
-		back_list = []
-		today_new = today.date()
-		bk_date = date.today() - timedelta(days=3)
-		back_date = bk_date.strftime('%Y-%m-%d')
-		
-		d1 = today_new
-		d2 = bk_date
-
-		delta = d1 - d2
-
-		for i in range(delta.days + 1):
-			bkk_date = d1 - timedelta(days=i)
-			backk_date = bkk_date.strftime('%Y-%m-%d')
-			back_list.append(backk_date)
-		if grn_date > today_date:
-			raise osv.except_osv(
-					_('Warning'),
-					_('GRN Date should be less than or equal to current date!'))
-		return True
-	
 	# Onchange PO Date #
 	
 	def onchange_po_id(self, cr, uid, ids, po_ids, context=None):
@@ -621,15 +599,6 @@ class kg_po_grn(osv.osv):
 		d1 = today_new
 		d2 = bk_date
 		delta = d1 - d2
-		for i in range(delta.days + 1):
-			bkk_date = d1 - timedelta(days=i)
-			backk_date = bkk_date.strftime('%Y-%m-%d')
-			back_list.append(backk_date)
-		
-		if grn_date > today_date:
-			raise osv.except_osv(
-					_('Warning'),
-					_('GRN Date should be less than or equal to current date!'))
 		grn_name = ''		
 		if not grn_entry.name:
 			grn_no = self.pool.get('ir.sequence').get(cr, uid, 'kg.po.grn') or ''
