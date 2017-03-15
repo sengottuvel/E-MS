@@ -35,7 +35,7 @@ class kg_depindent(osv.osv):
 					domain="[('item_request','=',True),('state','=','approved')]", states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'date': fields.datetime('Created Date',readonly=True),
 		'ind_date': fields.date('Indent Date',readonly=True),
-		'type': fields.selection([('direct','Direct'), ('from_bom','From BoM')], 'Indent Type',readonly=True, states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
+		'type': fields.selection([('direct','Direct'), ('from_bom','From BoM')], 'Entry Mode',readonly=True, states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'dep_indent_line': fields.one2many('kg.depindent.line', 'indent_id', 'Indent Lines', readonly=True, states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'active': fields.boolean('Active'),
 		'user_id' : fields.many2one('res.users', 'Created By', readonly=True,select=True),

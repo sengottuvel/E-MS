@@ -23,12 +23,12 @@
 					<group>
 						<group>
 							<field name="name" class="aplhanum_expect" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
-							<field name="code" class="aplhanum_expect" required='1' attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
 							<field name="discount" invisible='1'/>							
 						</group>
 						<group>
+							<field name="code" class="aplhanum_expect" required='1' attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
 							<field name="modify" invisible='1'/>
-							<field name="term_category" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+							<field name="term_category" invisible='1' attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
 						</group>																																	
 					</group>
                  		<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">

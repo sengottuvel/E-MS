@@ -137,6 +137,7 @@
 					<field name="ind_date"/>
                     <field name="dep_name"/>
 					<field name="state"/>
+					<field name="type"/>
 					<field name="indent_type" invisible="1"/>
                 </tree> 
             </field>

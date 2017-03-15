@@ -30,6 +30,7 @@
                     <field name="name"/>
                     <field name="partner_id" on_change="onchange_partner_id(partner_id)"/>
                     <field name="payment_mode" attrs="{'readonly': [('payment_mode','!=',False)]}"/>
+					<field name="payment_type" attrs="{'invisible': [('so_type','=','service')],'required':[('so_type','!=','service')]}"/>
                     <field name="freight_charges"/>
                     <field name="so_type" required="1" on_change="onchange_type(so_type,so_flag)" attrs="{'readonly': [('so_type','!=',False)]}"/>
                     <field name="amc_from" attrs="{'invisible': [('so_type','!=','amc')],'required':[('so_type','=','amc')]}"/>
@@ -41,7 +42,6 @@
                     <field name="so_flag" id = "so_flag" invisible="1"/> 
                     <field name="amend_flag" invisible="1"/> 
                     <field name="button_flag" invisible="1"/> 
-					<field name="payment_type" attrs="{'invisible': [('so_type','=','service')],'required':[('so_type','!=','service')]}"/>
                     </group> 
                     <group>					
 					<field name="date" readonly='1'/>

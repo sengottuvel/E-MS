@@ -61,7 +61,7 @@ class kg_payment_master(osv.osv):
 		'state': fields.selection([('draft','Draft'),('confirm','WFA'),('approved','Approved'),
 				('reject','Rejected'),('cancel','Canceled')],'Status', readonly=True),		
 		'term_category': fields.selection([('payment','Payment'),('invoice_process','Invoice Process'),
-				('others','Others')],'Term Category',required=True,readonly=False,states={'approved':[('readonly',True)]}),
+				('others','Others')],'Term Category',readonly=False,states={'approved':[('readonly',True)]}),
 		'discount': fields.float('Discount (%)',readonly=False,states={'approved':[('readonly',True)]}),
 		#notes
 		'notes': fields.text('Notes'),		

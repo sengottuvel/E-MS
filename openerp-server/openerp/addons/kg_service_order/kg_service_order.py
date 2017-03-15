@@ -109,7 +109,7 @@ class kg_service_order(osv.osv):
 					readonly=True, states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'active': fields.boolean('Active'),
 		'state': fields.selection([('draft', 'Draft'),('confirm','WFA'),('approved','Approved'),('inv','Invoiced'),('cancel','Cancelled'),('reject','Rejected')], 'Status', track_visibility='onchange'),
-		'payment_mode': fields.many2one('kg.payment.master', 'Mode of Payment', domain="[('state','=','approved')]",
+		'payment_mode': fields.many2one('kg.payment.master', 'Payment Term', domain="[('state','=','approved')]",
 		          required=True, readonly=True, states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'delivery_mode': fields.many2one('kg.delivery.master','Delivery Schedule', domain="[('state','=','approved')]",
 		               required=True, readonly=True, states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
@@ -168,7 +168,7 @@ class kg_service_order(osv.osv):
 		'grn_flag':fields.boolean('GRN Flag'),
 		'button_flag':fields.boolean('Button Flag',invisible=True),
 		'so_reonly_flag':fields.boolean('SO Flag'),
-		'payment_type': fields.selection([('cash', 'Cash'), ('credit', 'Credit')], 'Payment Type',readonly=True,states={'draft':[('readonly',False)]}),
+		'payment_type': fields.selection([('cash', 'Cash'), ('credit', 'Credit')], 'Payment Mode',readonly=True,states={'draft':[('readonly',False)]}),
 		'version':fields.char('Version'),
 		'expense_line_id': fields.one2many('kg.service.order.expense.track','expense_id','Expense Track'),
 		

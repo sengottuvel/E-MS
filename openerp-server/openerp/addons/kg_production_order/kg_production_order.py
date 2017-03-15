@@ -15,8 +15,8 @@ class kg_production_order(osv.osv):
 	_order = "creation_date desc"
 	_columns = {
 	
-		'order_lines': fields.one2many('ch.production.order.line', 'header_id', 'Order Lines', readonly=True,required=True),
-		'name': fields.char('Order No'),
+		'order_lines': fields.one2many('ch.production.order.line', 'header_id', 'Item Details', readonly=True,required=True),
+		'name': fields.char('Indent No'),
 		'date':fields.date('Date',readonly=True),
 		'creation_date':fields.datetime('Created Date',readonly=True),
 		'company_id': fields.many2one('res.company', 'Company Name',readonly=True),
@@ -108,7 +108,7 @@ class kg_production_order(osv.osv):
 				po_data = cr.dictfetchall()
 				if po_data:
 					kg_depindent_id=self.pool.get('kg.depindent')
-					indent_ids = kg_depindent_id.create(cr,uid,{'dep_name':72,'indent_type':'production','state':'draft','dest_location_id': 277,'src_location_id': 47})
+					indent_ids = kg_depindent_id.create(cr,uid,{'dep_name':72,'indent_type':'production','type':'from_bom','state':'draft','dest_location_id': 277,'src_location_id': 47})
 					for k in po_data:
 						po_qty = """ select qty from ch_production_order_line where header_id = %d and product_id = %d """%(rec.id,j)
 						cr.execute(po_qty)		
@@ -168,7 +168,7 @@ class ch_production_order_line(osv.osv):
 	'header_id': fields.many2one('kg.production.order', 'Production Order Line',ondelete='cascade', required=True),
 	'product_id': fields.many2one('product.product', 'Product', required=True,domain="[('state','=','approved'),('categ_id','in',('Finishedgoods'))]"),
 	'uom': fields.many2one('product.uom', 'UOM', required=True,domain="[('dummy_state','=','approved')]"),
-	'qty': fields.float('Order Qty', required=True),
+	'qty': fields.float('Qty', required=True),
 	'remarks': fields.text('Remarks'),
 	
 	}

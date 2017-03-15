@@ -109,7 +109,7 @@ class kg_purchase_order(osv.osv):
 	_columns = {
 		
 		'po_type': fields.selection([('direct', 'Direct'),('frompi', 'From PI'),('fromquote', 'From Quote')], 'PO Mode',readonly=False),
-		'bill_type': fields.selection([('cash','CASH BILL'),('credit','CREDIT BILL'),('advance','ADVANCE BILL')], 'Bill Type',states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
+		'bill_type': fields.selection([('cash','CASH'),('credit','CREDIT'),('advance','ADVANCE')], 'Payment Mode',states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
 		'advance_percen': fields.integer('Advance(%)'),
 		'po_expenses_type1': fields.selection([('freight','Freight Charges'),('others','Others')], 'Expenses Type1', readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)]}),
 		'po_expenses_type2': fields.selection([('freight','Freight Charges'),('others','Others')], 'Expenses Type2', readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)]}),

@@ -154,7 +154,7 @@ class kg_general_grn(osv.osv):
 		'po_date':fields.date('PO Date',readonly=True),
 		'order_no': fields.char('Order NO'),
 		'order_date':fields.char('Order Date'),
-		'payment_type': fields.selection([('cash', 'Cash'), ('credit', 'Credit')], 'Payment Type',readonly=True,states={'confirmed':[('readonly',False)],'draft': [('readonly', False)]}),
+		'payment_type': fields.selection([('cash', 'Cash'), ('credit', 'Credit')], 'Payment Mode',readonly=True,states={'confirmed':[('readonly',False)],'draft': [('readonly', False)]}),
 		'grn_dc': fields.selection([('only_grn','Only grn')], 'GRN Type',required=True),
 		'sup_invoice_no':fields.char('Supplier Invoice No',size=200, readonly=False, states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
 		'sup_invoice_date':fields.date('Supplier Invoice Date', readonly=False, states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),

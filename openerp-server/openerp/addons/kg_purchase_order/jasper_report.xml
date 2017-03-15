@@ -4,7 +4,7 @@
 
          <report auto="False" id="buyer_report" model="purchase.order"
         name="onscreen_purchase_order_report"
-                rml="kg_purchase_order/report/Purchase_Order.jrxml" string="PRINT PO"
+                rml="kg_purchase_order/report/Purchase_Order.jrxml" string="PO Copy"
                 usage="default"/> 
 
 

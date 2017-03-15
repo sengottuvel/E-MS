@@ -28,7 +28,7 @@
 							<field name="return" invisible='1'/>
 							<field name="modify" invisible='1'/>
 							<button name="auto_dep_indent" type="object" string="Auto Dept.Indent" states="draft" class="oe_highlight" invisible='1'/>
-							<button name="user_entry_count" type="object" string="User Entry Count" states="draft" class="oe_highlight" invisible='0'/>
+							<button name="user_entry_count" type="object" string="User Entry Count" states="draft" class="oe_highlight" invisible='1'/>
 						</group>					
 					</group>
                  		<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Purchase_Order" language="groovy" pageWidth="594" pageHeight="842" columnWidth="554" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="96"/>
+	<property name="ireport.y" value="0"/>
 	<subDataset name="dataset1"/>
 	<subDataset name="New Dataset 1">
 		<parameter name="order_id" class="java.lang.Integer"/>
@@ -59,6 +59,7 @@ part.phone as phone,
 part.fax as fax,
 part.email as email,
 
+
 CASE WHEN comp.cin_no != '' THEN 'CIN NO :'
 ELSE ''
 END as cin_label,
@@ -78,7 +79,9 @@ partner.street2 as sup_street2,
 partner.contact_person as contact_person,
 partner.phone as sup_phone,
 partner.fax as sup_fax,
-partner.email as sup_email,
+CASE WHEN partner.email is null THEN '-'
+ELSE partner.email
+END as sup_email,
 CASE WHEN partner_city.name = null THEN ''
 ELSE partner_city.name
 END as sup_city,
@@ -94,8 +97,9 @@ END as sup_zip,
 CASE WHEN partner.mobile = null THEN ''
 ELSE partner.mobile
 END as sup_mobile,
-
-po.quot_ref_no as quot_ref_no,
+CASE WHEN po.quot_ref_no is null THEN '-'
+ELSE po.quot_ref_no
+END as quot_ref_no,
 po.dep_project_name as project_name,
 trim(TO_CHAR(po.amount_untaxed::float, '999G999G99G999G99G99G990D99'))  as total_amt,
 trim(TO_CHAR(po.discount::float, '999G999G99G999G99G99G990D99'))  as discount,
@@ -356,7 +360,7 @@ where po.id = $P{po_id}]]>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{disc_per}]]></textFieldExpression>
 							</textField>
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="440" y="3" width="55" height="10"/>
 								<textElement>
 									<font size="8"/>
@@ -552,7 +556,7 @@ where po.id = $P{po_id}]]>
 				<reportElement x="-1" y="0" width="554" height="802">
 					<printWhenExpression><![CDATA[(new Boolean(($F{status}.equals("draft"))) || new Boolean(($F{status}.equals("sent"))) || new Boolean(($F{status}.equals("confirmed"))))]]></printWhenExpression>
 				</reportElement>
-				<imageExpression><![CDATA["/OpenERP/E-MS/openerp-server/openerp/addons/kg_purchase_order/report/Draft.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["/home/dinesh/OpenERP_Projects/ellen_mc/openerp-server/openerp/addons/kg_purchase_order/report/Draft.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</background>
@@ -588,7 +592,7 @@ where po.id = $P{po_id}]]>
 				<text><![CDATA[Unit-I]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="196" y="42" width="240" height="10"/>
+				<reportElement x="215" y="42" width="240" height="10"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -672,7 +676,7 @@ where po.id = $P{po_id}]]>
 			</staticText>
 			<image>
 				<reportElement x="9" y="14" width="77" height="55"/>
-				<imageExpression><![CDATA["/OpenERP/E-MS/openerp-server/openerp/addons/web/static/src/img/ellen_logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["/home/dinesh/OpenERP_Projects/ellen_mc/openerp-server/openerp/addons/web/static/src/img/ellen_logo.jpg"]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>
@@ -750,19 +754,19 @@ where po.id = $P{po_id}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sup_street1}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="42" y="41" width="170" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sup_street2}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="42" y="51" width="171" height="12"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="42" y="53" width="60" height="12"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{sup_city}+"-"+$F{sup_zip}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{sup_city}]]></textFieldExpression>
 			</textField>
 			<rectangle radius="10">
 				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="2" y="80" width="551" height="27"/>
@@ -802,7 +806,7 @@ where po.id = $P{po_id}]]>
 				</textElement>
 				<text><![CDATA[QR741A2]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="false">
 				<reportElement x="219" y="87" width="93" height="20"/>
 				<textElement>
 					<font size="8"/>
@@ -819,6 +823,13 @@ where po.id = $P{po_id}]]>
 				</textElement>
 				<text><![CDATA[Please arrange to supply us the following]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="42" y="65" width="60" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sup_zip}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<pageFooter>
