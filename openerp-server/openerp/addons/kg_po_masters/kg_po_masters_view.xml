@@ -82,7 +82,7 @@
 				<tree toolbar="True" string="Payment Master" colors="blue:state == 'draft';red:state == 'confirm';black:state == 'approved';grey:state == 'reject'">
 					<field name="name"/>
 					<field name="code"/>
-					<field name="term_category"/>
+					<field name="term_category" invisible='1'/>
 					<field name="state"/>
 				</tree>
 			</field>

@@ -88,6 +88,7 @@ class kg_purchase_order_register(JasperDataParser.JasperDataParser):
 
 
 	def generate_records(self, cr, uid, ids, data, context):
+		print "---------------------------------------"
 		pool= pooler.get_pool(cr.dbname)
 		return {}
 

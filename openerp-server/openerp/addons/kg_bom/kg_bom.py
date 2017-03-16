@@ -201,16 +201,27 @@ class kg_bom_line(osv.osv):
 	'department_id':72
 	  
 	}
-	_sql_constraints = [
-		('product_id', 'unique(product_id)', 'Product Name must be unique!'),
-	]	
-	
+
 	def onchange_uom_id(self, cr, uid, ids, product_id, context=None):
 		value = {'product_uom': ''}
 		if product_id:
 			pro_rec = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
 			value = {'product_uom': pro_rec.uom_id.id}
 		return {'value': value}	
+
+	def _check_product_id(self, cr, uid, ids, context=None):
+		rec = self.browse(cr,uid,ids[0])
+		cr.execute("""select id from mrp_bom_line where bom_id = %s and product_id = %s"""%(rec.bom_id.id,rec.product_id.id))
+		data = cr.fetchall();
+		if len(data) > 1:
+			return False
+		else:
+			return True
+		return True
+
+	_constraints = [
+		(_check_product_id, 'Warning ! Product already exist.', ['product_id']),
+	]
 
 	
 kg_bom_line()

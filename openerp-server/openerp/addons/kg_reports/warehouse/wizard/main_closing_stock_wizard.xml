@@ -8,7 +8,27 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
             <form string="Main Store Closing Stock">
-				<separator string="Main Stores Closing Stock" colspan="4"/>                   
+				<separator string="Main Stores Closing Stock" colspan="4"/>    
+				<group>
+						<group string="Filter by">
+							<field name="filter" required="1"/>
+							<field name="date" attrs="{'readonly':[('filter', '!=', 'filter_date')], 'required':[('filter', '=', 'filter_date')]}"/>
+							<field name="pro_cat"/>
+						</group>
+						<group string="Filter">
+							<field name="location_dest_id"/>
+							<field name="major_name"/>
+						</group>
+						<group string='Product Name'>
+							<field name="product" widget="many2many_tags"/>
+						</group>			
+						<group string='Product Type'>
+							<field name="product_type"/>
+						</group>					
+					</group>
+					
+					               
+<!--
 					<notebook tabpos="up" colspan="4">
 						<page string="Filters" name="filters">
 							<field name="filter" colspan="4"/>
@@ -30,6 +50,7 @@
 						</page>
 															   
 					</notebook>                
+-->
                     <separator colspan="4"/>
 						<group col="4" colspan="4">
 							<button icon="gtk-print" name="check_report" string="Print" type="object" colspan="2" default_focus="1" />

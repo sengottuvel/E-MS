@@ -9,7 +9,25 @@
             <field name="type">form</field>            
             <field name="arch" type="xml">
 				<form string="Department Issue Register">
+				<separator string="Department Issue Register" colspan="4"/>
+				 <group>
+						<group string="Date">
+							<field name="from_date" required="1"/>
+							<field name="to_date" required="1"/>
+						</group>
+						<group string='Department Name'>
+							<field name="dep_id" widget="many2many_tags"/>
+						</group>			
+						<group string='Product'>
+							<field name="product" widget="many2many_tags"/>
+						</group>					
+					</group>
+					
+					
+<!--
 					 <separator string="Department Issue Register" colspan="4"/>
+-->
+<!--
                    
 						<notebook tabpos="up" colspan="4">
 							<page string="Filters" name="filter">
@@ -20,6 +38,7 @@
 									<field name="to_date" required="1"/>
 									
 								</group>
+-->
 <!--
 								<group string="Status">
 									<field name="issue_status" />
@@ -27,28 +46,34 @@
 -->
 
 
+<!--
 							   </group>
 							</page>
 							
+-->
 
 							
 
+<!--
 							<page string="Department" name="dep_id">
 								<group colspan="2" col="2">
 									<separator string="Department Name" colspan="2" col="2" />
 									<field name = "dep_id"/>
 								</group>
 							</page>
+-->
 
 
 							
 
+<!--
 							<page string="Product" name="product">
 								<group colspan="2" col="2">
 									<separator string="Product" colspan="2" col="2" />
 									<field name = "product"/>
 								</group>
 							</page>
+-->
 
 							<!--<page string="Product Type" name="product_type">
 								<group colspan="2" col="2">
@@ -58,7 +83,9 @@
 							</page>-->
 
 																			 
+<!--
 						</notebook>                
+-->
                     <separator colspan="4"/>
 						<group col="4" colspan="4">
 						<button type="object" name="create_report" icon="gtk-go-forward" string="Generate Report"/>

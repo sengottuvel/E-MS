@@ -79,6 +79,7 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 			lo_type = 'in'
 		else:
 			lo_type = 'out'
+		
 		self.cr.execute('''		
 		
 			   SELECT 
@@ -135,6 +136,7 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 					op_qty = in_qty		
 					
 				item['close_qty'] = op_qty
+				print "====================================================",item['close_qty']
 				
 				
 				#####
@@ -167,6 +169,7 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 						
 						
 						value += price
+					print "=============================",	price_list
 					if price_list:
 						item['unit_price'] = sum(price_list) / len(price_list)
 					else:
@@ -200,6 +203,8 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 				cat_rec = self.pool.get('product.category').browse(self.cr,self.uid,item1['cat_id'])
 				category = cat_rec.complete_name
 				cat = category.split("/")
+				print  "------------------------------------>",cat[0]
+				print  "------------------------------------>",cat_rec.complete_name
 				
 				
 				data_renew1.append({'product_name':cat[0],'type':1})

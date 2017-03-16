@@ -20,5 +20,7 @@
 ##############################################################################
 
 
-import kg_purchase_order_register
 import kg_so_register
+import kg_purchase_order_register
+
+

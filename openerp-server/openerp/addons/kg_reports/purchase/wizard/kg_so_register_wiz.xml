@@ -8,6 +8,26 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
              <form string="Service Order Register">
+				 <separator string="Service Order Register" colspan="4"/>
+				 <group>
+						<group string="Date">
+							<field name="date_from" required="1"/>
+							<field name="date_to" required="1"/>
+						</group>
+						<group string='Product Name'>
+							<field name="product_id" widget="many2many_tags"/>
+						</group>			
+						<group string='Supplier'>
+							<field name="supplier" widget="many2many_tags"/>
+						</group>
+						<group string='Status'>
+							<field name="status"/>
+						</group>						
+					</group>
+					
+					
+<!--
+					
                 <separator string="Service Order Register" colspan="4"/>
                    
                     <notebook tabpos="up" colspan="4">
@@ -37,6 +57,7 @@
                         </page>
                                                                          
                     </notebook>                
+-->
                     <separator colspan="4"/>
 						<group col="4" colspan="4">
 							<button icon="gtk-print" name="check_report" string="Generate" type="object" colspan="2" default_focus="1" />
