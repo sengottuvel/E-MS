@@ -83,7 +83,7 @@
 			 <field name="delivery_address"/>
 			 <field name="bill_type" required="1" attrs="{'readonly': [('bill_type','!=',False)]}"/>
 			 <field name="advance_percen" attrs="{'invisible': [('bill_type','!=','advance')],'required': [('bill_type','=','advance')],'readonly': [('state','!=','draft')]}"/>
-			 <field name="payment_mode" required='1' attrs="{'readonly': [('payment_mode','!=',False)],'invisible': [('bill_type','=','credit')]}"/>
+			 <field name="payment_mode" attrs="{'readonly': [('payment_mode','!=',False)],'invisible': [('bill_type','=','credit')]}"/>
 			 <field name="term_warranty" invisible='1'/>
 			 <field name="revision" invisible="1"/>
 			<field name="grn_flag" invisible="1"/>

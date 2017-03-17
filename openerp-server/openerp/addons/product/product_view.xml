@@ -83,7 +83,7 @@
                         </div>
                         <group>
 							<group>
-								<field name="name" class="aplhanum_expect" placeholder="Name" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+								<field name="name" placeholder="Name" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
 								<field name="categ_id" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" required='1'/>
 							</group>
 							<group>
