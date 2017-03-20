@@ -9,3 +9,4 @@
 
 import kg_po_register_wiz
 import kg_so_register_wiz
+import kg_purchase_invoice_reg_wiz

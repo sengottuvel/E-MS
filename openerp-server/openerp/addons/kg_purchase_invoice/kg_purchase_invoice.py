@@ -94,6 +94,7 @@ class kg_purchase_invoice(osv.osv):
 			
 			res[order.id]['amount_total']=(round(val1 - final_adj_amt + res[order.id]['other_charge'],0)) - credit_amt + order.round_off_amt
 			res[order.id]['discount']=(round(val3,0))   
+			cr.execute(""" update kg_purchase_invoice set net_amt = %s where id = %s""" %((round(val1 - final_adj_amt + res[order.id]['other_charge'],0)) - credit_amt + order.round_off_amt,invoice_rec.id))
 		#advance updation
 		for i in invoice_rec.supplier_advance_line_ids:
 			val=i.supplier_advance_id.id

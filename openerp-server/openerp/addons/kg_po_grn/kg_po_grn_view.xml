@@ -35,7 +35,7 @@
                     <group>
 						<field name="grn_date" options="{'datepicker':{'maxDate': 0,'minDate':-4}}"/>
 						<field name="dc_date"/>
-						<field name="payment_type" invisible='1'/>
+						<field name="payment_type" required='1'/>
 						<field name="billing_status"/>
 						<field name="approved_by" attrs="{'invisible': [('approve_flag','=',False)]}"/>
 						<field name="approved_date" attrs="{'invisible': [('approve_flag','=',False)]}"/>

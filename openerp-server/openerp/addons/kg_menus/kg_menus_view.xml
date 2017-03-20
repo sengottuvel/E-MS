@@ -222,6 +222,14 @@ user rights
 				/>
 				
 				
+				<menuitem
+				icon="STOCK_PRINT"
+				name="Gate Pass Register"
+				parent="main_store_report_menu" sequence = "11" 
+				action="kg_reports.action_gate_pass_report"
+				id="kg_rep_gate_pass_register"
+				/>
+				
 				<!-- PO Reports -->
 				
 			<menuitem id="main_sale_report_menus" parent = "main_report_menu" name="Sale Reports" sequence="3" groups="base.group_no_one"/>
@@ -236,6 +244,7 @@ user rights
 				
 			<menuitem action="kg_reports.action_po_stm_report" name="PO Register" id="menu_po_report" parent="main_po_report_menus" sequence="6" />
 			<menuitem action="kg_reports.action_so_stm_report" name="SO Register" id="menu_so_report" parent="main_po_report_menus" sequence="8" />
+			<menuitem action="kg_reports.action_purchase_invoice_report" name="Invoice Register" id="menu_invoice_report" parent="main_po_report_menus" sequence="9" />
 		
 
 		<!-- Entry Count -->

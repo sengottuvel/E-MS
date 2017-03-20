@@ -9,3 +9,4 @@
 import dep_issue_register_wizard_istl
 import main_closing_stock_wizard
 import grn_register_report_wizard
+import gate_pass_register_wizard

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_gate_pass_register_report" model="ir.ui.view">
+            <field name="name">Gate Pass Register</field>
+            <field name="model">gate.pass.register.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+             <form string="Gate Pass Register">
+                
+						  <group>
+							<group string="Gate Pass Date">
+								<field name="date_from" required="1"/>
+								<field name="date_to" required="1"/>
+							</group>
+							<group  string="Status">
+								<field name="status"/>
+								<field name="supplier"/>
+<!--
+								<field name = "dep_id"/>
+-->
+								<field name = "product"/>
+<!--
+								<field name = "out_type"/>
+-->
+							</group>
+						   </group>
+						
+                    <separator colspan="4"/>
+						<group col="4" colspan="4">
+							<button icon="gtk-print" name="create_report" string="Generate" type="object" colspan="2" default_focus="1" />
+							<button icon="gtk-cancel" special="cancel" string="Cancel" colspan="2"/>
+						</group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_gate_pass_report" model="ir.actions.act_window">  
+            <field name="name">Gate Pass Register</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gate.pass.register.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+          <report string="Gate Pass Register"
+		model="gate.pass.register.wizard"
+		auto="True"
+		name="jasper_kg_gatepass_register"
+		rml="kg_reports/warehouse/report/kg_gatepass_register.jrxml"
+		id="gatepass_jasper_register_id"
+		menu="False"
+		/>    
+	
+    </data>
+</openerp>
