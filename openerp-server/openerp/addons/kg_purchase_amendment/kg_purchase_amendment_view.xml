@@ -172,7 +172,7 @@
 					<field name="cancel_flag" invisible="1"/>
 					<field name="qty_flag" invisible="1"/>
 					<field name="line_state" invisible="1"/>
-					<field name="kg_poindent_lines" nolabel="1" attrs="{'invisible': [('po_type','!=','frompi')]}"/>
+					<field name="kg_poindent_lines" nolabel="1" attrs="{'invisible': [('po_type','==','direct')]}"/>
 					<button name="pol_cancel" type="object" string="Cancel" icon="gtk-cancel"
 							attrs="{'invisible': [('line_state','!=','draft')]}"
 							class="oe_highlight" invisible="1"/>

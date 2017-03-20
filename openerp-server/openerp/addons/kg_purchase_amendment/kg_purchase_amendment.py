@@ -363,7 +363,7 @@ class kg_purchase_amendment(osv.osv):
 			pol_record = amend_line.po_line_id
 			diff_qty = amend_line.product_qty - amend_line.product_qty_amend
 			pending_diff_qty = amend_line.product_qty - amend_line.pending_qty
-			if grn_entry.po_type == 'frompi':
+			if grn_entry.po_type == 'frompi' or grn_entry.po_type == 'fromquote':
 				if amend_line.product_qty < amend_line.product_qty_amend:
 					pi_line_record = pi_line_obj.browse(cr, uid,pol_record.pi_line_id.id)
 					if pi_line_record.pending_qty <= 0:
@@ -371,19 +371,6 @@ class kg_purchase_amendment(osv.osv):
 							raise osv.except_osv(
 							_('If you want to increase PO Qty'),
 							_('Select PI for this Product')) 
-						else:
-							for ele in amend_line.kg_poindent_lines:
-								if ele.product_id.id == amend_line.product_id.id:
-									
-									if (amend_line.product_qty_amend - amend_line.product_qty) <= ele.pending_qty:
-										pi_line_obj.write(cr,uid,pi_line_record.id,{'pending_qty': 0}) 
-										amend_line_obj.write(cr,uid,amend_line.id,{'pi_line_id':ele.id})
-										line_pending = ele.pending_qty - (amend_line.product_qty_amend - amend_line.product_qty)
-										pi_line_obj.write(cr,uid,ele.id,{'pending_qty': line_pending}) 
-									else:
-										raise osv.except_osv(
-											_('Amendment Qty is greater than indent qty'),
-											_('')) 	
 					else:
 						pass
 				else:
@@ -517,7 +504,33 @@ class kg_purchase_amendment(osv.osv):
 					'note':amend_obj.remark,
 					'version':version,
 					})
-		
+			for amend_line in amend_obj.amendment_line:		
+				po_line_id = amend_line.po_line_id.id
+				po_rec = amend_obj.po_id
+				pol_record = amend_line.po_line_id
+				diff_qty = amend_line.product_qty - amend_line.product_qty_amend
+				pending_diff_qty = amend_line.product_qty - amend_line.pending_qty
+				if amend_obj.po_type == 'frompi' or amend_obj.po_type == 'fromquote':
+					if amend_line.product_qty < amend_line.product_qty_amend:
+						pi_line_record = pi_line_obj.browse(cr, uid,pol_record.pi_line_id.id)
+						if pi_line_record.pending_qty <= 0:
+							if not amend_line.kg_poindent_lines:
+								raise osv.except_osv(
+								_('If you want to increase PO Qty'),
+								_('Select PI for this Product')) 
+							else:
+								for ele in amend_line.kg_poindent_lines:
+									if ele.product_id.id == amend_line.product_id.id:
+										
+										if (amend_line.product_qty_amend - amend_line.product_qty) <= ele.pending_qty:
+											pi_line_obj.write(cr,uid,pi_line_record.id,{'pending_qty': 0}) 
+											amend_line_obj.write(cr,uid,amend_line.id,{'pi_line_id':ele.id})
+											line_pending = ele.pending_qty - (amend_line.product_qty_amend - amend_line.product_qty)
+											pi_line_obj.write(cr,uid,ele.id,{'pending_qty': line_pending}) 
+										else:
+											raise osv.except_osv(
+												_('Amendment Qty is greater than indent qty'),
+												_('')) 	
 		for amend_line in amend_obj.amendment_line:
 			po_line_id = amend_line.po_line_id.id
 			po_rec = amend_obj.po_id
