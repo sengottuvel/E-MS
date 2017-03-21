@@ -873,7 +873,7 @@ class product_product(osv.osv):
 		'cancel_remark': fields.text('Cancel Remarks'),
 		'notes': fields.text('Notes'),
 		# added by dinesh
-		'self_life_days': fields.integer('Self Life Days',size=3),
+		'self_life_days': fields.char('Self Life Days'),
 	    'qa_verification':fields.selection([('yes', 'Yes'), ('no', 'No')], 'QA Verification'),
 	    'critical_item':fields.selection([('yes', 'Yes'), ('no', 'No')], 'Critical Item Status'),
 	    'test_certificate':fields.selection([('yes', 'Yes'), ('no', 'No')], 'Test Certificate'),

@@ -249,6 +249,7 @@ class kg_gate_pass(osv.osv):
 					cr.execute(sql1)
 					stock_move_obj.create(cr,uid,
 						{
+						'date': rec.date,
 						'gp_id': rec.id,
 						'gp_line_id': rec.gate_line[0].id,
 						'product_id': product.id,

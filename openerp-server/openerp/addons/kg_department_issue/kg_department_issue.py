@@ -105,7 +105,7 @@ class kg_department_issue(osv.osv):
 	def unlink(self,cr,uid,ids,context=None):
 		unlink_ids = []		
 		for rec in self.browse(cr,uid,ids):	
-			if rec.state != 'draft':			
+			if rec.state not in ('confirmed','draft'):			
 				raise osv.except_osv(_('Warning!'),
 						_('You can not delete this entry !!'))
 			else:
@@ -191,7 +191,7 @@ class kg_department_issue(osv.osv):
 		obj =  self.browse(cr,uid,ids[0])
 		if obj.issue_line_ids:
 			issue_lines = map(lambda x:x.id,obj.issue_line_ids)
-			move_obj.unlink(cr,uid,issue_lines)
+			issue_line_obj.unlink(cr,uid,issue_lines)
 		
 		dep_rec = dep_obj.browse(cr, uid, obj.user_id.dep_name.id)
 		issue_dep_id = obj.department_id.id
@@ -252,7 +252,7 @@ class kg_department_issue(osv.osv):
 		obj =  self.browse(cr,uid,ids[0])
 		if obj.issue_line_ids:
 			issue_lines = map(lambda x:x.id,obj.issue_line_ids)
-			move_obj.unlink(cr,uid,issue_lines)
+			issue_line_obj.unlink(cr,uid,issue_lines)
 		dep_rec = dep_obj.browse(cr, uid, obj.user_id.dep_name.id)
 		issue_dep_id = obj.department_id.id
 		obj.write({'state': 'confirmed'})
@@ -300,6 +300,26 @@ class kg_department_issue(osv.osv):
 		lot_obj = self.pool.get('stock.production.lot')
 		product_obj = self.pool.get('product.product')
 		dep_issue_line_obj = self.pool.get('kg.department.issue.line')
+		if obj_rec.dep_issue_type =='from_indent':
+			if obj_rec.issue_line_ids:
+				if obj_rec.issue_type =='material':
+					for i in obj_rec.issue_line_ids:
+						if i.indent_line_id:
+							pass
+						else:
+							raise osv.except_osv(
+						_('Warning !!'),
+						_('You cannot able to add manual entry '))
+				elif obj_rec.issue_type =='service':
+					for i in obj_rec.issue_line_ids:
+							if i.service_indent_line_id:
+								pass
+							else:
+								raise osv.except_osv(
+						_('Warning!!'),
+						_('You cannot able to add manual entry  '))
+				else:
+					pass
 		if not obj_rec.name:
 			seq_id = self.pool.get('ir.sequence').search(cr,uid,[('code','=','kg.department.issue')])
 			seq_rec = self.pool.get('ir.sequence').browse(cr,uid,seq_id[0])

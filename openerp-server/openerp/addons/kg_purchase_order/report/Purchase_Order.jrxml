@@ -570,7 +570,7 @@ where po.id = $P{po_id}]]>
 				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="-1" y="0" width="554" height="83" backcolor="#A11D1D"/>
 			</rectangle>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="108" y="2" width="402" height="27" isPrintWhenDetailOverflows="true"/>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="139" y="2" width="331" height="27" isPrintWhenDetailOverflows="true"/>
 				<box leftPadding="2"/>
 				<textElement>
 					<font size="18" isBold="true"/>
@@ -661,11 +661,6 @@ where po.id = $P{po_id}]]>
 					<font size="8"/>
 				</textElement>
 				<text><![CDATA[E-mail]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="245" y="19" width="12" height="20"/>
-				<textElement/>
-				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="353" y="55" width="7" height="15"/>

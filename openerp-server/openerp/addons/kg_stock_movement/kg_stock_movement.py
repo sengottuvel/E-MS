@@ -300,7 +300,7 @@ class kg_stock_movement(osv.osv):
 			## move creation	
 				
 			form_vals = {
-			
+					'date':rec.date,
 					'stock_move_id':rec.id,
 					'product_id':line.product_id.id,
 					'product_uom':line.uom.id,

@@ -189,7 +189,7 @@
             <field name="model">kg.department.issue.line</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-				<tree string="Department Issue Line">
+				<tree string="Department Issue Line" delete='false'>
 						<field name="product_id"/>
 						<field name="brand_id"/>              
 						<field name="uom_id"/>

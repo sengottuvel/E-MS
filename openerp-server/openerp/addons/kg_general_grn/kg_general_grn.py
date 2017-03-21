@@ -326,6 +326,7 @@ class kg_general_grn(osv.osv):
 			if grn_entry.grn_line[0].product_id.stockable == 'yes':									
 				stock_move_obj.create(cr,uid,
 					{
+					'date':grn_entry.grn_date,
 					'general_grn_id':line.id,
 					'product_id': line.product_id.id,
 					'brand_id':line.brand_id.id,
