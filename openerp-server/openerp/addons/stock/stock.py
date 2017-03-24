@@ -161,7 +161,7 @@ class stock_location(osv.osv):
 	_columns = {
 		'name': fields.char('Name', size=64, required=True, translate=True),
 		'active': fields.boolean('Active', help="By unchecking the active field, you may hide a location without deleting it."),
-		'usage': fields.selection([('supplier', 'Supplier Location'), ('view', 'View'), ('internal', 'Internal Location'), ('customer', 'Customer Location'), ('inventory', 'Inventory'), ('procurement', 'Procurement'), ('production', 'Production'), ('transit', 'Transit Location for Inter-Companies Transfers'),('consumption','Consumption'),('scrap','Scrap')], 'Location Type', required=True,
+		'usage': fields.selection([('supplier', 'Supplier Location'),('transit', 'Transit'), ('view', 'View'), ('internal', 'Internal Location'), ('customer', 'Customer Location'), ('inventory', 'Inventory'), ('procurement', 'Procurement'), ('production', 'Production'), ('transit', 'Transit Location for Inter-Companies Transfers'),('consumption','Consumption'),('scrap','Scrap')], 'Location Type', required=True,
 				 help="""* Supplier Location: Virtual location representing the source location for products coming from your suppliers
 					   \n* View: Virtual location used to create a hierarchical structures for your warehouse, aggregating its child locations ; can't directly contain products
 					   \n* Internal Location: Physical locations inside your own warehouses,
@@ -1772,6 +1772,8 @@ class stock_move(osv.osv):
 		# used for colors in tree views:
 		'scrapped': fields.related('location_dest_id','scrap_location',type='boolean',relation='stock.location',string='Scrapped', readonly=True),
 		'type': fields.related('picking_id', 'type', type='selection', selection=[('out', 'Sending Goods'), ('in', 'Getting Goods'), ('internal', 'Internal')], string='Shipping Type'),
+		'flag_opening': fields.boolean('Flag Opening'),
+		'transaction_type': fields.char('Transaction Type'),
 	}
 
 	def _check_location(self, cr, uid, ids, context=None):
@@ -1877,6 +1879,7 @@ class stock_move(osv.osv):
 		'priority': '1',
 		'product_qty': 1.0,
 		'scrapped' :  False,
+		'flag_opening' :  False,
 		'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
 		'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'stock.move', context=c),
 		'date_expected': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
