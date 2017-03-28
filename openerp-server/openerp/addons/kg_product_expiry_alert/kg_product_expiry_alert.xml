@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	
+	
+	<record id="kg_product_expiry_alert_form_view" model="ir.ui.view">
+            <field name="name">kg.product.expiry.alert.form</field>
+            <field name="model">kg.product.expiry.alert</field>
+            <field name="arch" type="xml">
+                <form string="GRN Register" version="7.0">
+				<header>
+					<button name="load_product" type='object' string="Load GRN"/>
+					<button name="mail" type='object' string="Send Mail" invisible='1'/>
+				</header>
+		<group>
+			<group>
+				<field name="created_by" readonly="1"/>
+			</group>
+			<group>
+				<field name="date" readonly="1"/>
+				
+			</group>
+		</group>
+          
+          <field name="line_ids">
+			<tree string = "Expiry Line" editable="bottom">
+				<field name="product_id"/>
+				<field name="uom_id"/>
+				<field name="qty"/>
+				<field name="ex_date"/>
+				<field name="batch"/>
+				<field name="grn_no"/>
+				
+				
+			</tree>
+		</field>						
+					</form>
+            </field> 
+      
+
+        </record>
+       
+
+        
+		 <record id="kg_product_expiry_alert_action_form" model="ir.actions.act_window">
+            <field name="name">Expiry Alert</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">kg.product.expiry.alert</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="kg_product_expiry_alert_form_view"/>
+        </record>
+        
+         
+
+		
+		<menuitem id="kg_product_expiry_alert_menu_menus" name="Product Expiry" sequence="105" parent="stock.menu_stock_root"/>
+		
+		<menuitem id="kg_product_expiry_alert_form_id" name="Products expiry" parent="kg_product_expiry_alert_menu_menus" sequence="1" action="kg_product_expiry_alert_action_form" />
+
+</data>
+	</openerp>
