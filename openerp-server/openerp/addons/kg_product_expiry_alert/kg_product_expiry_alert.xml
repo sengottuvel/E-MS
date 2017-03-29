@@ -10,7 +10,7 @@
                 <form string="GRN Register" version="7.0">
 				<header>
 					<button name="load_product" type='object' string="Load GRN"/>
-					<button name="mail" type='object' string="Send Mail" invisible='0'/>
+					<button name="mail" type='object' string="Send Mail" invisible='1'/>
 				</header>
 		<group>
 			<group>
