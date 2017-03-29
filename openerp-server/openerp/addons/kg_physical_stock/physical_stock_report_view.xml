@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    
+
+		<report string="Physical Stock Slip"
+        model="kg.physical.stock"
+        auto="True"
+        name="onscreen_physical_stock_report"
+        rml="kg_physical_stock/report/Physical_stock.jrxml"
+        id="physical_stock_jasper_reports" 
+        menu="True"
+        header="False"
+        />
+
+
+    </data>
+</openerp>

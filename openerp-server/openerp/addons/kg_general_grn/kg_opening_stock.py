@@ -284,7 +284,7 @@ class kg_opening_stock(osv.osv):
                         object_id = ids and ('%s-%s' % (ids, 'kg.opening.stock')),
                         subtype = 'html',
                         subtype_alternative = 'plain')
-                res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=1,  context=context)
+                res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=2,  context=context)
                 
                
         return True

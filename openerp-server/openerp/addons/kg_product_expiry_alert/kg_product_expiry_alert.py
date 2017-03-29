@@ -56,9 +56,10 @@ class kg_product_expiry_alert(osv.osv):
 		return data
 	
 	
-	def mail(self, cr, uid, ids,context=None):
-		val = self.load_product(cr, uid, ids,context)
-		if val:
+	def mail(self, cr, uid, ids=0,context=None):		
+		cr.execute("""select grn_no,product_id,product_uom,price_unit,expiry_date,product_qty,pending_qty,batch_no,po_uom from stock_production_lot where pending_qty >0 and product_id in (select id from product_product where flag_expiry_alert='t') and expiry_date >= (select current_date) and expiry_date <(select current_date+15) order by expiry_date""")	
+		data1 = cr.fetchall();
+		if data1:
 			cr.execute("""select expiry_alert_mail('Expiry Alert')""")
 			data = cr.fetchall();
 			if data[0][0] is None:
@@ -86,7 +87,7 @@ class kg_product_expiry_alert(osv.osv):
 						object_id = ids and ('%s-%s' % (ids, 'kg.mail.settings')),
 						subtype = 'html',
 						subtype_alternative = 'plain')
-					res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=1, context=context)
+					res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=2, context=context)
 				else:
 					pass
 		return True
