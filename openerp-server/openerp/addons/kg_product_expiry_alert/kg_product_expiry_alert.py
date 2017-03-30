@@ -36,7 +36,7 @@ class kg_product_expiry_alert(osv.osv):
 		if expiry_ids.line_ids:
 			line_ids = map(lambda x:x.id,expiry_ids.line_ids)
 			pi_obj.unlink(cr,uid,line_ids)
-		ex_date = datetime.datetime.now() + timedelta(days=15)			
+		ex_date = datetime.datetime.now() + timedelta(days=60)			
 		fut_date=ex_date.strftime('%Y-%m-%d')
 		cr.execute("""select grn_no,product_id,product_uom,price_unit,expiry_date,product_qty,pending_qty,batch_no,po_uom from stock_production_lot where pending_qty >0 and product_id in (select id from product_product where flag_expiry_alert='t') and expiry_date >= '%s' and expiry_date <'%s' order by expiry_date"""%(expiry_ids.date,fut_date))
 		data = cr.dictfetchall();
@@ -57,7 +57,7 @@ class kg_product_expiry_alert(osv.osv):
 	
 	
 	def mail(self, cr, uid, ids=0,context=None):		
-		cr.execute("""select grn_no,product_id,product_uom,price_unit,expiry_date,product_qty,pending_qty,batch_no,po_uom from stock_production_lot where pending_qty >0 and product_id in (select id from product_product where flag_expiry_alert='t') and expiry_date >= (select current_date) and expiry_date <(select current_date+15) order by expiry_date""")	
+		cr.execute("""select grn_no,product_id,product_uom,price_unit,expiry_date,product_qty,pending_qty,batch_no,po_uom from stock_production_lot where pending_qty >0 and product_id in (select id from product_product where flag_expiry_alert='t') and expiry_date >= (select current_date) and expiry_date <(select current_date+60) order by expiry_date""")	
 		data1 = cr.fetchall();
 		if data1:
 			cr.execute("""select expiry_alert_mail('Expiry Alert')""")
@@ -87,7 +87,7 @@ class kg_product_expiry_alert(osv.osv):
 						object_id = ids and ('%s-%s' % (ids, 'kg.mail.settings')),
 						subtype = 'html',
 						subtype_alternative = 'plain')
-					res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=2, context=context)
+					res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=1, context=context)
 				else:
 					pass
 		return True

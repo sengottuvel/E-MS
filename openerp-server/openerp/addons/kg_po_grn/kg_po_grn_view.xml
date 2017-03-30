@@ -256,6 +256,7 @@
 							<field name="gp_flag" invisible = "1"/>
 							<field name="ser_no"/>
 							<field name="serial_no"/>
+							<field name="confirm_flag" invisible='1'/>
 						</group> 
 					</group>
                   
@@ -289,10 +290,11 @@
                   
                   <group string="S/N Details">
                   
-					   <field name="po_exp_id" nolabel="1">
+					   <field name="po_exp_id" nolabel="1" attrs="{'readonly': [('confirm_flag','=',True)]}">
 						  <tree editable="bottom">
 							<field name="product_qty" required="1"/>
-							<field name="exp_date" required="1" options="{'datepicker':{'maxDate': null,'minDate':0}}"/>               
+							<field name="exp_days" required="1"/>
+							<field name="exp_date" invisible='1' options="{'datepicker':{'maxDate': null,'minDate':0}}"/>               
 							<field name="batch_no" string = 'S/N' required="1"/>
 							
 							

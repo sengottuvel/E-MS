@@ -202,6 +202,26 @@ class kg_general_grn(osv.osv):
 		
 	def entry_confirm(self, cr, uid, ids,context=None):
 		grn_entry = self.browse(cr, uid, ids[0])
+		for i in grn_entry.grn_line:
+			if i.product_id.flag_expiry_alert ==True:
+				if i.exp_batch_id:
+					pass
+				else:
+					raise osv.except_osv(
+				_('Warning'),
+				_('Expiry days Mandatory for the product %s')%(i.product_id.name_template))
+			for j in i.exp_batch_id:
+				if i.product_id.flag_expiry_alert ==True:
+					if j.exp_days >0:
+						pass
+					else:
+						raise osv.except_osv(
+					_('Warning'),
+					_('Expiry days Should ber greater than Zero for the product %s')%(i.product_id.name_template))
+				cr.execute(""" select current_date+%s"""%(j.exp_days))
+				datw = cr.dictfetchall()
+				ex_date = datw[0]['?column?']
+				cr.execute(""" update kg_exp_batch set exp_date ='%s' where id =%s"""%(ex_date,j.id))	
 		if not grn_entry.name:
 			seq_id = self.pool.get('ir.sequence').search(cr,uid,[('code','=','kg.po.grn')])
 			seq_rec = self.pool.get('ir.sequence').browse(cr,uid,seq_id[0])
@@ -220,18 +240,10 @@ class kg_general_grn(osv.osv):
 				_('Warning'),
 				_('GRN Entry is not allowed for this date!'))
 		for line in grn_entry.grn_line:
-			dt_time = a.strftime('%Y-%m-%d')		
-			for exp in line.exp_batch_id:
-				if exp.exp_date:
-					if exp.exp_date < dt_time:
-						raise osv.except_osv(_('Warning!'), _('Expiery Date in Line items should not be in past date!!'))
 			if line.inward_type.id == False:
 				raise osv.except_osv(_('Warning!'), _('Kindly Give Inward Type for %s !!' %(line.product_id.name)))
 			product_id = line.product_id.id
 			pro_rec = self.pool.get('product.product').browse(cr, uid, product_id)
-			if pro_rec.expiry == True:
-				if not line.exp_batch_id:
-					raise osv.except_osv(_('Warning!'), _('You should specify Expiry date and batch no for this item!!'))
 			if line.exp_batch_id:
 				for exp_line in line.exp_batch_id:
 					exp_grn_qty += exp_line.product_qty
@@ -251,6 +263,7 @@ class kg_general_grn(osv.osv):
 								  'confirmed_by':uid,
 								  'confirmed_date':time.strftime('%Y-%m-%d %H:%M:%S')
 								  })
+		cr.execute("""update kg_general_grn_line set confirm_flag = 't' where id = %s"""%(line.id))								  
 		return True
 
 	def entry_approve(self, cr, uid, ids,context=None):
@@ -766,10 +779,13 @@ class kg_general_grn_line(osv.osv):
 		'price_type': fields.selection([('po_uom','PO UOM'),('per_kg','Per Kg')],'Price Type'),
 		'weight': fields.float('Weight',readonly=True, states={'confirmed':[('readonly',False)],'draft':[('readonly',False)]}),
 		'tot_price': fields.float('Total Amount',readonly=True),
+		'confirm_flag': fields.boolean('Rejection Flag'),
+		
 	}
 
 	_defaults = {
 
+		'confirm_flag':False,
 		'state':'draft',
 		'price_type': 'po_uom',
 
@@ -826,6 +842,7 @@ class kg_exp_batch(osv.osv):
 
 		'grn_line_id':fields.many2one('kg.general.grn.line','GRN Entry Line'),
 		'exp_date':fields.date('Expiry Date'),
+		'exp_days':fields.integer('Expiry Days'),
 		'batch_no':fields.char('Batch No'),
 		'product_qty':fields.integer('Product Qty'),
 

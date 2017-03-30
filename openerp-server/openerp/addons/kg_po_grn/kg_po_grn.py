@@ -599,6 +599,26 @@ class kg_po_grn(osv.osv):
 		d1 = today_new
 		d2 = bk_date
 		delta = d1 - d2
+		for i in grn_entry.line_ids:
+			if i.product_id.flag_expiry_alert ==True:
+				if i.po_exp_id:
+					pass
+				else:
+					raise osv.except_osv(
+				_('Warning'),
+				_('Expiry days Mandatory for the product %s')%(i.product_id.name_template))
+			for j in i.po_exp_id:
+				if i.product_id.flag_expiry_alert ==True:
+					if j.exp_days >0:
+						pass
+					else:
+						raise osv.except_osv(
+					_('Warning'),
+					_('Expiry days Should ber greater than Zero for the product %s')%(i.product_id.name_template))
+				cr.execute(""" select current_date+%s"""%(j.exp_days))
+				datw = cr.dictfetchall()
+				ex_date = datw[0]['?column?']
+				cr.execute(""" update kg_po_exp_batch set exp_date ='%s' where id =%s"""%(ex_date,j.id))	
 		grn_name = ''		
 		if not grn_entry.name:
 			grn_no = self.pool.get('ir.sequence').get(cr, uid, 'kg.po.grn') or ''
@@ -629,15 +649,7 @@ class kg_po_grn(osv.osv):
 					so_obj.write(cr,uid,line.so_line_id.service_id.id, {'grn_flag': True})
 			product_id = line.product_id.id
 			product_rec = self.pool.get('product.product').browse(cr, uid, product_id)
-			if product_rec.expiry == True:
-				if not line.po_exp_id:
-					raise osv.except_osv(_('Warning!'), _('You should specify expiry date and batch no for %s !!' %(line.product_id.name)))
 			if line.po_exp_id:
-				for exp_line in line.po_exp_id:
-					if line.po_grn_date > exp_line.exp_date:
-						raise osv.except_osv(
-								_('Expiry Date Should Not Be Less Than Current Date!'),
-								_('Change the product expity date to greater than current date for Product %s' %(line.product_id.name)))
 				cr.execute(""" select sum(product_qty) from kg_po_exp_batch where po_grn_line_id = %s """ %(line.id))
 				exp_data = cr.dictfetchone()
 				exp_grn_qty = exp_data['sum']
@@ -657,6 +669,8 @@ class kg_po_grn(osv.osv):
 								  'confirmed_by':uid,
 								  'confirmed_date':today,
 								   })
+		for line in grn_entry.line_ids:
+			cr.execute("""update po_grn_line set confirm_flag = 't' where id = %s"""%(line.id))
 		return True
 		
 		# PO GRN APPROVE #
@@ -1599,6 +1613,7 @@ class po_grn_line(osv.osv):
 		'rejection_flag': fields.boolean('Rejection Flag'),
 		'test_cer': fields.binary('Test Certificate'),
 		'inspec_report': fields.binary('Inspection Report'),
+		'confirm_flag': fields.boolean('Rejection Flag'),
 	}
 	
 	
@@ -1640,6 +1655,7 @@ class po_grn_line(osv.osv):
 	
 	_defaults = {
 	
+		'confirm_flag':False,
 		'state':'draft',
 		'billing_type':'free',
 		'price_type':'po_uom'
@@ -1659,6 +1675,7 @@ class kg_po_exp_batch(osv.osv):
 		
 		'po_grn_line_id':fields.many2one('po.grn.line','PO GRN Entry Line'),
 		'exp_date':fields.date('Expiry Date'),
+		'exp_days':fields.integer('Expiry Days'),
 		'batch_no':fields.char('Batch No'),
 		'product_qty':fields.float('Product Qty'),
 		
