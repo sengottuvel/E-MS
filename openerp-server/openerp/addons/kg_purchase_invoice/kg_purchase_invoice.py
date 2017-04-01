@@ -30,7 +30,7 @@ class kg_purchase_invoice(osv.osv):
 		val = 0.0
 		amt_to_per = (line.discount / (line.rec_qty * line.price_unit or 1.0 )) * 100
 		kg_discount_per = line.kg_discount_per
-		tot_discount_per = amt_to_per + kg_discount_per
+		tot_discount_per = amt_to_per 
 		for c in self.pool.get('account.tax').compute_all(cr, uid, line.invoice_tax_ids,
 			line.price_unit * (1-(tot_discount_per or 0.0)/100.0), line.rec_qty, line.product_id,
 			 line.header_id.supplier_id)['taxes']:			 
@@ -688,8 +688,9 @@ class ch_invoice_line(osv.osv):
 			tot_discount_per = amt_to_per 
 			price = line.price_unit * (1 - (tot_discount_per or 0.0) / 100.0)
 			taxes = tax_obj.compute_all(cr, uid, line.invoice_tax_ids, price, line.rec_qty, line.product_id, line.header_id.supplier_id)
-			cur = line.header_id.supplier_id.property_product_pricelist_purchase.currency_id
-			res[line.id] = cur_obj.round(cr, uid, cur, taxes['total_included'])
+			#~ cur = line.header_id.supplier_id.property_product_pricelist_purchase.currency_id
+			cur_rec =cur_obj.browse(cr,uid,21)
+			res[line.id] = cur_obj.round(cr, uid, cur_rec, taxes['total_included'])
 		return res  
 
 	_name = "ch.invoice.line"
@@ -729,7 +730,7 @@ class ch_invoice_line(osv.osv):
 		'header_id' : fields.many2one('kg.purchase.invoice', 'Header ID'),
 		
 		'brand_id':fields.many2one('kg.brand.master','Brand'),
-		'price_subtotal': fields.function(_amount_line,string='Line Total', digits_compute= dp.get_precision('Account')),
+		'price_subtotal': fields.function(_amount_line,string='Line Total', store=True,digits_compute= dp.get_precision('Account')),
 		'approved_status': fields.boolean('Approved Status'),
 		
 	}

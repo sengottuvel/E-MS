@@ -92,7 +92,7 @@ class kg_purchase_order(osv.osv):
 			res[order.id]['amount_tax']=(round(val,0))
 			res[order.id]['amount_untaxed']=(round(val4,0))
 			res[order.id]['discount']=(round(val3,0))
-			res[order.id]['amount_total']=(round(val5,0)) + (round(val,0))
+			res[order.id]['amount_total']=(round(val5,0))
 		return res
 		
 	def _get_order(self, cr, uid, ids, context=None):

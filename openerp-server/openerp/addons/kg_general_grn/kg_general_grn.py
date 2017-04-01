@@ -33,7 +33,7 @@ class kg_general_grn(osv.osv):
 		new_amt_to_per = line.kg_discount or 0.0 / line.grn_qty
 		amt_to_per = (line.kg_discount / (line.grn_qty * line.price_unit or 1.0 )) * 100
 		kg_discount_per = line.kg_discount_per
-		tot_discount_per = amt_to_per + kg_discount_per
+		tot_discount_per = amt_to_per
 		for c in self.pool.get('account.tax').compute_all(cr, uid, line.grn_tax_ids,
 			line.price_unit * (1-(tot_discount_per or 0.0)/100.0), line.grn_qty, line.product_id,
 			 line.grn_id.supplier_id)['taxes']:

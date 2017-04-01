@@ -99,6 +99,17 @@
 			</page>
 		</xpath>
 		
+		<xpath expr = "//page[@string='Supplier Details']" position="before">
+			<page string="Average Price">
+				<field name="avg_line_ids" editable="bottom">
+					<tree>
+						<field name="fiscal_id"/>
+						<field name="avg_price"/>
+					</tree>	
+				</field>					 
+			</page>
+		</xpath>
+		
 		<xpath expr = "//page[@string='Coupling Details']" position="before">
 				<page string="Mechanical Seal Details" attrs="{'invisible':[('product_type','not in',('mechanical_seal'))]}">
 					<group>

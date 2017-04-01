@@ -28,7 +28,7 @@ class kg_po_grn(osv.osv):
 		val = 0.0
 		amt_to_per = (line.kg_discount / (line.po_grn_qty * line.price_unit or 1.0 )) * 100
 		kg_discount_per = line.kg_discount_per
-		tot_discount_per = amt_to_per + kg_discount_per
+		tot_discount_per = amt_to_per
 		for c in self.pool.get('account.tax').compute_all(cr, uid, line.grn_tax_ids,
 			line.price_unit * (1-(tot_discount_per or 0.0)/100.0), line.po_grn_qty, line.product_id,
 			 line.po_grn_id.supplier_id)['taxes']:			 
@@ -65,7 +65,7 @@ class kg_po_grn(osv.osv):
 				val4 += line.tot_price
 			tax_am = val + tax_amt
 			val1 = val1 + vals
-			res[order.id]['line_amount_total']= ((round(val4,0)) - (round(val3,0)))
+			res[order.id]['line_amount_total']= ((round(val1 + tax_am,0)) - (round(val3,0)))
 			res[order.id]['other_charge']=(round(po_charges,0))
 			res[order.id]['amount_tax']=(round(tax_am,0))
 			res[order.id]['additional_charge']=(round(vals,0))
@@ -110,7 +110,7 @@ class kg_po_grn(osv.osv):
 		'approved_date':fields.datetime('Approved Date',readonly=True),
 		'name': fields.char('GRN NO',readonly=True),
 		'grn_date':fields.date('GRN Date',required=True,readonly=True, states={'item_load':[('readonly',False)],'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
-		'dc_no': fields.char('DC NO', required=True,readonly=True, states={'item_load':[('readonly',False)],'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
+		'dc_no': fields.char('DC NO',readonly=True, states={'item_load':[('readonly',False)],'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'dc_date':fields.date('DC Date',required=True, readonly=True, states={'item_load':[('readonly',False)],'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),		
 		'po_id':fields.many2one('purchase.order', 'PO NO',
 					domain="[('state','=','approved'), '&', ('order_line.pending_qty','>','0'), '&', ('grn_flag','=',False), '&', ('partner_id','=',supplier_id), '&', ('order_line.line_state','!=','cancel')]"), 

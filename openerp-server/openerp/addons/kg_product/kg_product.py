@@ -24,6 +24,7 @@ class kg_product(osv.osv):
 	_inherit = "product.product"
 	_columns = {
 	
+		'avg_line_ids':fields.one2many('ch.product.yearly.average.price','product_id','Line Entry'),
 		'capital': fields.boolean('Capital Goods'),
 		'abc': fields.boolean('ABC Analysis'),
 		'po_uom_coeff': fields.float('PO Coeff', required=True, help="One Purchase Unit of Measure = Value of(PO Coeff)UOM"),
@@ -201,6 +202,28 @@ class ch_supplier_details(osv.osv):
 	
 		
 ch_supplier_details()
+
+
+class ch_product_yearly_average_price(osv.osv):
+    
+	_name = "ch.product.yearly.average.price"
+ 
+	_columns = {
+    
+       
+		'avg_price': fields.float('Average Price', required=True),
+		'product_id': fields.many2one('product.product', 'Product'),
+		'fiscal_id': fields.many2one('account.fiscalyear', 'Fiscal year'),
+       
+	}
+    
+	_defaults = {
+    
+		'avg_price' : 0.00,
+        
+      
+	}
+ch_product_yearly_average_price()	
 
 
 	

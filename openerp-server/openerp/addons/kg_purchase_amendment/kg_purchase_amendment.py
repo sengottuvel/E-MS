@@ -793,13 +793,12 @@ class kg_purchase_amendment_line(osv.osv):
 		res = {}
 		if context is None:
 			context = {}
-		for line in self.browse(cr, uid, ids, context=context):
+		for line in self.browse(cr, uid, ids, context=context):			
 			amt_to_per = (line.kg_discount_amend / (line.product_qty_amend * line.price_unit_amend or 1.0 )) * 100
-			kg_discount_per = line.kg_discount_per_amend
-			tot_discount_per = amt_to_per + kg_discount_per
+			qty =line.product_qty_amend
+			tot_discount_per = amt_to_per
 			price = line.price_unit_amend * (1 - (tot_discount_per or 0.0) / 100.0)
-			taxes = tax_obj.compute_all(cr, uid, line.taxes_id_amend, price, line.product_qty, line.product_id, 
-								line.amendment_id.partner_id)
+			taxes = tax_obj.compute_all(cr, uid, line.taxes_id_amend, price, qty, line.product_id_amend, line.amendment_id.partner_id_amend)
 			cur = line.amendment_id.pricelist_id.currency_id
 			res[line.id] = cur_obj.round(cr, uid, cur, taxes['total_included'])
 		return res

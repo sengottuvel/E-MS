@@ -19,7 +19,7 @@ When a purchase order is created, you now have the opportunity to save the
 related requisition. This new object will regroup and will allow you to easily
 keep track and order all your purchase orders.
 """,
-    'depends' : ['base', 'product'],
+    'depends' : ['base', 'product','account'],
     'data': ['kg_product_view.xml'],
     'auto_install': False,
     'installable': True,
