@@ -27,6 +27,8 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 		self.context = context
 		
 	def get_data(self,form):
+		fis_obj = self.pool.get('account.fiscalyear').search(self.cr, self.uid, [('date_start','<=',form['date']),('date_stop','>=',form['date'])])
+		fis_rec = self.pool.get('account.fiscalyear').browse(self.cr,self.uid,fis_obj[0])
 		res = {}
 		
 		where_sql = []
@@ -95,8 +97,8 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 			   left JOIN product_category pc ON (pc.id=pt.categ_id)
 
 			   
-			   where sm.product_qty != 0 and sm.state=%s and sm.date::date <=%s and sm.location_dest_id =%s '''+ where_sql + major + product + pro_type +'''
-			   group by sm.product_id,pc.name,pt.categ_id,pt.name''',('done',form['date'],location))
+			   where sm.product_qty != 0 and sm.state=%s and sm.date::date <=%s and sm.date::date >=%s and sm.location_dest_id =%s '''+ where_sql + major + product + pro_type +'''
+			   group by sm.product_id,pc.name,pt.categ_id,pt.name''',('done',form['date'],fis_rec.date_start,location))
 				   
 			   
 		data=self.cr.dictfetchall()
@@ -123,7 +125,7 @@ class mains_closing_stock_report(report_sxw.rml_parse):
 				
 				out_date = "'"+form['date']+"'"
 				
-				out_sql = """ select product_id,sum(product_qty) from stock_move where product_id=%s and location_id=%s and state='done' and date::date <=%s  group by product_id """%(product_id,location,out_date)
+				out_sql = """ select product_id,sum(product_qty) from stock_move where product_id=%s and location_id=%s and state='done' and date::date <=%s and date::date <='%s'  group by product_id """%(product_id,location,out_date,fis_rec.date_start)
 				self.cr.execute(out_sql)			
 				out_data = self.cr.dictfetchall()
 			
