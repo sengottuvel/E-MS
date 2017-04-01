@@ -11,4 +11,4 @@ uid = sock_common.login(dbname, username, pwd)
 sock = xmlrpclib.ServerProxy('http://localhost:8070/xmlrpc/object')
 
 ## Scheduler List
-sock.execute(dbname, uid, pwd, 'kg.opening.stock', 'opening_stock_entry_creation')
+sock.execute(dbname, uid, pwd, 'kg.opening.stock', 'opening_stock_mail_creation')
