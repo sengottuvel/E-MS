@@ -94,3 +94,58 @@ class kg_scheduler(osv.osv):
 		val['email_to'] = email_to
 		val['email_cc'] = email_cc
 		return val	
+		
+		
+	def open_gate_pass_mail(self, cr, uid, ids=0, context=None):
+		cr.execute("""select ROW_NUMBER() OVER(ORDER BY kg_gate_pass_line.id) sl_no,
+			product_product.name_template,product_uom.name,kg_gate_pass_line.grn_pending_qty,current_date - kg_gate_pass.date,
+			kg_gate_pass_line.grn_pending_qty * kg_service_order_line.price_unit,res_partner.name,kg_gate_pass.out_type,
+			kg_gate_pass.name,to_char(kg_gate_pass.date,'dd/mm/yyyy'),kg_gate_pass_line.qty,kg_gate_pass_line.qty - kg_gate_pass_line.grn_pending_qty,
+			kg_gate_pass.note
+			from kg_gate_pass
+			left join kg_gate_pass_line on kg_gate_pass_line.gate_id = kg_gate_pass.id
+			left join product_product on product_product.id = kg_gate_pass_line.product_id
+			left join product_uom on product_uom.id = kg_gate_pass_line.uom
+			left join kg_service_order_line on kg_service_order_line.soindent_line_id=kg_gate_pass_line.si_line_id
+			left join res_partner on res_partner.id = kg_gate_pass.partner_id
+			where kg_gate_pass.state in ('done') and kg_gate_pass_line.grn_pending_qty > 0 and  
+			to_char(kg_gate_pass.approved_date,'yyyy-mm-dd') <= to_char((select current_date-7 limit 1),'yyyy-mm-dd') 
+			and 
+			kg_gate_pass.out_type in ('service') or to_char(kg_gate_pass.return_date,'yyyy-mm-dd') <= to_char((select current_date limit 1),'yyyy-mm-dd')
+			and kg_gate_pass.out_type in ('replacement')
+			
+
+			 order by to_char(kg_gate_pass.date,'dd/mm/yyyy'),kg_gate_pass.date,kg_gate_pass.name;""")	
+		data1 = cr.fetchall();
+		if data1:
+			cr.execute("""SELECT open_gate_pass_mail('Open Gate Pass Register')""") 
+			data = cr.fetchall();
+			if data[0][0] is None:
+				return False
+			if data[0][0] is not None:	
+				maildet = (str(data[0])).rsplit('~');
+				cont = data[0][0].partition('UNWANTED.')		
+				email_from = maildet[1]	
+				if maildet[2]:	
+					email_to = [maildet[2]]
+				else:
+					email_to = ['']			
+				if maildet[3]:
+					email_cc = [maildet[3]]	
+				else:
+					email_cc = ['']		
+				ir_mail_server = self.pool.get('ir.mail_server')
+				if maildet[4] != '':
+					msg = ir_mail_server.build_email(
+						email_from = email_from,
+						email_to = email_to,
+						subject = maildet[4],
+						body = cont[0],
+						email_cc = email_cc,
+						object_id = ids and ('%s-%s' % (ids, 'kg.mail.settings')),
+						subtype = 'html',
+						subtype_alternative = 'plain')
+					res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=2, context=context)
+				else:
+					pass
+		return True	
