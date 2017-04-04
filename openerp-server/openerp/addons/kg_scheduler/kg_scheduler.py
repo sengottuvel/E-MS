@@ -63,7 +63,7 @@ class kg_scheduler(osv.osv):
                     object_id = ids and ('%s-%s' % (ids, 'kg.general.grn')),
                     subtype = 'html',
 					subtype_alternative = 'plain')
-			res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=1, context=context)
+			res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=2, context=context)
 		return True
 		
 	def sechedular_email_ids(self,cr,uid,ids,reg_string,context = None):
