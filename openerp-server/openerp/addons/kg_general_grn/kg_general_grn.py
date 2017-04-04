@@ -847,6 +847,19 @@ class kg_exp_batch(osv.osv):
 		'product_qty':fields.integer('Product Qty'),
 
 	}
+	
+	
+	def default_get(self, cr, uid, fields, context=None):
+		if context['exp_days']:
+			prod_rec = self.pool.get('product.product').browse(cr,uid,context['exp_days'])
+			if prod_rec.flag_expiry_alert == True:
+				prod_rec = self.pool.get('product.product').browse(cr,uid,context['exp_days'])
+				context['exp_days'] = prod_rec.self_life_days
+			else:
+				context['exp_days'] = 0
+		return context
+		
+		
 	_sql_constraints = [
 
 		('batch_no', 'unique(batch_no)', 'S/N must be unique per Item !!'),

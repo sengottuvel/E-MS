@@ -1681,6 +1681,19 @@ class kg_po_exp_batch(osv.osv):
 		
 		
 	}
+	
+	def default_get(self, cr, uid, fields, context=None):
+		if context['exp_days']:
+			prod_rec = self.pool.get('product.product').browse(cr,uid,context['exp_days'])
+			if prod_rec.flag_expiry_alert == True:
+				prod_rec = self.pool.get('product.product').browse(cr,uid,context['exp_days'])
+				context['exp_days'] = prod_rec.self_life_days
+			else:
+				context['exp_days'] = 0
+		return context	
+	
+	
+	
 	def _check_values(self, cr, uid, ids, context=None):
 		entry = self.browse(cr,uid,ids[0])
 		

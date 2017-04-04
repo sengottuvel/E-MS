@@ -290,7 +290,7 @@
                   
                   <group string="S/N Details">
                   
-					   <field name="po_exp_id" nolabel="1" attrs="{'readonly': [('confirm_flag','=',True)]}">
+					   <field name="po_exp_id" nolabel="1" attrs="{'readonly': [('confirm_flag','=',True)]}" context="{'exp_days':product_id}">
 						  <tree editable="bottom">
 							<field name="product_qty" required="1"/>
 							<field name="exp_days" required="1"/>
