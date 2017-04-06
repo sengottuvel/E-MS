@@ -372,7 +372,7 @@
             <field name="name">stock.production.lot.tree</field>
             <field name="model">stock.production.lot</field>
             <field name="arch" type="xml">
-                <tree string="Serial Number" create="false" delete="false">
+                <tree string="Serial Number" delete="false">
                    
                     <field name="name"/>
                     <field name="grn_date" string="In Date"/>                       
