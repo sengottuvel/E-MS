@@ -2,11 +2,9 @@
 <openerp>
     <data>
 
-<!--
         <report auto="False" id="mrn_report" model="kg.depindent" name="onscreen_mrn_report"
-                rml="kg_depindent/report/MRN.jrxml" string="Print Indent Slip"
+                rml="kg_depindent/report/MRN.jrxml" string="Indent Slip"
                 usage="default"/>
--->
 
 
     </data>
