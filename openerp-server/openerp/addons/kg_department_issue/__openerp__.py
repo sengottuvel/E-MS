@@ -10,7 +10,7 @@
 This module allows you to manage your Item Details.
 ===========================================================
 """,
-    'depends' : ['base', 'product','stock','kg_depmaster','kg_outwardmaster','kg_depindent'],
+    'depends' : ['base', 'product','stock','kg_grn','kg_depmaster','kg_outwardmaster','kg_depindent'],
     'data': ['kg_department_issue_view.xml',
 			  'dep_issue_report.xml',
             

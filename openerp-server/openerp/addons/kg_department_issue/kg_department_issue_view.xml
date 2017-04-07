@@ -164,6 +164,14 @@
                   </group>
                   <group string = "GRN Details">
 						<field name="kg_grn_moves" nolabel="1">
+							<tree string = "GRN Details">
+							<field name="grn_date" string="In Date"/>
+							<field name="batch_no" string="S/No"/>
+							<field name="expiry_date"/>
+							<field name="product_uom"/>
+							<field name="product_qty" string="Received Qty"/>
+							<field name="pending_qty" string="Available Qty"/>
+						</tree>
 						</field>
                   </group>
                   <group>
