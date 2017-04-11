@@ -121,7 +121,8 @@ class kg_purchase_order(osv.osv):
 		'location_id': fields.many2one('stock.location', 'Destination', required=True, domain=[('usage','=','internal')], states={'approved':[('readonly',True)],'done':[('readonly',True)]} ),		
 		'payment_term_id': fields.many2one('account.payment.term', 'Payment Term', readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)]}),
 		'pricelist_id':fields.many2one('product.pricelist', 'Pricelist', states={'approved':[('readonly',True)],'done':[('readonly',True)]}, help="The pricelist sets the currency used for this purchase order. It also computes the supplier price for the selected products/quantities."),	
-		'date_order': fields.date('PO Date',readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]}),
+		'date_order': fields.date('PO Date'),
+		'entry_date': fields.date('Entry Date',readonly=True),
 		'payment_mode': fields.many2one('kg.payment.master', 'Payment Term', readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]},domain=[('state','=','approved')]),
 		'delivery_mode': fields.many2one('kg.delivery.master','Delivery Term', required=False,readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)],'cancel':[('readonly',True)]},domain=[('state','=','approved')]),
 		'partner_address':fields.char('Supplier Address', size=128,readonly=False, states={'approved':[('readonly',True)],'done':[('readonly',True)]}),
@@ -198,6 +199,7 @@ class kg_purchase_order(osv.osv):
 	_defaults = {
 	
 		'date_order': lambda * a: time.strftime('%Y-%m-%d'),
+		'entry_date': lambda * a: time.strftime('%Y-%m-%d'),
 		'name': lambda self, cr, uid, c: self.pool.get('purchase.order').browse(cr, uid, id, c).id,
 		'user_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).id,
 		'creation_date':lambda * a: time.strftime('%Y-%m-%d %H:%M:%S'),

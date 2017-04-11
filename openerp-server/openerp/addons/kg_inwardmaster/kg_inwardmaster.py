@@ -238,7 +238,7 @@ class kg_inwardmaster(osv.osv):
 					{
 					'dep_name':72,
 					'indent_type':'production',
-					'state':'approved',
+					'state':'draft',
 					'name': seq_name[0],				
 					'dest_location_id': 277,					
 					'src_location_id': 47					

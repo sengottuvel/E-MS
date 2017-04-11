@@ -34,7 +34,8 @@ class kg_depindent(osv.osv):
 		'dep_name': fields.many2one('kg.depmaster','Department', required=True,translate=True, select=True,readonly=True,
 					domain="[('item_request','=',True),('state','=','approved')]", states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'date': fields.datetime('Created Date',readonly=True),
-		'ind_date': fields.date('Indent Date',readonly=True),
+		'ind_date': fields.date('Indent Date'),
+		'entry_date': fields.date('Entry Date',readonly=True),
 		'type': fields.selection([('direct','Direct'), ('from_bom','From BoM')], 'Entry Mode',readonly=True, states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'dep_indent_line': fields.one2many('kg.depindent.line', 'indent_id', 'Indent Lines', readonly=True, states={'draft':[('readonly',False)],'confirm':[('readonly',False)]}),
 		'active': fields.boolean('Active'),
@@ -75,6 +76,7 @@ class kg_depindent(osv.osv):
 		'date': lambda * a: time.strftime('%Y-%m-%d %H:%M:%S'),
 		'user_id': lambda self, cr, uid, c: self.pool.get('res.users').browse(cr, uid, uid, c).id ,
 		'ind_date': fields.date.context_today,
+		'entry_date': fields.date.context_today,
 		'company_id': lambda self,cr,uid,c: self.pool.get('res.company')._company_default_get(cr, uid, 'kg.depindent', context=c),
 		'entry_mode': 'manual',
 		
