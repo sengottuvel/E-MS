@@ -307,21 +307,18 @@ class kg_opening_stock(osv.osv):
         
 		if len(avg_price) > 0:
 			price = sum(avg_price)/len(avg_price)
-			print "---------------------------------------------------------------------------------------------------------",price
-        if product_rec.avg_line_ids:
-            for item in product_rec.avg_line_ids:
-                if item.fiscal_id.id == fis_rec.id:
-                    avg_obj.write(cr,uid,item.id,{'avg_price':price})
-                else:
-                    avg_obj.create(cr,uid,{'product_id':product_id,
-                                            'fiscal_id':fis_rec.id,
-                                            'avg_price':price})
-        else:   
-            
-            avg_obj.create(cr,uid,{'product_id':product_id,
+		if product_rec.avg_line_ids:
+			avg_search = avg_obj.search(cr,uid,[('product_id','=',product_rec.id),('fiscal_id','=',fis_rec.id)])
+			if avg_search:
+				avg_obj.write(cr,uid,avg_search[0],{'avg_price':price})
+			else:
+				avg_obj.create(cr,uid,{'product_id':product_id,
+										'fiscal_id':fis_rec.id,
+										'avg_price':price})
+		else:   
+			avg_obj.create(cr,uid,{'product_id':product_id,
                 'fiscal_id':fis_rec.id,
                 'avg_price':price})
-                
                 
         return True
       
