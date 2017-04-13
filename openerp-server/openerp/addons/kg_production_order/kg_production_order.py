@@ -17,7 +17,7 @@ class kg_production_order(osv.osv):
 	
 		'order_lines': fields.one2many('ch.production.order.line', 'header_id', 'Item Details', readonly=True,required=True),
 		'name': fields.char('Indent No'),
-		'date':fields.date('Date',readonly=True),
+		'date':fields.date('Date'),
 		'creation_date':fields.datetime('Created Date',readonly=True),
 		'company_id': fields.many2one('res.company', 'Company Name',readonly=True),
 		'user_id': fields.many2one('res.users', 'Created By', readonly=True),
