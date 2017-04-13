@@ -2065,7 +2065,7 @@ class account_tax(osv.osv):
 		'ref_tax_sign': fields.float('Tax Code Sign', help="Usually 1 or -1."),
 		'include_base_amount': fields.boolean('Included in base amount',states={'waiting':[('readonly',False)]},help="Indicates if the amount of tax must be included in the base amount for the computation of the next taxes"),
 		'company_id': fields.many2one('res.company', 'Company', required=True),
-		'description': fields.char('Code',size=4, states={'draft':[('readonly',False)]}),
+		'description': fields.char('Code',size=25, states={'draft':[('readonly',False)]}),
 		'price_include': fields.boolean('Tax Included in Price', states={'draft':[('readonly',False)]},help="Check this if the price you use on the product and invoices includes this tax."),
 		'type_tax_use': fields.selection([('sale','Sale'),('purchase','Purchase'),('all','All'),('service','Service'),('ed','ED')], 'Tax Application', required=True,readonly=True, states={'draft':[('readonly',False)]}),
 		
