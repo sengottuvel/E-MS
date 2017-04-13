@@ -101,7 +101,7 @@ class kg_general_grn(osv.osv):
 		
 		'name': fields.char('GRN NO',readonly=True),
 		'active': fields.boolean('Active'),
-		'grn_date':fields.date('GRN Date',required=True,readonly=True, states={'confirmed':[('readonly',False)],'draft':[('readonly',False)]}),
+		'grn_date':fields.date('GRN Date',required=True,states={'confirmed':[('readonly',False)],'draft':[('readonly',False)]}),
 		'supplier_id':fields.many2one('res.partner','Supplier',domain=[('supplier','=',True),('sup_state','=','approved')],readonly=True, states={'confirmed':[('readonly',False)],'draft':[('readonly',False)]}),
 		'dc_no': fields.char('DC NO', required=True,readonly=True, states={'confirmed':[('readonly',False)],'draft':[('readonly',False)]}),
 		'dc_date':fields.date('DC Date',required=True, readonly=True, states={'confirmed':[('readonly',False)],'draft':[('readonly',False)]}),
