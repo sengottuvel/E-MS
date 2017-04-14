@@ -20,8 +20,8 @@ class kg_scheduler(osv.osv):
 	def dead_stock_register_scheduler(self,cr,uid,ids=0,context = None):
 		cr.execute(""" SELECT current_database();""")
 		db = cr.dictfetchall()
-		if db[0]['current_database'] == 'foundry_local':
-			db[0]['current_database'] = 'foundry_local'
+		if db[0]['current_database'] == 'machineshop':
+			db[0]['current_database'] = 'machineshop'
 		else:
 			db[0]['current_database'] = 'Others'
 		cr.execute("""select non_moveable_stock_mails('Unused Stock Register')""")
