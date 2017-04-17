@@ -812,7 +812,6 @@ class kg_purchase_order_line(osv.osv):
 				raise osv.except_osv(_(' Warning!!'),_("Discount percentage must be lesser than 25 % !") )
 		return True	
 				
-	
 	def create(self, cr, uid, vals,context=None):
 		if vals['product_id']:
 			product_obj =  self.pool.get('product.product')
@@ -820,10 +819,12 @@ class kg_purchase_order_line(osv.osv):
 			if product_rec.uom_id.id != product_rec.uom_po_id.id:
 				vals.update({
 							'product_uom':product_rec.uom_po_id.id,
+							'pending_qty':vals['product_qty'],
 							})
 			elif  product_rec.uom_id.id == product_rec.uom_po_id.id:
 				vals.update({
 							'product_uom':product_rec.uom_id.id,
+							'pending_qty':vals['product_qty']
 							})
 		order =  super(kg_purchase_order_line, self).create(cr, uid, vals, context=context)
 		return order

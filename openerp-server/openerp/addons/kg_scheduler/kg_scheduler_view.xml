@@ -2,6 +2,37 @@
 <openerp>
     <data>
        
+		<record id="kg_scheduler_form" model="ir.ui.view">
+			<field name="name">kg.scheduler.form</field>
+			<field name="model">kg.scheduler</field>
+			<field name="arch" type="xml">
+				<form string="Scheduler" version="7.0">
+				<header>
+						<button name="auto_purchase_indent" class="oe_highlight" type="object" string="Button"/> 						
+				</header>
+				</form>
+			</field> 
+		</record>       
+		
+		
+		 <record id="kg_scheduler_form_action" model="ir.actions.act_window">
+			<field name="name">Scheduler</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">kg.scheduler</field>
+			<field name="view_type">form</field>
+			<field name="view_id" ref="kg_scheduler_form"/>
+		</record>
+       
+       
+       
+		<menuitem id="kg_scheduler_main_menu" name="Scheduler" sequence="51" />
+		
+		
+		
+		<!-- PO Master -->
+			<menuitem id="kg_scheduler_child" parent="kg_scheduler_main_menu" name = "Scheduler" sequence="1"/>
+				
+				<menuitem id="kg_scheduler_menu_menu" parent="kg_scheduler_child" name="Scheduler" action="kg_scheduler_form_action" sequence="1"/>
 	
     </data>
 </openerp>

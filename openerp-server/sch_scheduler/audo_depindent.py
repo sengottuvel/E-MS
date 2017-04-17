@@ -11,4 +11,4 @@ uid = sock_common.login(dbname, username, pwd)
 sock = xmlrpclib.ServerProxy('http://localhost:8070/xmlrpc/object')
 
 ## Scheduler List
-sock.execute(dbname, uid, pwd, 'kg.inwardmaster', 'auto_dep_indent')
+sock.execute(dbname, uid, pwd, 'kg.scheduler', 'auto_purchase_indent')
