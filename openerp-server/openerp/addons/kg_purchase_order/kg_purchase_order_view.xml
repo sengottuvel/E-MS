@@ -460,7 +460,7 @@
 				<field name="pi_qty" readonly="1"/>
                 <field name="kg_discount" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_disc_amt(kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price)" />
                 <field name="kg_disc_amt_per" invisible="1" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}"/>
-                <field name="kg_discount_per" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_discount_value_calc(kg_discount_per, product_qty, price_unit,tot_price)"/> 
+                <field name="kg_discount_per" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_discount_value_calc(kg_discount,kg_discount_per, product_qty, price_unit,tot_price)"/> 
                 <field name="kg_discount_per_value" invisible="1"/>
 				<field name="total_disc" invisible="1"/>
                 <field name="taxes_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','!=','sale')]" />

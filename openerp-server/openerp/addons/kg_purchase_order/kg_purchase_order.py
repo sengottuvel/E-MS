@@ -684,7 +684,10 @@ class kg_purchase_order_line(osv.osv):
 		if kg_discount_per:
 			discount_value_price = (tot_price/100.00)*kg_discount_per
 		discount_value = (product_qty * price_unit) * kg_discount_per / 100.00
-		return {'value': {'kg_discount_per_value': discount_value,'kg_discount': discount_value_price}}
+		if kg_discount:
+			return True
+		else:
+			return {'value': {'kg_discount_per_value': discount_value,'kg_discount': discount_value_price}}
 		
 	def onchange_disc_amt(self,cr,uid,ids,kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price):
 		logger.info('[KG OpenERP] Class: kg_purchase_order_line, Method: onchange_disc_amt called...')
