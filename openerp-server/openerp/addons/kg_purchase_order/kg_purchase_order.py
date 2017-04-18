@@ -676,7 +676,7 @@ class kg_purchase_order_line(osv.osv):
 			tot_price = (price_unit * product_qty)
 		return {'value':{'tot_price':(round(tot_price,2)),'kg_discount': 0.00}}
 		
-	def onchange_discount_value_calc(self, cr, uid, ids, kg_discount_per, product_qty, price_unit , tot_price):
+	def onchange_discount_value_calc(self, cr, uid,kg_discount, ids, kg_discount_per, product_qty, price_unit , tot_price):
 		logger.info('[KG OpenERP] Class: kg_purchase_order_line, Method: onchange_discount_value_calc called...')
 		discount_value_price = 0.00
 		if kg_discount_per > 25:

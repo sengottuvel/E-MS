@@ -254,7 +254,7 @@ class kg_scheduler(osv.osv):
 						depindent_p_qty = 0
 			else:
 				depindent_p_qty = 0			
-			purchase_pending = """ select sum(pending_qty) from purchase_requisition_line where product_id = %d and indent_state = 't' """%(value)
+			purchase_pending = """ select sum(pending_qty) from purchase_requisition_line where product_id = %d"""%(value)
 			cr.execute(purchase_pending)
 			purchase_pending_qty = cr.dictfetchall()
 			if purchase_pending_qty:
