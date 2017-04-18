@@ -25,7 +25,7 @@ class kg_gate_pass(osv.osv):
 		'return_date': fields.date('Expected Return Date',readonly=True, states={'draft':[('readonly',False)]}),
 		'partner_id': fields.many2one('res.partner', 'Supplier',readonly=True, states={'draft':[('readonly',False)]},domain="[('supplier','=',True),('sup_state','=','approved')]"),
 		'gate_line': fields.one2many('kg.gate.pass.line', 'gate_id', 'Gate Pass Line',readonly=True, states={'draft':[('readonly',False)]}),
-		'out_type': fields.selection([('g-return', 'G-Return'),('service', 'Service'), ('replacement', 'Replacement'), ('rejection', 'Rejection'), ('transfer', 'Transfer')],'Gate Pass Type',readonly=True, states={'draft':[('readonly',False)]},domain="[('state','=','approved')]"),
+		'out_type': fields.selection([('g-return', 'G-Return'),('loan_purpose', 'Loan Purpose'),('service', 'Service'), ('replacement', 'Replacement'), ('rejection', 'Rejection'), ('transfer', 'Transfer')],'Gate Pass Type',readonly=True, states={'draft':[('readonly',False)]},domain="[('state','=','approved')]"),
 		'origin': fields.many2one('kg.service.indent', 'Origin', readonly=True),
 		'note': fields.text('Remarks',readonly=False, states={'confirmed':[('readonly',False)],'done':[('readonly',False)]}),
 		'state': fields.selection([('draft', 'Draft'), ('confirmed', 'WFA'), ('done', 'Delivered'), ('cancel', 'Cancelled'), ('reject', 'Rejected')], 'Out Status',readonly=True),
@@ -213,6 +213,9 @@ class kg_gate_pass(osv.osv):
 						'confirm_flag':True,'confirmed_date':time.strftime('%Y-%m-%d %H:%M:%S')})
 		if entry.out_type == 'service':
 			self.write(cr,uid,ids[0],{'state':'confirmed','name':'SR'+seq_name[0],'confirmed_by':uid,
+						'confirm_flag':True,'confirmed_date':time.strftime('%Y-%m-%d %H:%M:%S')})
+		elif entry.out_type == 'loan_purpose':
+			self.write(cr,uid,ids[0],{'state':'confirmed','name':'LP'+seq_name[0],'confirmed_by':uid,
 						'confirm_flag':True,'confirmed_date':time.strftime('%Y-%m-%d %H:%M:%S')})
 		elif entry.out_type == 'replacement':
 			self.write(cr,uid,ids[0],{'state':'confirmed','name':'R'+seq_name[0],'confirmed_by':uid,
