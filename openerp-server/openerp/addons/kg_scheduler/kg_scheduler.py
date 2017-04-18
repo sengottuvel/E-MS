@@ -20,50 +20,54 @@ class kg_scheduler(osv.osv):
 	def dead_stock_register_scheduler(self,cr,uid,ids=0,context = None):
 		cr.execute(""" SELECT current_database();""")
 		db = cr.dictfetchall()
-		if db[0]['current_database'] == 'machineshop':
-			db[0]['current_database'] = 'machineshop'
+		if db[0]['current_database'] == 'foundry_local':
+			db[0]['current_database'] = 'foundry_local'
 		else:
 			db[0]['current_database'] = 'Others'
 		cr.execute("""select non_moveable_stock_mails('Unused Stock Register')""")
 		data = cr.fetchall();
 		cr.execute("""SELECT to_date(to_char(now()::date - interval '1 month', 'YYYY/MM/DD'), 'YYYY/MM/DD') as last_dt""")
 		last_dt = cr.fetchall();
-		cr.execute("""select sum(tot_name),to_char(sum(tot_name),'999G999G99G999G99G99G990D99') as cost from (select product_product.name_template,product_uom.name,stock_production_lot.pending_qty,
-                stock_production_lot.grn_no,stock_production_lot.price_unit,(stock_production_lot.price_unit * stock_production_lot.pending_qty) as tot_name
-                
-                from stock_production_lot
-                
-                left join product_product on product_product.id = stock_production_lot.product_id
-                left join product_uom on product_uom.id = stock_production_lot.product_uom
-                where 
-                to_char(stock_production_lot.write_date,'yyyy-mm-dd') <= '%s' and stock_production_lot.pending_qty = stock_production_lot.product_qty and stock_production_lot.pending_qty > 0
-                order by stock_production_lot.date,stock_production_lot.grn_no) as p    """%(last_dt[0]))
-		total_sum = cr.dictfetchall();
-		db = db[0]['current_database'].encode('utf-8')
-		total = total_sum[0]['sum'] or ''
-		vals = self.sechedular_email_ids(cr,uid,ids,reg_string = 'dead stock',context = context)
-		if (not vals['email_to']) and (not vals['email_cc']):
-			pass
-		else:
-            
-			if total :
-				subject = "ERP Machineshop - Non-Movable stock (for last 30 days) Details for "+db+' as on ' + time.strftime('%d-%m-%Y') + '. Total Values : Rs. ' +  str(total_sum[0]['cost']) + ' /- '
-            
+		cr.execute("""select * from stock_production_lot	where 
+		to_char(write_date,'yyyy-mm-dd') <= '%s' and pending_qty = product_qty and pending_qty > 0"""%(last_dt[0]))
+		data1 = cr.fetchall();
+		if data1:	
+			cr.execute("""select sum(tot_name),to_char(sum(tot_name),'999G999G99G999G99G99G990D99') as cost from (select product_product.name_template,product_uom.name,stock_production_lot.pending_qty,
+					stock_production_lot.grn_no,stock_production_lot.price_unit,(stock_production_lot.price_unit * stock_production_lot.pending_qty) as tot_name
+					
+					from stock_production_lot
+					
+					left join product_product on product_product.id = stock_production_lot.product_id
+					left join product_uom on product_uom.id = stock_production_lot.product_uom
+					where 
+					to_char(stock_production_lot.write_date,'yyyy-mm-dd') <= '%s' and stock_production_lot.pending_qty = stock_production_lot.product_qty and stock_production_lot.pending_qty > 0
+					order by stock_production_lot.date,stock_production_lot.grn_no) as p    """%(last_dt[0]))
+			total_sum = cr.dictfetchall();
+			db = db[0]['current_database'].encode('utf-8')
+			total = total_sum[0]['sum'] or ''
+			vals = self.sechedular_email_ids(cr,uid,ids,reg_string = 'dead stock',context = context)
+			if (not vals['email_to']) and (not vals['email_cc']):
+				pass
 			else:
-				subject = "ERP Machineshop - Non-Movable stock (for last 30 days) Details for "+db+' as on ' + time.strftime('%d-%m-%Y') + '.'
-            
-            
-			ir_mail_server = self.pool.get('ir.mail_server')
-			msg = ir_mail_server.build_email(
-                    email_from = vals['email_from'][0],
-                    email_to = vals['email_to'],
-                    subject = subject,
-                    body = data[0][0],
-                    email_cc = vals['email_cc'],
-                    object_id = ids and ('%s-%s' % (ids, 'kg.general.grn')),
-                    subtype = 'html',
-					subtype_alternative = 'plain')
-			res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=2, context=context)
+				
+				if total :
+					subject = "ERP Foundry - Non-Movable stock (for last 30 days) Details for "+db+' as on ' + time.strftime('%d-%m-%Y') + '. Total Values : Rs. ' +  str(total_sum[0]['cost']) + ' /- '
+				
+				else:
+					subject = "ERP Foundry - Non-Movable stock (for last 30 days) Details for "+db+' as on ' + time.strftime('%d-%m-%Y') + '.'
+				
+				
+				ir_mail_server = self.pool.get('ir.mail_server')
+				msg = ir_mail_server.build_email(
+						email_from = vals['email_from'][0],
+						email_to = vals['email_to'],
+						subject = subject,
+						body = data[0][0],
+						email_cc = vals['email_cc'],
+						object_id = ids and ('%s-%s' % (ids, 'kg.general.grn')),
+						subtype = 'html',
+						subtype_alternative = 'plain')
+				res = ir_mail_server.send_email(cr, uid, msg,mail_server_id=2, context=context)
 		return True
 		
 	def sechedular_email_ids(self,cr,uid,ids,reg_string,context = None):
