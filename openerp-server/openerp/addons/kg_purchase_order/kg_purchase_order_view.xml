@@ -77,7 +77,7 @@
 		</field>
 		
 		<field name="bill_type" position="replace">
-			 <field name="date_order" required="1" readonly='0' options="{'datepicker':{'maxDate': 0,'minDate':-17}}" on_change="onchange_date_order(date_order)"/>
+			 <field name="date_order" required="1" readonly='0' options="{'datepicker':{'maxDate': 0,'minDate':-18}}" on_change="onchange_date_order(date_order)"/>
 			 <field name="entry_date" readonly='1' invisible='1'/>
 			 <field name="quotation_date" readonly='1'/>
 			 <field name="quot_ref_no" class="aplhanum_expect"  />
