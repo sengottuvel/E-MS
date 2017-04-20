@@ -33,7 +33,7 @@
 						<field name="invoice_flag" invisible="1"/>
                     </group>
                     <group>
-						<field name="grn_date" options="{'datepicker':{'maxDate': 0,'minDate':-18}}"/>
+						<field name="grn_date" options="{'datepicker':{'maxDate': 0,'minDate':-19}}"/>
 						<field name="dc_date" attrs="{'required': [('grn_dc','=','only_grn')]}"/>
 						<field name="payment_type" required='1'/>
 						<field name="billing_status"/>
