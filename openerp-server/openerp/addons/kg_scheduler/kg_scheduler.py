@@ -227,6 +227,7 @@ class kg_scheduler(osv.osv):
 		
 		
 	def auto_purchase_indent(self, cr, uid, ids=0, context=None):
+		flag =0
 		product_obj = self.pool.get('product.product')
 		product_ids = """ select id from product_product where flag_minqty_rule = 't'  and state = 'approved' """
 		cr.execute(product_ids)	
@@ -234,89 +235,66 @@ class kg_scheduler(osv.osv):
 		for i in list(product_data):
 			value = i['id']
 			product_id_val = self.pool.get('product.product').browse(cr, uid, value)
-			lot_sql = """ select sum(pending_qty) from stock_production_lot where product_id = %d group by product_id """%(value)
+			lot_sql = """select COALESCE((select sum(pending_qty) from stock_production_lot where product_id=%s),0) + 
+COALESCE((select sum(pending_qty) from kg_depindent_line where product_id =%s),0) +
+COALESCE((select sum(pending_qty) from purchase_requisition_line where product_id=%s),0) +
+COALESCE((select sum(pending_qty) from purchase_order_line where product_id =%s),0) - 
+COALESCE((select minimum_qty from product_product where id=%s),0)
+as result"""%(value,value,value,value,value)
 			cr.execute(lot_sql)
 			lot_data = cr.dictfetchall()
-			if lot_data:
-				for i in list(lot_data):
-					stock_remain = i['sum']
-			else:
-				stock_remain = 0
-			min_sql = """ select minimum_qty from product_product where id = %d """%(value)
-			cr.execute(min_sql)
-			min_qty_val_data = cr.dictfetchall()
-			for i in list(min_qty_val_data):
-				min_qty_val = i['minimum_qty']
-				min_qty_val = min_qty_val+1
-			depindent_pending = """ select sum(pending_qty) from kg_depindent_line where product_id = %d """%(value)
-			cr.execute(depindent_pending)
-			depindent_pending_qty = cr.dictfetchall()
-			if depindent_pending_qty:
-				for i in list(depindent_pending_qty):
-					depindent_p_qty = i['sum']
-					if depindent_p_qty == None:
-						depindent_p_qty = 0
-			else:
-				depindent_p_qty = 0			
-			purchase_pending = """ select sum(pending_qty) from purchase_requisition_line where product_id = %d"""%(value)
-			cr.execute(purchase_pending)
-			purchase_pending_qty = cr.dictfetchall()
-			if purchase_pending_qty:
-				for i in list(purchase_pending_qty):
-					purchase_p_qty = i['sum']
-					if purchase_p_qty == None:
-						purchase_p_qty = 0					
-			else:
-				purchase_p_qty = 0			
-			order_pending = """ select sum(pending_qty) from purchase_order_line where product_id = %d"""%(value)
-			cr.execute(order_pending)
-			order_pending_qty = cr.dictfetchall()
-			if order_pending_qty:
-				for i in list(order_pending_qty):
-					order_p_qty = i['sum']
-					if order_p_qty == None:
-						order_p_qty = 0						
-			else:
-				order_p_qty = 0		
-			total_indent_pending_qty = int(depindent_p_qty) + int(purchase_p_qty) + int(order_p_qty)
-			remain_stock_value = int(stock_remain) + int(total_indent_pending_qty)
-			if int(remain_stock_value) < int(min_qty_val):
-				reorder_sql = """ select reorder_qty from product_product where id = %d """%(value)
-				cr.execute(reorder_sql)
-				reorder_qty = cr.dictfetchall()
-				exp_date_sql= """ select current_date+7 as date """
-				cr.execute(exp_date_sql)
-				exp_date = cr.dictfetchall()
-				cur_date_sql= """ select current_date"""
-				cr.execute(cur_date_sql)
-				cur_date = cr.dictfetchall()
-				for i in list(reorder_qty):
-					reorder_qty_val = i['reorder_qty']
-					kg_purchase_id=self.pool.get('purchase.requisition')
-					kg_purchase_line_id=self.pool.get('purchase.requisition.line')
-					indent_ids = kg_purchase_id.create(cr,uid,
+			if lot_data[0]['result'] < 0:
+				flag =1		
+		if flag ==1:
+			kg_purchase_id=self.pool.get('purchase.requisition')
+			kg_purchase_line_id=self.pool.get('purchase.requisition.line')
+			exp_date_sql= """ select current_date+7 as date """
+			cr.execute(exp_date_sql)
+			exp_date = cr.dictfetchall()
+			indent_ids = kg_purchase_id.create(cr,uid,
 					{
 					'dep_name':72,
 					'indent_type':'direct',
 					'entry_mode':'auto',
 					'state':'draft',
 					'pi_flag':True,
+					'notes':'This indent for full-fill the minimum stock level of inventory ',
 					'expected_date':exp_date[0]['date'],
 					})
+			for j in list(product_data):
+				value1 = j['id']
+				product_id_val = self.pool.get('product.product').browse(cr, uid, value1)
+				lot_sq = """select COALESCE((select sum(pending_qty) from stock_production_lot where product_id=%s),0) + 
+	COALESCE((select sum(pending_qty) from kg_depindent_line where product_id =%s),0) +
+	COALESCE((select sum(pending_qty) from purchase_requisition_line where product_id=%s),0) +
+	COALESCE((select sum(pending_qty) from purchase_order_line where product_id =%s),0) - 
+	COALESCE((select minimum_qty from product_product where id=%s),0)
+	as result"""%(value1,value1,value1,value1,value1)
+				cr.execute(lot_sq)
+				lot_dat = cr.dictfetchall()
+				if lot_dat[0]['result'] < 0:
+					cr.execute("""select reorder_qty from product_product where id =%s"""%(value1)) 
+					reorder_qty = cr.dictfetchall()
+					cr.execute("""select sum(pending_qty) from stock_production_lot where product_id=%s"""%(value1)) 
+					curr_qty = cr.dictfetchall()
+					cur_date_sql= """ select current_date"""
+					cr.execute(cur_date_sql)
+					cur_date = cr.dictfetchall()
 					kg_purchase_line_id.create(cr,uid,
-					{
-					'requisition_id':indent_ids,
-					'product_id':value,
-					'product_uom_id':product_id_val.uom_po_id.id,
-					'product_qty':reorder_qty_val,
-					'pending_qty':reorder_qty_val,
-					'expected_date':exp_date[0]['date'],
-					'line_state':'noprocess',
-					'name':'PILINE',
-					'indent_state':'t',
-					'line_date':cur_date[0]['date'],
-					})
-					
+						{
+						'requisition_id':indent_ids,
+						'product_id':value1,
+						'product_uom_id':product_id_val.uom_po_id.id,
+						'product_qty':reorder_qty[0]['reorder_qty'],
+						'pending_qty':reorder_qty[0]['reorder_qty'],
+						'expected_date':exp_date[0]['date'],
+						'stock_qty':curr_qty[0]['sum'] or 0,
+						'line_state':'noprocess',
+						'name':'PILINE',
+						'indent_state':'t',
+						'line_date':cur_date[0]['date'],
+						'note':'This indent for full-fill the minimum stock level of inventory ',
+						})
 		return	
 		
 		

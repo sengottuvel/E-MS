@@ -918,6 +918,7 @@
                     <field name="name"/>
 					<field name="description"/>
                     <field name="price_include"/>
+                    <field name="include_base_amount"/>
                     <field name="state"/>
                     <field name="company_id" widget="selection" groups="base.group_multi_company"/>
                 </tree>
