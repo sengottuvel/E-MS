@@ -9,6 +9,7 @@
 
 import kg_purchase_indent
 import kg_depindent2_poindent
+import report
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

@@ -20,7 +20,7 @@ related requisition. This new object will regroup and will allow you to easily
 keep track and order all your purchase orders.
 """,
     'depends' : ['base', 'product', 'purchase_requisition','kg_depmaster','kg_depindent'],
-    'data': ['kg_purchase_indent_view.xml'],
+    'data': ['kg_purchase_indent_view.xml','jasper_report.xml'],
     #'css': [  'static/src/css/state.css'],
     'auto_install': False,
     'installable': True,

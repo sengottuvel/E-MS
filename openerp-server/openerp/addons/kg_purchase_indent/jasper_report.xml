@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+         <report auto="False" id="pi_report_id" model="purchase.requisition"
+        name="onscreen_purchase_indent_report"
+                rml="kg_purchase_indent/report/Purchase_Indent.jrxml" string="PI Copy"
+                usage="default"/> 
+ 
+
+    </data>
+</openerp>
