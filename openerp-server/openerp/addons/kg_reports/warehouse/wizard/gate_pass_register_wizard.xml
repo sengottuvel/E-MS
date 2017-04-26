@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <record id="view_gate_pass_register_report" model="ir.ui.view">
+        <record id="view_gate_pass_register_report_rec" model="ir.ui.view">
             <field name="name">Gate Pass Register</field>
             <field name="model">gate.pass.register.wizard</field>
             <field name="type">form</field>

@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <record id="view_purchase_invoice_report" model="ir.ui.view">
+        <record id="view_purchase_invoice_report_rec" model="ir.ui.view">
             <field name="name">Purchase Invoice Register</field>
             <field name="model">kg.purchase.invoice.reg.wiz</field>
             <field name="type">form</field>
