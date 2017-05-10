@@ -269,127 +269,154 @@ class kg_general_grn(osv.osv):
 	def entry_approve(self, cr, uid, ids,context=None):
 		user_id = self.pool.get('res.users').browse(cr, uid, uid)
 		grn_entry = self.browse(cr, uid, ids[0])
-		if grn_entry.confirmed_by.id == uid:
-			raise osv.except_osv(
-					_('Warning'),
-					_('Approve cannot be done by Confirmed user'))
-		lot_obj = self.pool.get('stock.production.lot')
-		self.write(cr,uid,ids[0],{'state':'done','approved_by':uid,'approved_date':time.strftime('%Y-%m-%d %H:%M:%S')})
-		if grn_entry.bill == 'applicable':
-			self.write(cr,uid,ids[0],{'invoice_flag':'True'})
-		stock_move_obj=self.pool.get('stock.move')
-		dep_obj = self.pool.get('kg.depmaster')
-		dep_id = grn_entry.dep_name.id
-		dep_record = dep_obj.browse(cr,uid,dep_id)
-		dest_location_id = dep_record.main_location.id
-		pi_obj = self.pool.get('kg.purchase.invoice')
-		pi_gen_grn_obj = self.pool.get('kg.gengrn.purchase.invoice.line')
-		if grn_entry.grn_dc == 'dc_invoice' and grn_entry.bill == 'applicable':
-			partner = self.pool.get('res.partner')
-			supplier = partner.browse(cr, uid, grn_entry.supplier_id.id)
-			tot_add = (supplier.street or '')+ ' ' + (supplier.street2 or '') + '\n'+(supplier.city_id.name or '')+ ',' +(supplier.state_id.name or '') + '-' +(supplier.zip or '') + '\nPh:' + (supplier.phone or '')+ '\n' +(supplier.mobile or '')
-			invoice_no = pi_obj.create(cr, uid, {
-						'created_by': uid,
-						'creation_date': today,
-						'type':'from_po',
-						'purpose': 'consu',
-						'grn_type':'from_general_grn',
-						'supplier_id':grn_entry.supplier_id.id,
-						'grn_no':grn_entry.name,
-						'sup_address': tot_add,
-						'sup_invoice_date' : today,
-						'sup_invoice_no':grn_entry.sup_invoice_no,
-						'sup_invoice_date':grn_entry.sup_invoice_date,
-					})
-
-			sql1 = """ insert into purchase_invoice_general_grn_ids(invoice_id,grn_id) values(%s,%s)"""%(invoice_no,grn_entry.id)
-			cr.execute(sql1)
-		line_tot = 0
-		for line in grn_entry.grn_line:
-			# This code will create General GRN to Stock Move
-			brand = []
-			if line.brand_id:
-				brand.append("brand_id = %s"%(line.brand_id.id))
-			if brand:
-				brand = 'and ('+' or '.join(brand)
-				brand =  brand+')'
-			else:
-				brand = ''
-			sql = """select * from stock_move where product_id="""+str(line.product_id.id)+""" and move_type='in' """+ brand +""" and general_grn_id="""+str(line.id)+""" """
-			cr.execute(sql)
-			data = cr.dictfetchall()
-			if data:
-				del_sql = """delete from stock_move where product_id="""+str(line.product_id.id)+""" and move_type='in'  """+ brand +"""  and general_grn_id="""+str(line.id)+""" """
-				cr.execute(del_sql)
-			sql1 = """select * from stock_production_lot where lot_type='in' """+ brand +""" and product_id="""+str(line.product_id.id)+""" and grn_no='"""+str(line.grn_id.name)+"""'"""
-			cr.execute(sql1)
-			data1 = cr.dictfetchall()
-			if data1:
-				del_sql1 = """delete from stock_production_lot where lot_type='in' """+ brand +""" and product_id="""+str(line.product_id.id)+""" and grn_no='"""+str(line.grn_id.name)+"""'"""
-				cr.execute(del_sql1)
-			if line.uom_id.id != line.product_id.uom_po_id.id:
-				product_uom = line.product_id.uom_id.id
-				po_coeff = line.product_id.po_uom_coeff
-				product_qty = line.grn_qty * po_coeff
-				price_unit = line.price_subtotal / product_qty
-			elif line.uom_id.id == line.product_id.uom_id.id:
-				product_uom = line.product_id.uom_id.id
-				product_qty = line.grn_qty
-				price_unit = line.price_subtotal / product_qty
-			if grn_entry.grn_line[0].product_id.stockable == 'yes':									
-				stock_move_obj.create(cr,uid,
-					{
-					'date':grn_entry.grn_date,
-					'general_grn_id':line.id,
-					'product_id': line.product_id.id,
-					'brand_id':line.brand_id.id,
-					'name':line.product_id.name,
-					'product_qty': product_qty,
-					'po_to_stock_qty':product_qty,
-					'stock_uom':line.uom_id.id,
-					'product_uom': line.uom_id.id,
-					'location_id': grn_entry.supplier_id.property_stock_supplier.id,
-					'location_dest_id': dest_location_id,
-					'move_type': 'in',
-					'state': 'done',
-					'price_unit': price_unit or 0.0,
-					'origin':'General GRN',
-					'stock_rate':line.price_unit or 0.0,
-					})
+		if grn_entry.state =='confirmed':
+			if grn_entry.confirmed_by.id == uid:
+				raise osv.except_osv(
+						_('Warning'),
+						_('Approve cannot be done by Confirmed user'))
+			lot_obj = self.pool.get('stock.production.lot')
+			self.write(cr,uid,ids[0],{'state':'done','approved_by':uid,'approved_date':time.strftime('%Y-%m-%d %H:%M:%S')})
+			if grn_entry.bill == 'applicable':
+				self.write(cr,uid,ids[0],{'invoice_flag':'True'})
+			stock_move_obj=self.pool.get('stock.move')
+			dep_obj = self.pool.get('kg.depmaster')
+			dep_id = grn_entry.dep_name.id
+			dep_record = dep_obj.browse(cr,uid,dep_id)
+			dest_location_id = dep_record.main_location.id
+			pi_obj = self.pool.get('kg.purchase.invoice')
+			pi_gen_grn_obj = self.pool.get('kg.gengrn.purchase.invoice.line')
 			if grn_entry.grn_dc == 'dc_invoice' and grn_entry.bill == 'applicable':
+				partner = self.pool.get('res.partner')
+				supplier = partner.browse(cr, uid, grn_entry.supplier_id.id)
+				tot_add = (supplier.street or '')+ ' ' + (supplier.street2 or '') + '\n'+(supplier.city_id.name or '')+ ',' +(supplier.state_id.name or '') + '-' +(supplier.zip or '') + '\nPh:' + (supplier.phone or '')+ '\n' +(supplier.mobile or '')
+				invoice_no = pi_obj.create(cr, uid, {
+							'created_by': uid,
+							'creation_date': today,
+							'type':'from_po',
+							'purpose': 'consu',
+							'grn_type':'from_general_grn',
+							'supplier_id':grn_entry.supplier_id.id,
+							'grn_no':grn_entry.name,
+							'sup_address': tot_add,
+							'sup_invoice_date' : today,
+							'sup_invoice_no':grn_entry.sup_invoice_no,
+							'sup_invoice_date':grn_entry.sup_invoice_date,
+						})
 
-					pi_gen_grn_obj.create(cr,uid,
-							{
-							'general_grn_id':grn_entry.id,
-							'general_grn_line_id':line.id,
-							'product_id': line.product_id.id,
-							'dc_no':grn_entry.dc_no,
-							'tot_rec_qty':line.grn_qty,
-							'uom_id':line.uom_id.id,
-							'total_amt': line.grn_qty * line.price_unit,
-							'price_unit': line.price_unit or 0.0,
-							'discount': line.kg_discount,
-							'kg_discount_per': line.kg_discount_per,
-							'invoice_tax_ids': [(6, 0, [x.id for x in line.grn_tax_ids])],
-							'net_amt':  line.price_subtotal or 0.0,
-							'invoice_header_id' :invoice_no
+				sql1 = """ insert into purchase_invoice_general_grn_ids(invoice_id,grn_id) values(%s,%s)"""%(invoice_no,grn_entry.id)
+				cr.execute(sql1)
+			line_tot = 0
+			for line in grn_entry.grn_line:
+				# This code will create General GRN to Stock Move
+				brand = []
+				if line.brand_id:
+					brand.append("brand_id = %s"%(line.brand_id.id))
+				if brand:
+					brand = 'and ('+' or '.join(brand)
+					brand =  brand+')'
+				else:
+					brand = ''
+				sql = """select * from stock_move where product_id="""+str(line.product_id.id)+""" and move_type='in' """+ brand +""" and general_grn_id="""+str(line.id)+""" """
+				cr.execute(sql)
+				data = cr.dictfetchall()
+				if data:
+					del_sql = """delete from stock_move where product_id="""+str(line.product_id.id)+""" and move_type='in'  """+ brand +"""  and general_grn_id="""+str(line.id)+""" """
+					cr.execute(del_sql)
+				sql1 = """select * from stock_production_lot where lot_type='in' """+ brand +""" and product_id="""+str(line.product_id.id)+""" and grn_no='"""+str(line.grn_id.name)+"""'"""
+				cr.execute(sql1)
+				data1 = cr.dictfetchall()
+				#~ if data1:
+					#~ del_sql1 = """delete from stock_production_lot where lot_type='in' """+ brand +""" and product_id="""+str(line.product_id.id)+""" and grn_no='"""+str(line.grn_id.name)+"""'"""
+					#~ cr.execute(del_sql1)
+				if line.uom_id.id != line.product_id.uom_po_id.id:
+					product_uom = line.product_id.uom_id.id
+					po_coeff = line.product_id.po_uom_coeff
+					product_qty = line.grn_qty * po_coeff
+					price_unit = line.price_subtotal / product_qty
+				elif line.uom_id.id == line.product_id.uom_id.id:
+					product_uom = line.product_id.uom_id.id
+					product_qty = line.grn_qty
+					price_unit = line.price_subtotal / product_qty
+				if grn_entry.grn_line[0].product_id.stockable == 'yes':									
+					stock_move_obj.create(cr,uid,
+						{
+						'date':grn_entry.grn_date,
+						'general_grn_id':line.id,
+						'product_id': line.product_id.id,
+						'brand_id':line.brand_id.id,
+						'name':line.product_id.name,
+						'product_qty': product_qty,
+						'po_to_stock_qty':product_qty,
+						'stock_uom':line.uom_id.id,
+						'product_uom': line.uom_id.id,
+						'location_id': grn_entry.supplier_id.property_stock_supplier.id,
+						'location_dest_id': dest_location_id,
+						'move_type': 'in',
+						'state': 'done',
+						'price_unit': price_unit or 0.0,
+						'origin':'General GRN',
+						'stock_rate':line.price_unit or 0.0,
+						})
+				if grn_entry.grn_dc == 'dc_invoice' and grn_entry.bill == 'applicable':
+
+						pi_gen_grn_obj.create(cr,uid,
+								{
+								'general_grn_id':grn_entry.id,
+								'general_grn_line_id':line.id,
+								'product_id': line.product_id.id,
+								'dc_no':grn_entry.dc_no,
+								'tot_rec_qty':line.grn_qty,
+								'uom_id':line.uom_id.id,
+								'total_amt': line.grn_qty * line.price_unit,
+								'price_unit': line.price_unit or 0.0,
+								'discount': line.kg_discount,
+								'kg_discount_per': line.kg_discount_per,
+								'invoice_tax_ids': [(6, 0, [x.id for x in line.grn_tax_ids])],
+								'net_amt':  line.price_subtotal or 0.0,
+								'invoice_header_id' :invoice_no
+								})
+				line.write({'state':'done'})
+				# This code will create Production lot
+				if line.exp_batch_id:
+					for exp in line.exp_batch_id:
+						if line.uom_id.id != line.product_id.uom_po_id.id:
+							product_uom = line.product_id.uom_id.id
+							po_coeff = line.product_id.po_uom_coeff
+							product_qty = exp.product_qty * po_coeff
+							price_unit = line.price_subtotal / product_qty
+						elif line.uom_id.id == line.product_id.uom_id.id:
+							product_uom = line.product_id.uom_id.id
+							product_qty = exp.product_qty
+							if product_qty <= 0:
+								raise osv.except_osv(_('Check Expiry Quantity !!'), _('Expiry product quantity must be greater than Zero !!!'))
+							price_unit = line.price_subtotal / product_qty
+						if grn_entry.grn_line[0].product_id.stockable == 'yes':															
+							lot_obj.create(cr,uid,
+								{
+								'grn_no':line.grn_id.name,
+								'product_id':line.product_id.id,
+								'brand_id':line.brand_id.id,
+								'product_uom':line.uom_id.id,
+								'product_qty':product_qty,
+								'pending_qty':product_qty,
+								'issue_qty':product_qty,
+								'batch_no':exp.batch_no,
+								'expiry_date':exp.exp_date,
+								'price_unit':price_unit or 0.0,
+								'po_uom':line.uom_id.id,
+								'grn_type':'material'
 							})
-			line.write({'state':'done'})
-			# This code will create Production lot
-			if line.exp_batch_id:
-				for exp in line.exp_batch_id:
+				else:
 					if line.uom_id.id != line.product_id.uom_po_id.id:
 						product_uom = line.product_id.uom_id.id
 						po_coeff = line.product_id.po_uom_coeff
-						product_qty = exp.product_qty * po_coeff
-						price_unit = line.price_subtotal / product_qty
+						product_qty = line.grn_qty * po_coeff
+						price_unit =  line.price_subtotal / product_qty
 					elif line.uom_id.id == line.product_id.uom_id.id:
 						product_uom = line.product_id.uom_id.id
-						product_qty = exp.product_qty
-						if product_qty <= 0:
-							raise osv.except_osv(_('Check Expiry Quantity !!'), _('Expiry product quantity must be greater than Zero !!!'))
+						product_qty = line.grn_qty
 						price_unit = line.price_subtotal / product_qty
-					if grn_entry.grn_line[0].product_id.stockable == 'yes':															
+					if grn_entry.grn_line[0].product_id.stockable == 'yes':									
 						lot_obj.create(cr,uid,
 							{
 							'grn_no':line.grn_id.name,
@@ -399,44 +426,18 @@ class kg_general_grn(osv.osv):
 							'product_qty':product_qty,
 							'pending_qty':product_qty,
 							'issue_qty':product_qty,
-							'batch_no':exp.batch_no,
-							'expiry_date':exp.exp_date,
+							'batch_no':line.grn_id.name,
 							'price_unit':price_unit or 0.0,
 							'po_uom':line.uom_id.id,
+							'batch_no':line.grn_id.name,
 							'grn_type':'material'
 						})
-			else:
-				if line.uom_id.id != line.product_id.uom_po_id.id:
-					product_uom = line.product_id.uom_id.id
-					po_coeff = line.product_id.po_uom_coeff
-					product_qty = line.grn_qty * po_coeff
-					price_unit =  line.price_subtotal / product_qty
-				elif line.uom_id.id == line.product_id.uom_id.id:
-					product_uom = line.product_id.uom_id.id
-					product_qty = line.grn_qty
-					price_unit = line.price_subtotal / product_qty
-				if grn_entry.grn_line[0].product_id.stockable == 'yes':									
-					lot_obj.create(cr,uid,
-						{
-						'grn_no':line.grn_id.name,
-						'product_id':line.product_id.id,
-						'brand_id':line.brand_id.id,
-						'product_uom':line.uom_id.id,
-						'product_qty':product_qty,
-						'pending_qty':product_qty,
-						'issue_qty':product_qty,
-						'batch_no':line.grn_id.name,
-						'price_unit':price_unit or 0.0,
-						'po_uom':line.uom_id.id,
-						'batch_no':line.grn_id.name,
-						'grn_type':'material'
-					})
-			grn_price = line.grn_qty * line.price_unit
-			line.write({'line_total':grn_price})
-			line_tot += grn_price
-			total_price = line.price_unit * line.grn_qty
-			product_tax_amt = self._amount_line_tax(cr, uid, line, context=context)
-			cr.execute("""update kg_general_grn_line set product_tax_amt = %s where id = %s"""%(product_tax_amt,line.id))
+				grn_price = line.grn_qty * line.price_unit
+				line.write({'line_total':grn_price})
+				line_tot += grn_price
+				total_price = line.price_unit * line.grn_qty
+				product_tax_amt = self._amount_line_tax(cr, uid, line, context=context)
+				cr.execute("""update kg_general_grn_line set product_tax_amt = %s where id = %s"""%(product_tax_amt,line.id))
 		return True
 			
 	def entry_cancel(self, cr, uid, ids, context=None):
