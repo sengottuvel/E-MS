@@ -678,478 +678,238 @@ class kg_po_grn(osv.osv):
 	def kg_po_grn_approve(self, cr, uid, ids,context=None):
 		user_id = self.pool.get('res.users').browse(cr, uid, uid)
 		grn_entry = self.browse(cr, uid, ids[0])
-		if grn_entry.grn_type == 'from_po':
-			if grn_entry.line_ids:
-				for i in grn_entry.line_ids:
-					cr.execute(""" select test_certificate from product_product where id = %s """ %(i.product_id.id))
-					data4 = cr.dictfetchall()
-					if data4[0]['test_certificate'] == 'yes':
-						if i.test_cer:
-							pass
-						else:
+		if grn_entry.state =='confirmed':
+			if grn_entry.grn_type == 'from_po':
+				if grn_entry.line_ids:
+					for i in grn_entry.line_ids:
+						cr.execute(""" select test_certificate from product_product where id = %s """ %(i.product_id.id))
+						data4 = cr.dictfetchall()
+						if data4[0]['test_certificate'] == 'yes':
+							if i.test_cer:
+								pass
+							else:
+								raise osv.except_osv(
+								_('Unable to confirm this GRN.'),
+								_('Test Certificate is mandatory for this product.'))
+							if i.inspec_report:
+								pass
+							else:
+								raise osv.except_osv(
+								_('Unable to confirm this GRN.'),
+								_('Inspection Report is mandatory for this product.'))
+						cr.execute(""" select pending_qty from purchase_order_line where order_id = %s and product_id = %s""" %(i.po_id.id,i.product_id.id))
+						data3 = cr.dictfetchall()
+						if (data3[0]['pending_qty']) - (i.po_grn_qty) < i.rejected_items:
 							raise osv.except_osv(
-							_('Unable to confirm this GRN.'),
-							_('Test Certificate is mandatory for this product.'))
-						if i.inspec_report:
-							pass
-						else:
-							raise osv.except_osv(
-							_('Unable to confirm this GRN.'),
-							_('Inspection Report is mandatory for this product.'))
-					cr.execute(""" select pending_qty from purchase_order_line where order_id = %s and product_id = %s""" %(i.po_id.id,i.product_id.id))
-					data3 = cr.dictfetchall()
-					if (data3[0]['pending_qty']) - (i.po_grn_qty) < i.rejected_items:
-						raise osv.except_osv(
-							_('Unable to confirm this GRN.'),
-							_('Check the rejection quantity lesser than purchase order pending quantity.'))
+								_('Unable to confirm this GRN.'),
+								_('Check the rejection quantity lesser than purchase order pending quantity.'))
+				gate_obj = self.pool.get('kg.gate.pass')
+				gate_obj_line = self.pool.get('kg.gate.pass.line')
+				cr.execute(""" select rejection_flag from po_grn_line where rejection_flag='t' and po_id=%s """ %(grn_entry.po_ids[0].id))
+				rej_flag = cr.dictfetchone()
+				if rej_flag:
+					gate_idd = gate_obj.create(cr, uid, {'dep_id': 72,'partner_id': grn_entry.supplier_id.id,'mode': 'from_grn',	'out_type': 'rejection'})
+					for i in grn_entry.line_ids:
+						if i.rejection_flag == True:
+							gate_obj_line.create(cr,uid,
+								{
+								'gate_id':gate_idd,
+								'product_id':i['product_id'].id,
+								'uom':i['uom_id'].id,
+								'qty':i['rejected_items'],
+								'grn_pending_qty':i['rejected_items'],
+								'so_pending_qty':i['rejected_items'],
+								'mode':'from_grn',
+								})	
+							cr.execute(""" select pending_qty from purchase_order_line where order_id = %s """ %(i.po_id.id))
+							pend_qty = cr.dictfetchone()
+							if pend_qty:
+								updated_qty = pend_qty['pending_qty'] - i['rejected_items']
+								cr.execute(""" update purchase_order_line set pending_qty = %s where order_id = %s """ %(updated_qty,i.po_id.id))
+			val = 0
 			gate_obj = self.pool.get('kg.gate.pass')
-			gate_obj_line = self.pool.get('kg.gate.pass.line')
-			cr.execute(""" select rejection_flag from po_grn_line where rejection_flag='t' and po_id=%s """ %(grn_entry.po_ids[0].id))
-			rej_flag = cr.dictfetchone()
-			if rej_flag:
-				gate_idd = gate_obj.create(cr, uid, {'dep_id': 72,'partner_id': grn_entry.supplier_id.id,'mode': 'from_grn',	'out_type': 'rejection'})
-				for i in grn_entry.line_ids:
-					if i.rejection_flag == True:
-						gate_obj_line.create(cr,uid,
-							{
-							'gate_id':gate_idd,
-							'product_id':i['product_id'].id,
-							'uom':i['uom_id'].id,
-							'qty':i['rejected_items'],
-							'grn_pending_qty':i['rejected_items'],
-							'so_pending_qty':i['rejected_items'],
-							'mode':'from_grn',
-							})	
-						cr.execute(""" select pending_qty from purchase_order_line where order_id = %s """ %(i.po_id.id))
-						pend_qty = cr.dictfetchone()
-						if pend_qty:
-							updated_qty = pend_qty['pending_qty'] - i['rejected_items']
-							cr.execute(""" update purchase_order_line set pending_qty = %s where order_id = %s """ %(updated_qty,i.po_id.id))
-		val = 0
-		gate_obj = self.pool.get('kg.gate.pass')
-		if grn_entry.dc_date and grn_entry.dc_date > grn_entry.grn_date:
-			raise osv.except_osv(_('DC Date Error!'),_('DC Date Should Be Less Than GRN Date.'))			
-		if grn_entry.sup_invoice_date and grn_entry.sup_invoice_date > grn_entry.grn_date:
-			raise osv.except_osv(_('Supplier Invoice Date Error!'),_('Supplier Invoice Date Should Be Less Than GRN Date.'))				
-		if grn_entry.confirmed_by.id == uid:
-			raise osv.except_osv(
-					_('Warning'),
-					_('Approve cannot be done by Confirmed user'))
-		else:
-			lot_obj = self.pool.get('stock.production.lot')
-			stock_move_obj=self.pool.get('stock.move')
-			dep_obj = self.pool.get('kg.depmaster')
-			po_line_obj = self.pool.get('purchase.order.line')
-			po_obj = self.pool.get('purchase.order')
-			so_line_obj = self.pool.get('kg.service.order.line')
-			so_obj = self.pool.get('kg.service.order')
-			gp_line_obj = self.pool.get('kg.gate.pass.line')
-			gp_obj = self.pool.get('kg.gate.pass')
-			pi_obj = self.pool.get('kg.purchase.invoice')
-			pi_po_grn_obj = self.pool.get('ch.invoice.line')
-			po_order = grn_entry.po_id
-			dep_id = user_id.dep_name.id
-			dep_record = dep_obj.browse(cr,uid,dep_id)
-			dest_location_id = dep_record.main_location.id 
-			line_tot = 0			
-			line_id_list = []
-			if grn_entry.grn_dc == 'dc_invoice' and grn_entry.grn_type != 'from_gp':
-				partner = self.pool.get('res.partner')
-				supplier = partner.browse(cr, uid, grn_entry.supplier_id.id)
-				tot_add = (supplier.street or '')+ ' ' + (supplier.street2 or '') + '\n'+(supplier.city.name or '')+ ',' +(supplier.state_id.name or '') + '-' +(supplier.zip or '') + '\nPh:' + (supplier.phone or '')+ '\n' +(supplier.mobile or '')
-				if grn_entry.grn_type == 'from_po':
-					grn_type = 'from_po'
-				if grn_entry.grn_type == 'from_so':
-					grn_type = 'from_so'
-				grn_date = time.strftime('%Y-%m-%d')
-				inv_sql = """select * from kg_purchase_invoice where to_char(invoice_date,'yyyy-mm-dd')="""+"""'"""+str(grn_date)+"""'""" + """and supplier_id="""+str(grn_entry.supplier_id.id)+""" and sup_invoice_no="""+"""'"""+str(grn_entry.sup_invoice_no)+"""'""" """  """
-				cr.execute(inv_sql)
-				inv_data = cr.dictfetchall()
-				if inv_data:
-					invdel_sql = """delete from kg_purchase_invoice where to_char(invoice_date,'yyyy-mm-dd')="""+"""'"""+str(grn_date)+"""'""" + """and supplier_id="""+str(grn_entry.supplier_id.id)+""" and sup_invoice_no="""+"""'"""+str(grn_entry.sup_invoice_no)+"""'""" """  """
-					cr.execute(invdel_sql)	
-				invoice_no = pi_obj.create(cr, uid, {
-							'created_by': uid,
-							'creation_date': today,
-							'type':grn_type,
-							'purpose': 'consu',
-							'grn_type':'from_po_grn',
-							'grn_no': grn_entry.name,
-							'po_so_name': grn_entry.order_no,
-							'po_so_date': grn_entry.order_date,
-							'supplier_id':grn_entry.supplier_id.id,
-							'sup_address': tot_add,
-							'sup_invoice_date' : today,
-							'entry_mode' : 'auto',
-							'sup_invoice_no':grn_entry.sup_invoice_no,
-							'sup_invoice_date':grn_entry.sup_invoice_date,
-						})
-				sql1 = """ insert into purchase_invoice_grn_ids(invoice_id,grn_id) values(%s,%s)"""%(invoice_no,grn_entry.id)
-				cr.execute(sql1)
-			for add in grn_entry.expense_line_id:
-				val = val + add.expense_amt
-			for line in grn_entry.line_ids:
-				if line.price_unit > 0 :
-					line.write({'billing_type':'cost'})
-				line_id = line.id
-				brand = []
-				if line.brand_id:
-					brand.append("brand_id = %s"%(line.brand_id.id))
-				if brand:
-					brand = 'and ('+' or '.join(brand)
-					brand =  brand+')'
-				else:
-					brand = ''
-				sql = """select * from stock_move where product_id="""+str(line.product_id.id)+""" and move_type='in' """+ brand +""" and po_grn_line_id="""+str(line.id)+"""  """
-				cr.execute(sql)
-				data = cr.dictfetchall()
-				if data:
-					del_sql = """delete from stock_move where product_id="""+str(line.product_id.id)+""" and move_type='in'  """+ brand +"""  and po_grn_line_id="""+str(line.id)+""" """
-					cr.execute(del_sql)
-				sql1 = """select * from stock_production_lot where lot_type='in' """+ brand +""" and product_id="""+str(line.product_id.id)+""" and grn_no='"""+str(line.po_grn_id.name)+"""' """
-				cr.execute(sql1)
-				data1 = cr.dictfetchall()
-				if data1:
-					del_sql1 = """delete from stock_production_lot where lot_type='in' """+ brand +""" and product_id="""+str(line.product_id.id)+""" and grn_no='"""+str(line.po_grn_id.name)+"""'"""
-					cr.execute(del_sql1)
-				if grn_entry.grn_type == 'from_po':
-					if line.po_line_id.order_id:
-						po_obj.write(cr,uid,line.po_line_id.order_id.id, {'grn_flag': False})
-					if line.billing_type == 'cost':
-						#code for tolarance
-						if line.product_id.tolerance_applicable ==  True:
-							tolarance = line.product_id.tolerance_plus
-							cal_val = (line.po_qty*int(tolarance))/100
-							tolarance_value  = line.po_pending_qty + cal_val
-							if line.po_grn_qty < tolarance_value + 1:
-								pass
-							else:
-								raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than PO Qty for %s !!' %(line.product_id.name)))
-						else:
-							if line.po_grn_qty > line.po_pending_qty:
-								raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than PO Qty for %s !!' %(line.product_id.name)))
-					if line.po_line_id.line_state == 'cancel':
-						raise osv.except_osv(_('Warning!'), _('%s has been cancelled, kindly delete this product for proceed further!!' %(line.product_id.name)))					
-					# This code is to update pending qty in Purchase Order #
-					rec_qty = line.po_line_id.received_qty
-					pending_qty = line.po_line_id.pending_qty
-					if line.po_line_id:
-						po_line_id = line.po_line_id
-						grn_qty = line.po_grn_qty
-						po_line_qty = line.po_qty
-						po_line_pending_qty = pending_qty - grn_qty
-						rec_qty += line.po_grn_qty
-						po_line_obj.write(cr, uid, [line.po_line_id.id],
-								{
-								'pending_qty' : po_line_pending_qty,
-								'received_qty' : rec_qty,
-								})
-				if grn_entry.grn_type == 'from_so':
-					so_id = grn_entry.so_id.id
-					so_obj.write(cr,uid,so_id, {'grn_flag':False})
-					if line.so_line_id:
-						so_obj.write(cr,uid,line.so_line_id.service_id.id, {'grn_flag': False})
-					if line.billing_type == 'cost':
-						#code for tolarance
-						if line.product_id.tolerance_applicable ==  True:
-							tolarance = line.product_id.tolerance_plus
-							cal_val = (line.so_qty*int(tolarance))/100
-							tolarance_value  = line.so_pending_qty + cal_val
-							if line.po_grn_qty < tolarance_value + 1:
-								pass
-							else:
-								raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than SO Qty for %s !!' %(line.product_id.name)))
-						else:
-							if line.po_grn_qty > line.so_pending_qty:
-								raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than SO Qty for %s !!' %(line.product_id.name)))						
-					# This code is to update pending qty in Service Order #
-					rec_qty = line.so_line_id.received_qty
-					pending_qty = line.so_line_id.pending_qty
-					if line.so_line_id:
-						so_line_id = line.so_line_id
-						grn_qty = line.po_grn_qty
-						so_line_qty = line.so_qty
-						so_line_pending_qty = pending_qty - grn_qty
-						rec_qty += line.po_grn_qty
-						so_line_obj.write(cr, uid, [line.so_line_id.id],
-								{
-								'pending_qty' : so_line_pending_qty,
-								'received_qty' : rec_qty,
-								})
-				if grn_entry.grn_type == 'from_gp' :
-						#code for tolarance
-					if line.product_id.tolerance_applicable ==  True:
-						tolarance = line.product_id.tolerance_plus
-						cal_val = (line.gp_qty*int(tolarance))/100
-						tolarance_value  = line.gp_pending_qty + cal_val
-						if line.po_grn_qty < tolarance_value + 1:
-							pass
-						else:
-							raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than GP Qty for %s !!' %(line.product_id.name)))
-					else:
-						if line.po_grn_qty > line.gp_pending_qty and line.gp_flag == True:
-							raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than GP Qty for %s !!' %(line.product_id.name)))						
-					# This code is to update pending qty in Gate Pass #
-					if line.gp_line_id:
-						pending_qty = line.gp_line_id.grn_pending_qty
-						grn_qty = line.po_grn_qty
-						gp_line_pending_qty = pending_qty - grn_qty
-						if gp_line_pending_qty > 0:
-							status = 'pending'
-						else:
-							status = 'done'
-						gp_obj.write(cr, uid, [line.gp_line_id.gate_id.id],
-								{
-								'in_state' : status
-								})
-						gp_line_obj.write(cr, uid, [line.gp_line_id.id],
-								{
-								'grn_pending_qty' : gp_line_pending_qty,
-								})
-				# This code will create PO GRN to Stock Move
-				# UOM Checking #
-				if grn_entry.grn_type == 'from_po':
-					if line.billing_type == 'cost':
-						if line.uom_id.id != line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							po_coeff = line.product_id.po_uom_coeff
-							product_qty = line.po_grn_qty * po_coeff
-							price_unit =  line.po_line_id.price_subtotal / product_qty
-						elif line.uom_id.id == line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							product_qty = line.po_grn_qty
-							price_unit = line.po_line_id.price_subtotal / product_qty
-					if line.billing_type == 'free':
-						if line.uom_id.id != line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							po_coeff = line.product_id.po_uom_coeff
-							product_qty = line.po_grn_qty * po_coeff
-							price_unit =  line.price_subtotal / product_qty
-						elif line.uom_id.id == line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							product_qty = line.po_grn_qty
-							price_unit =  line.price_subtotal / product_qty
-					stock_move_obj.create(cr,uid,
-						{
-						'date':grn_entry.grn_date,
-						'po_grn_id':grn_entry.id,
-						'po_grn_line_id':line.id,
-						'purchase_line_id':line.po_line_id.id,
-						'po_id':grn_entry.po_id.id,
-						'product_id': line.product_id.id,
-						'brand_id': line.brand_id.id,
-						'name':line.product_id.name,
-						'product_qty': product_qty,
-						'po_to_stock_qty':product_qty,
-						'stock_uom':product_uom,
-						'product_uom': product_uom,
-						'location_id': grn_entry.supplier_id.property_stock_supplier.id,
-						'location_dest_id': dest_location_id,
-						'move_type': 'in',
-						'state': 'done',
-						'price_unit': price_unit or 0.0,
-						'price_tax': price_unit or 0.0,
-						'origin':grn_entry.po_id.name,
-						'stock_rate':price_unit or 0.0,
-						'billing_type':line.billing_type
-						})
-					if  line.po_line_id.order_id:
-						po_name = line.po_line_id.order_id.name
-					else:
-						po_name = ''	 
-					if grn_entry.grn_dc == 'dc_invoice':	
-						pi_po_grn_obj.create(cr,uid,
-								{
-								'po_grn_id':grn_entry.id,
-								'po_grn_line_id':line.id,
-								'purchase_line_id':line.po_line_id.id,
-								'po_id':line.po_id.id,
-								'product_id': line.product_id.id,
-								'dc_no':grn_entry.dc_no,
-								'po_so_no':po_name,
-								'po_so_qty': line.po_qty,
-								'tot_rec_qty':line.po_grn_qty,
-								'uom_id':line.uom_id.id,
-								'total_amt': line.po_grn_qty * line.price_unit,
-								'price_unit': line.price_unit or 0.0,
-								'discount': line.kg_discount,
-								'kg_discount_per': line.kg_discount_per,
-								'invoice_tax_ids': [(6, 0, [x.id for x in line.grn_tax_ids])],
-								'net_amt': line.price_subtotal or 0.0,
-								'invoice_header_id' :invoice_no
-								})
-					line.write({'state':'done'})
-				if grn_entry.grn_type == 'from_so':
-					if line.billing_type == 'cost':
-						if line.uom_id.id != line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							po_coeff = line.product_id.po_uom_coeff
-							product_qty = line.po_grn_qty * po_coeff
-							price_unit =  line.so_line_id.price_subtotal / product_qty
-						elif line.uom_id.id == line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							product_qty = line.po_grn_qty
-							price_unit = line.so_line_id.price_subtotal / product_qty
-					if line.billing_type == 'free':
-						if line.uom_id.id != line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							po_coeff = line.product_id.po_uom_coeff
-							product_qty = line.po_grn_qty * po_coeff
-							price_unit =  line.price_subtotal / product_qty
-						elif line.uom_id.id == line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							product_qty = line.po_grn_qty
-							price_unit =  line.price_subtotal / product_qty
-					if line.si_line_id and line.so_line_id.service_id.gp_id:		
-						sql1 = """ update kg_gate_pass_line set grn_pending_qty=(grn_pending_qty - %s) where si_line_id = %s and gate_id = %s"""%(product_qty,
-															line.si_line_id.id,line.so_line_id.service_id.gp_id.id)
-						cr.execute(sql1)
-					elif not line.si_line_id and line.so_line_id:
-						sql1 = """ update kg_gate_pass_line set grn_pending_qty=(grn_pending_qty - %s) where product_id = %s and gate_id = %s"""%(product_qty,
-															line.product_id.id,line.so_line_id.service_id.gp_id.id)
-						cr.execute(sql1)	
-					else:
-						pass	
-					stock_move_obj.create(cr,uid,
-						{
-						'date':grn_entry.grn_date,
-						'po_grn_id':grn_entry.id,
-						'po_grn_line_id':line.id,
-						'so_line_id':line.so_line_id.id,
-						'so_id':grn_entry.so_id.id,
-						'product_id': line.product_id.id,
-						'brand_id': line.brand_id.id,
-						'name':line.product_id.name,
-						'product_qty': product_qty,
-						'po_to_stock_qty':product_qty,
-						'stock_uom':product_uom,
-						'product_uom': product_uom,
-						'location_id': grn_entry.supplier_id.property_stock_supplier.id,
-						'location_dest_id': dest_location_id,
-						'move_type': 'in',
-						'state': 'done',
-						'price_unit': price_unit or 0.0,
-						'price_tax': price_unit or 0.0,
-						'origin':grn_entry.so_id.name,
-						'stock_rate':price_unit or 0.0,
-						})
-					if grn_entry.grn_dc == 'dc_invoice': 
-						
-						if line.so_line_id:
-							sso_id = line.so_line_id.service_id.id
-							sso_name = line.so_line_id.service_id.name
-						else:
-							sso_id = False
-							sso_name = ''
-						
-						pi_po_grn_obj.create(cr,uid,
-								{
-								'po_grn_id':grn_entry.id,
-								'po_grn_line_id':line.id,
-								'so_line_id':line.so_line_id.id,
-								'so_id':sso_id,
-								'product_id': line.product_id.id,
-								'dc_no':grn_entry.dc_no,
-								'po_so_no':sso_name,
-								'po_so_qty': line.so_qty,
-								'tot_rec_qty':line.po_grn_qty,
-								'uom_id':line.uom_id.id,
-								'total_amt': line.po_grn_qty * line.price_unit,
-								'price_unit': line.price_unit or 0.0,
-								'discount': line.kg_discount,
-								'kg_discount_per': line.kg_discount_per,
-								'invoice_tax_ids': [(6, 0, [x.id for x in line.grn_tax_ids])],
-								'net_amt': line.price_subtotal or 0.0,
-								'invoice_header_id' :invoice_no
-								})
-					line.write({'state':'done'})
-				if grn_entry.grn_type == 'from_gp':
-					if line.billing_type == 'free':
-						if line.uom_id.id != line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							po_coeff = line.product_id.po_uom_coeff
-							product_qty = line.po_grn_qty * po_coeff
-							price_unit =  line.price_subtotal / product_qty
-						elif line.uom_id.id == line.product_id.uom_id.id:
-							product_uom = line.product_id.uom_id.id
-							product_qty = line.po_grn_qty
-							price_unit =  line.price_subtotal / product_qty
-					if line.gp_line_id:
-						pass_id = line.gp_line_id.gate_id.id
-						pass_line_id = line.gp_line_id.id
-						pass_name = line.gp_line_id.gate_id.name
-					else:
-						pass_id = False
-						pass_line_id = False
-						pass_name = ''
-					stock_move_obj.create(cr,uid,
-						{
-						'date':grn_entry.grn_date,
-						'po_grn_id':grn_entry.id,
-						'po_grn_line_id':line.id,
-						'gp_line_id':pass_line_id,
-						'gp_id':pass_id,
-						'product_id': line.product_id.id,
-						'brand_id': line.brand_id.id,
-						'name':line.product_id.name,
-						'product_qty': line.po_grn_qty,
-						'po_to_stock_qty':line.po_grn_qty,
-						'stock_uom':line.product_id.uom_id.id,
-						'product_uom': line.product_id.uom_id.id,
-						'location_id': grn_entry.supplier_id.property_stock_supplier.id,
-						'location_dest_id': dest_location_id,
-						'move_type': 'in',
-						'state': 'done',
-						'price_unit': (line.price_subtotal / line.po_grn_qty) or 0.0,
-						'price_unit': (line.price_subtotal / line.po_grn_qty) or 0.0,
-						'origin':pass_name,
-						'stock_rate':(line.price_subtotal / line.po_grn_qty) or 0.0,
-						})
-					line.write({'state':'done'})
-				# This code will create Production lot
-				# UOM Checking #
-				if grn_entry.grn_type == 'from_po':
-					if line.po_exp_id:
-						for exp in line.po_exp_id:
-							if line.billing_type == 'cost':
-								if line.uom_id.id != line.product_id.uom_id.id:
-									product_uom = line.product_id.uom_id.id
-									po_coeff = line.product_id.po_uom_coeff
-									product_qty = exp.product_qty * po_coeff
-									price_unit =  line.price_unit
-								elif line.uom_id.id == line.product_id.uom_id.id:
-									product_uom = line.product_id.uom_id.id
-									product_qty = exp.product_qty
-									price_unit = line.price_unit
-							if line.billing_type == 'free':
-								if line.uom_id.id != line.product_id.uom_id.id:
-									product_uom = line.product_id.uom_id.id
-									po_coeff = line.product_id.po_uom_coeff
-									product_qty = exp.product_qty * po_coeff
-									price_unit =  line.price_unit
-								elif line.uom_id.id == line.product_id.uom_id.id:
-									product_uom = line.product_id.uom_id.id
-									product_qty = exp.product_qty
-									price_unit =  line.price_unit
-							lot_obj.create(cr,uid,
-								{
-								'po_grn_id':grn_entry.id,
-								'po_grn_line_id':line.id,
-								'grn_no':line.po_grn_id.name,
-								'product_id':line.product_id.id,
-								'brand_id':line.brand_id.id,
-								'product_uom':product_uom,
-								'product_qty':product_qty,
-								'pending_qty':product_qty,
-								'issue_qty':product_qty,
-								'batch_no':exp.batch_no,
-								'expiry_date':exp.exp_date,
-								'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
-								'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
-								'po_uom':line.uom_id.id,
-								'grn_type':'material'
+			if grn_entry.dc_date and grn_entry.dc_date > grn_entry.grn_date:
+				raise osv.except_osv(_('DC Date Error!'),_('DC Date Should Be Less Than GRN Date.'))			
+			if grn_entry.sup_invoice_date and grn_entry.sup_invoice_date > grn_entry.grn_date:
+				raise osv.except_osv(_('Supplier Invoice Date Error!'),_('Supplier Invoice Date Should Be Less Than GRN Date.'))				
+			if grn_entry.confirmed_by.id == uid:
+				raise osv.except_osv(
+						_('Warning'),
+						_('Approve cannot be done by Confirmed user'))
+			else:
+				lot_obj = self.pool.get('stock.production.lot')
+				stock_move_obj=self.pool.get('stock.move')
+				dep_obj = self.pool.get('kg.depmaster')
+				po_line_obj = self.pool.get('purchase.order.line')
+				po_obj = self.pool.get('purchase.order')
+				so_line_obj = self.pool.get('kg.service.order.line')
+				so_obj = self.pool.get('kg.service.order')
+				gp_line_obj = self.pool.get('kg.gate.pass.line')
+				gp_obj = self.pool.get('kg.gate.pass')
+				pi_obj = self.pool.get('kg.purchase.invoice')
+				pi_po_grn_obj = self.pool.get('ch.invoice.line')
+				po_order = grn_entry.po_id
+				dep_id = user_id.dep_name.id
+				dep_record = dep_obj.browse(cr,uid,dep_id)
+				dest_location_id = dep_record.main_location.id 
+				line_tot = 0			
+				line_id_list = []
+				if grn_entry.grn_dc == 'dc_invoice' and grn_entry.grn_type != 'from_gp':
+					partner = self.pool.get('res.partner')
+					supplier = partner.browse(cr, uid, grn_entry.supplier_id.id)
+					tot_add = (supplier.street or '')+ ' ' + (supplier.street2 or '') + '\n'+(supplier.city.name or '')+ ',' +(supplier.state_id.name or '') + '-' +(supplier.zip or '') + '\nPh:' + (supplier.phone or '')+ '\n' +(supplier.mobile or '')
+					if grn_entry.grn_type == 'from_po':
+						grn_type = 'from_po'
+					if grn_entry.grn_type == 'from_so':
+						grn_type = 'from_so'
+					grn_date = time.strftime('%Y-%m-%d')
+					inv_sql = """select * from kg_purchase_invoice where to_char(invoice_date,'yyyy-mm-dd')="""+"""'"""+str(grn_date)+"""'""" + """and supplier_id="""+str(grn_entry.supplier_id.id)+""" and sup_invoice_no="""+"""'"""+str(grn_entry.sup_invoice_no)+"""'""" """  """
+					cr.execute(inv_sql)
+					inv_data = cr.dictfetchall()
+					if inv_data:
+						invdel_sql = """delete from kg_purchase_invoice where to_char(invoice_date,'yyyy-mm-dd')="""+"""'"""+str(grn_date)+"""'""" + """and supplier_id="""+str(grn_entry.supplier_id.id)+""" and sup_invoice_no="""+"""'"""+str(grn_entry.sup_invoice_no)+"""'""" """  """
+						cr.execute(invdel_sql)	
+					invoice_no = pi_obj.create(cr, uid, {
+								'created_by': uid,
+								'creation_date': today,
+								'type':grn_type,
+								'purpose': 'consu',
+								'grn_type':'from_po_grn',
+								'grn_no': grn_entry.name,
+								'po_so_name': grn_entry.order_no,
+								'po_so_date': grn_entry.order_date,
+								'supplier_id':grn_entry.supplier_id.id,
+								'sup_address': tot_add,
+								'sup_invoice_date' : today,
+								'entry_mode' : 'auto',
+								'sup_invoice_no':grn_entry.sup_invoice_no,
+								'sup_invoice_date':grn_entry.sup_invoice_date,
 							})
+					sql1 = """ insert into purchase_invoice_grn_ids(invoice_id,grn_id) values(%s,%s)"""%(invoice_no,grn_entry.id)
+					cr.execute(sql1)
+				for add in grn_entry.expense_line_id:
+					val = val + add.expense_amt
+				for line in grn_entry.line_ids:
+					if line.price_unit > 0 :
+						line.write({'billing_type':'cost'})
+					line_id = line.id
+					brand = []
+					if line.brand_id:
+						brand.append("brand_id = %s"%(line.brand_id.id))
+					if brand:
+						brand = 'and ('+' or '.join(brand)
+						brand =  brand+')'
 					else:
+						brand = ''
+					sql = """select * from stock_move where product_id="""+str(line.product_id.id)+""" and move_type='in' """+ brand +""" and po_grn_line_id="""+str(line.id)+"""  """
+					cr.execute(sql)
+					data = cr.dictfetchall()
+					if data:
+						del_sql = """delete from stock_move where product_id="""+str(line.product_id.id)+""" and move_type='in'  """+ brand +"""  and po_grn_line_id="""+str(line.id)+""" """
+						cr.execute(del_sql)
+					sql1 = """select * from stock_production_lot where lot_type='in' """+ brand +""" and product_id="""+str(line.product_id.id)+""" and grn_no='"""+str(line.po_grn_id.name)+"""' """
+					cr.execute(sql1)
+					data1 = cr.dictfetchall()
+					#~ if data1:
+						#~ del_sql1 = """delete from stock_production_lot where lot_type='in' """+ brand +""" and product_id="""+str(line.product_id.id)+""" and grn_no='"""+str(line.po_grn_id.name)+"""'"""
+						#~ cr.execute(del_sql1)
+					if grn_entry.grn_type == 'from_po':
+						if line.po_line_id.order_id:
+							po_obj.write(cr,uid,line.po_line_id.order_id.id, {'grn_flag': False})
+						if line.billing_type == 'cost':
+							#code for tolarance
+							if line.product_id.tolerance_applicable ==  True:
+								tolarance = line.product_id.tolerance_plus
+								cal_val = (line.po_qty*int(tolarance))/100
+								tolarance_value  = line.po_pending_qty + cal_val
+								if line.po_grn_qty < tolarance_value + 1:
+									pass
+								else:
+									raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than PO Qty for %s !!' %(line.product_id.name)))
+							else:
+								if line.po_grn_qty > line.po_pending_qty:
+									raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than PO Qty for %s !!' %(line.product_id.name)))
+						if line.po_line_id.line_state == 'cancel':
+							raise osv.except_osv(_('Warning!'), _('%s has been cancelled, kindly delete this product for proceed further!!' %(line.product_id.name)))					
+						# This code is to update pending qty in Purchase Order #
+						rec_qty = line.po_line_id.received_qty
+						pending_qty = line.po_line_id.pending_qty
+						if line.po_line_id:
+							po_line_id = line.po_line_id
+							grn_qty = line.po_grn_qty
+							po_line_qty = line.po_qty
+							po_line_pending_qty = pending_qty - grn_qty
+							rec_qty += line.po_grn_qty
+							po_line_obj.write(cr, uid, [line.po_line_id.id],
+									{
+									'pending_qty' : po_line_pending_qty,
+									'received_qty' : rec_qty,
+									})
+					if grn_entry.grn_type == 'from_so':
+						so_id = grn_entry.so_id.id
+						so_obj.write(cr,uid,so_id, {'grn_flag':False})
+						if line.so_line_id:
+							so_obj.write(cr,uid,line.so_line_id.service_id.id, {'grn_flag': False})
+						if line.billing_type == 'cost':
+							#code for tolarance
+							if line.product_id.tolerance_applicable ==  True:
+								tolarance = line.product_id.tolerance_plus
+								cal_val = (line.so_qty*int(tolarance))/100
+								tolarance_value  = line.so_pending_qty + cal_val
+								if line.po_grn_qty < tolarance_value + 1:
+									pass
+								else:
+									raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than SO Qty for %s !!' %(line.product_id.name)))
+							else:
+								if line.po_grn_qty > line.so_pending_qty:
+									raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than SO Qty for %s !!' %(line.product_id.name)))						
+						# This code is to update pending qty in Service Order #
+						rec_qty = line.so_line_id.received_qty
+						pending_qty = line.so_line_id.pending_qty
+						if line.so_line_id:
+							so_line_id = line.so_line_id
+							grn_qty = line.po_grn_qty
+							so_line_qty = line.so_qty
+							so_line_pending_qty = pending_qty - grn_qty
+							rec_qty += line.po_grn_qty
+							so_line_obj.write(cr, uid, [line.so_line_id.id],
+									{
+									'pending_qty' : so_line_pending_qty,
+									'received_qty' : rec_qty,
+									})
+					if grn_entry.grn_type == 'from_gp' :
+							#code for tolarance
+						if line.product_id.tolerance_applicable ==  True:
+							tolarance = line.product_id.tolerance_plus
+							cal_val = (line.gp_qty*int(tolarance))/100
+							tolarance_value  = line.gp_pending_qty + cal_val
+							if line.po_grn_qty < tolarance_value + 1:
+								pass
+							else:
+								raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than GP Qty for %s !!' %(line.product_id.name)))
+						else:
+							if line.po_grn_qty > line.gp_pending_qty and line.gp_flag == True:
+								raise osv.except_osv(_('Warning!'), _('GRN Qty should not be greater than GP Qty for %s !!' %(line.product_id.name)))						
+						# This code is to update pending qty in Gate Pass #
+						if line.gp_line_id:
+							pending_qty = line.gp_line_id.grn_pending_qty
+							grn_qty = line.po_grn_qty
+							gp_line_pending_qty = pending_qty - grn_qty
+							if gp_line_pending_qty > 0:
+								status = 'pending'
+							else:
+								status = 'done'
+							gp_obj.write(cr, uid, [line.gp_line_id.gate_id.id],
+									{
+									'in_state' : status
+									})
+							gp_line_obj.write(cr, uid, [line.gp_line_id.id],
+									{
+									'grn_pending_qty' : gp_line_pending_qty,
+									})
+					# This code will create PO GRN to Stock Move
+					# UOM Checking #
+					if grn_entry.grn_type == 'from_po':
 						if line.billing_type == 'cost':
 							if line.uom_id.id != line.product_id.uom_id.id:
 								product_uom = line.product_id.uom_id.id
@@ -1170,65 +930,57 @@ class kg_po_grn(osv.osv):
 								product_uom = line.product_id.uom_id.id
 								product_qty = line.po_grn_qty
 								price_unit =  line.price_subtotal / product_qty
-						lot_obj.create(cr,uid,
+						stock_move_obj.create(cr,uid,
 							{
+							'date':grn_entry.grn_date,
 							'po_grn_id':grn_entry.id,
 							'po_grn_line_id':line.id,
-							'grn_no':line.po_grn_id.name,
-							'product_id':line.product_id.id,
-							'brand_id':line.brand_id.id,
-							'product_uom':product_uom,
-							'product_qty':product_qty,
-							'pending_qty':product_qty,
-							'issue_qty':product_qty,
-							'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
-							'po_uom':product_uom,
-							'batch_no':line.po_grn_id.name,
-							'grn_type':'material',
-							'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
-						})
-				if grn_entry.grn_type == 'from_so':
-					if line.po_exp_id:
-						for exp in line.po_exp_id:
-							if line.billing_type == 'cost':
-								if line.uom_id.id != line.product_id.uom_id.id:
-									product_uom = line.product_id.uom_id.id
-									po_coeff = line.product_id.po_uom_coeff
-									product_qty = exp.product_qty * po_coeff
-									price_unit = line.price_unit
-								elif line.uom_id.id == line.product_id.uom_id.id:
-									product_uom = line.product_id.uom_id.id
-									product_qty = exp.product_qty
-									price_unit = line.price_unit
-							if line.billing_type == 'free':
-								if line.uom_id.id != line.product_id.uom_id.id:
-									product_uom = line.product_id.uom_id.id
-									po_coeff = line.product_id.po_uom_coeff
-									product_qty = exp.product_qty * po_coeff
-									price_unit =  line.price_unit
-								elif line.uom_id.id == line.product_id.uom_id.id:
-									product_uom = line.product_id.uom_id.id
-									product_qty = exp.product_qty
-									price_unit =  line.price_unit
-							lot_obj.create(cr,uid,
-								{
-								'po_grn_id':grn_entry.id,
-								'po_grn_line_id':line.id,
-								'grn_no':line.po_grn_id.name,
-								'product_id':line.product_id.id,
-								'brand_id':line.brand_id.id,
-								'product_uom':product_uom,
-								'product_qty':product_qty,
-								'pending_qty':product_qty,
-								'issue_qty':product_qty,
-								'batch_no':exp.batch_no,
-								'expiry_date':exp.exp_date,
-								'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
-								'po_uom':line.uom_id.id,
-								'grn_type':'service',
-								'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
+							'purchase_line_id':line.po_line_id.id,
+							'po_id':grn_entry.po_id.id,
+							'product_id': line.product_id.id,
+							'brand_id': line.brand_id.id,
+							'name':line.product_id.name,
+							'product_qty': product_qty,
+							'po_to_stock_qty':product_qty,
+							'stock_uom':product_uom,
+							'product_uom': product_uom,
+							'location_id': grn_entry.supplier_id.property_stock_supplier.id,
+							'location_dest_id': dest_location_id,
+							'move_type': 'in',
+							'state': 'done',
+							'price_unit': price_unit or 0.0,
+							'price_tax': price_unit or 0.0,
+							'origin':grn_entry.po_id.name,
+							'stock_rate':price_unit or 0.0,
+							'billing_type':line.billing_type
 							})
-					else:
+						if  line.po_line_id.order_id:
+							po_name = line.po_line_id.order_id.name
+						else:
+							po_name = ''	 
+						if grn_entry.grn_dc == 'dc_invoice':	
+							pi_po_grn_obj.create(cr,uid,
+									{
+									'po_grn_id':grn_entry.id,
+									'po_grn_line_id':line.id,
+									'purchase_line_id':line.po_line_id.id,
+									'po_id':line.po_id.id,
+									'product_id': line.product_id.id,
+									'dc_no':grn_entry.dc_no,
+									'po_so_no':po_name,
+									'po_so_qty': line.po_qty,
+									'tot_rec_qty':line.po_grn_qty,
+									'uom_id':line.uom_id.id,
+									'total_amt': line.po_grn_qty * line.price_unit,
+									'price_unit': line.price_unit or 0.0,
+									'discount': line.kg_discount,
+									'kg_discount_per': line.kg_discount_per,
+									'invoice_tax_ids': [(6, 0, [x.id for x in line.grn_tax_ids])],
+									'net_amt': line.price_subtotal or 0.0,
+									'invoice_header_id' :invoice_no
+									})
+						line.write({'state':'done'})
+					if grn_entry.grn_type == 'from_so':
 						if line.billing_type == 'cost':
 							if line.uom_id.id != line.product_id.uom_id.id:
 								product_uom = line.product_id.uom_id.id
@@ -1249,36 +1001,176 @@ class kg_po_grn(osv.osv):
 								product_uom = line.product_id.uom_id.id
 								product_qty = line.po_grn_qty
 								price_unit =  line.price_subtotal / product_qty
-						lot_obj.create(cr,uid,
+						if line.si_line_id and line.so_line_id.service_id.gp_id:		
+							sql1 = """ update kg_gate_pass_line set grn_pending_qty=(grn_pending_qty - %s) where si_line_id = %s and gate_id = %s"""%(product_qty,
+																line.si_line_id.id,line.so_line_id.service_id.gp_id.id)
+							cr.execute(sql1)
+						elif not line.si_line_id and line.so_line_id:
+							sql1 = """ update kg_gate_pass_line set grn_pending_qty=(grn_pending_qty - %s) where product_id = %s and gate_id = %s"""%(product_qty,
+																line.product_id.id,line.so_line_id.service_id.gp_id.id)
+							cr.execute(sql1)	
+						else:
+							pass	
+						stock_move_obj.create(cr,uid,
 							{
+							'date':grn_entry.grn_date,
 							'po_grn_id':grn_entry.id,
 							'po_grn_line_id':line.id,
-							'grn_no':line.po_grn_id.name,
-							'product_id':line.product_id.id,
-							'brand_id':line.brand_id.id,
-							'product_uom':product_uom,
-							'product_qty':product_qty,
-							'pending_qty':product_qty,
-							'issue_qty':product_qty,
-							'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
-							'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
-							'po_uom':product_uom,
-							'batch_no':line.po_grn_id.name,
-							'grn_type':'service'  
-						})
-				if grn_entry.grn_type == 'from_gp':
-					if line.po_exp_id:
-						for exp in line.po_exp_id:
+							'so_line_id':line.so_line_id.id,
+							'so_id':grn_entry.so_id.id,
+							'product_id': line.product_id.id,
+							'brand_id': line.brand_id.id,
+							'name':line.product_id.name,
+							'product_qty': product_qty,
+							'po_to_stock_qty':product_qty,
+							'stock_uom':product_uom,
+							'product_uom': product_uom,
+							'location_id': grn_entry.supplier_id.property_stock_supplier.id,
+							'location_dest_id': dest_location_id,
+							'move_type': 'in',
+							'state': 'done',
+							'price_unit': price_unit or 0.0,
+							'price_tax': price_unit or 0.0,
+							'origin':grn_entry.so_id.name,
+							'stock_rate':price_unit or 0.0,
+							})
+						if grn_entry.grn_dc == 'dc_invoice': 
+							
+							if line.so_line_id:
+								sso_id = line.so_line_id.service_id.id
+								sso_name = line.so_line_id.service_id.name
+							else:
+								sso_id = False
+								sso_name = ''
+							
+							pi_po_grn_obj.create(cr,uid,
+									{
+									'po_grn_id':grn_entry.id,
+									'po_grn_line_id':line.id,
+									'so_line_id':line.so_line_id.id,
+									'so_id':sso_id,
+									'product_id': line.product_id.id,
+									'dc_no':grn_entry.dc_no,
+									'po_so_no':sso_name,
+									'po_so_qty': line.so_qty,
+									'tot_rec_qty':line.po_grn_qty,
+									'uom_id':line.uom_id.id,
+									'total_amt': line.po_grn_qty * line.price_unit,
+									'price_unit': line.price_unit or 0.0,
+									'discount': line.kg_discount,
+									'kg_discount_per': line.kg_discount_per,
+									'invoice_tax_ids': [(6, 0, [x.id for x in line.grn_tax_ids])],
+									'net_amt': line.price_subtotal or 0.0,
+									'invoice_header_id' :invoice_no
+									})
+						line.write({'state':'done'})
+					if grn_entry.grn_type == 'from_gp':
+						if line.billing_type == 'free':
 							if line.uom_id.id != line.product_id.uom_id.id:
 								product_uom = line.product_id.uom_id.id
 								po_coeff = line.product_id.po_uom_coeff
-								product_qty =  exp.product_qty * po_coeff
-								price_unit =  line.price_unit
-									
+								product_qty = line.po_grn_qty * po_coeff
+								price_unit =  line.price_subtotal / product_qty
 							elif line.uom_id.id == line.product_id.uom_id.id:
 								product_uom = line.product_id.uom_id.id
-								product_qty =  exp.product_qty
-								price_unit =  line.price_unit
+								product_qty = line.po_grn_qty
+								price_unit =  line.price_subtotal / product_qty
+						if line.gp_line_id:
+							pass_id = line.gp_line_id.gate_id.id
+							pass_line_id = line.gp_line_id.id
+							pass_name = line.gp_line_id.gate_id.name
+						else:
+							pass_id = False
+							pass_line_id = False
+							pass_name = ''
+						stock_move_obj.create(cr,uid,
+							{
+							'date':grn_entry.grn_date,
+							'po_grn_id':grn_entry.id,
+							'po_grn_line_id':line.id,
+							'gp_line_id':pass_line_id,
+							'gp_id':pass_id,
+							'product_id': line.product_id.id,
+							'brand_id': line.brand_id.id,
+							'name':line.product_id.name,
+							'product_qty': line.po_grn_qty,
+							'po_to_stock_qty':line.po_grn_qty,
+							'stock_uom':line.product_id.uom_id.id,
+							'product_uom': line.product_id.uom_id.id,
+							'location_id': grn_entry.supplier_id.property_stock_supplier.id,
+							'location_dest_id': dest_location_id,
+							'move_type': 'in',
+							'state': 'done',
+							'price_unit': (line.price_subtotal / line.po_grn_qty) or 0.0,
+							'price_unit': (line.price_subtotal / line.po_grn_qty) or 0.0,
+							'origin':pass_name,
+							'stock_rate':(line.price_subtotal / line.po_grn_qty) or 0.0,
+							})
+						line.write({'state':'done'})
+					# This code will create Production lot
+					# UOM Checking #
+					if grn_entry.grn_type == 'from_po':
+						if line.po_exp_id:
+							for exp in line.po_exp_id:
+								if line.billing_type == 'cost':
+									if line.uom_id.id != line.product_id.uom_id.id:
+										product_uom = line.product_id.uom_id.id
+										po_coeff = line.product_id.po_uom_coeff
+										product_qty = exp.product_qty * po_coeff
+										price_unit =  line.price_unit
+									elif line.uom_id.id == line.product_id.uom_id.id:
+										product_uom = line.product_id.uom_id.id
+										product_qty = exp.product_qty
+										price_unit = line.price_unit
+								if line.billing_type == 'free':
+									if line.uom_id.id != line.product_id.uom_id.id:
+										product_uom = line.product_id.uom_id.id
+										po_coeff = line.product_id.po_uom_coeff
+										product_qty = exp.product_qty * po_coeff
+										price_unit =  line.price_unit
+									elif line.uom_id.id == line.product_id.uom_id.id:
+										product_uom = line.product_id.uom_id.id
+										product_qty = exp.product_qty
+										price_unit =  line.price_unit
+								lot_obj.create(cr,uid,
+									{
+									'po_grn_id':grn_entry.id,
+									'po_grn_line_id':line.id,
+									'grn_no':line.po_grn_id.name,
+									'product_id':line.product_id.id,
+									'brand_id':line.brand_id.id,
+									'product_uom':product_uom,
+									'product_qty':product_qty,
+									'pending_qty':product_qty,
+									'issue_qty':product_qty,
+									'batch_no':exp.batch_no,
+									'expiry_date':exp.exp_date,
+									'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
+									'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
+									'po_uom':line.uom_id.id,
+									'grn_type':'material'
+								})
+						else:
+							if line.billing_type == 'cost':
+								if line.uom_id.id != line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									po_coeff = line.product_id.po_uom_coeff
+									product_qty = line.po_grn_qty * po_coeff
+									price_unit =  line.po_line_id.price_subtotal / product_qty
+								elif line.uom_id.id == line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									product_qty = line.po_grn_qty
+									price_unit = line.po_line_id.price_subtotal / product_qty
+							if line.billing_type == 'free':
+								if line.uom_id.id != line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									po_coeff = line.product_id.po_uom_coeff
+									product_qty = line.po_grn_qty * po_coeff
+									price_unit =  line.price_subtotal / product_qty
+								elif line.uom_id.id == line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									product_qty = line.po_grn_qty
+									price_unit =  line.price_subtotal / product_qty
 							lot_obj.create(cr,uid,
 								{
 								'po_grn_id':grn_entry.id,
@@ -1290,59 +1182,168 @@ class kg_po_grn(osv.osv):
 								'product_qty':product_qty,
 								'pending_qty':product_qty,
 								'issue_qty':product_qty,
-								'batch_no':exp.batch_no,
-								'expiry_date':exp.exp_date,
+								'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
+								'po_uom':product_uom,
+								'batch_no':line.po_grn_id.name,
+								'grn_type':'material',
+								'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
+							})
+					if grn_entry.grn_type == 'from_so':
+						if line.po_exp_id:
+							for exp in line.po_exp_id:
+								if line.billing_type == 'cost':
+									if line.uom_id.id != line.product_id.uom_id.id:
+										product_uom = line.product_id.uom_id.id
+										po_coeff = line.product_id.po_uom_coeff
+										product_qty = exp.product_qty * po_coeff
+										price_unit = line.price_unit
+									elif line.uom_id.id == line.product_id.uom_id.id:
+										product_uom = line.product_id.uom_id.id
+										product_qty = exp.product_qty
+										price_unit = line.price_unit
+								if line.billing_type == 'free':
+									if line.uom_id.id != line.product_id.uom_id.id:
+										product_uom = line.product_id.uom_id.id
+										po_coeff = line.product_id.po_uom_coeff
+										product_qty = exp.product_qty * po_coeff
+										price_unit =  line.price_unit
+									elif line.uom_id.id == line.product_id.uom_id.id:
+										product_uom = line.product_id.uom_id.id
+										product_qty = exp.product_qty
+										price_unit =  line.price_unit
+								lot_obj.create(cr,uid,
+									{
+									'po_grn_id':grn_entry.id,
+									'po_grn_line_id':line.id,
+									'grn_no':line.po_grn_id.name,
+									'product_id':line.product_id.id,
+									'brand_id':line.brand_id.id,
+									'product_uom':product_uom,
+									'product_qty':product_qty,
+									'pending_qty':product_qty,
+									'issue_qty':product_qty,
+									'batch_no':exp.batch_no,
+									'expiry_date':exp.exp_date,
+									'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
+									'po_uom':line.uom_id.id,
+									'grn_type':'service',
+									'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
+								})
+						else:
+							if line.billing_type == 'cost':
+								if line.uom_id.id != line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									po_coeff = line.product_id.po_uom_coeff
+									product_qty = line.po_grn_qty * po_coeff
+									price_unit =  line.so_line_id.price_subtotal / product_qty
+								elif line.uom_id.id == line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									product_qty = line.po_grn_qty
+									price_unit = line.so_line_id.price_subtotal / product_qty
+							if line.billing_type == 'free':
+								if line.uom_id.id != line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									po_coeff = line.product_id.po_uom_coeff
+									product_qty = line.po_grn_qty * po_coeff
+									price_unit =  line.price_subtotal / product_qty
+								elif line.uom_id.id == line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									product_qty = line.po_grn_qty
+									price_unit =  line.price_subtotal / product_qty
+							lot_obj.create(cr,uid,
+								{
+								'po_grn_id':grn_entry.id,
+								'po_grn_line_id':line.id,
+								'grn_no':line.po_grn_id.name,
+								'product_id':line.product_id.id,
+								'brand_id':line.brand_id.id,
+								'product_uom':product_uom,
+								'product_qty':product_qty,
+								'pending_qty':product_qty,
+								'issue_qty':product_qty,
 								'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
 								'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
-								'po_uom':line.uom_id.id,
+								'po_uom':product_uom,
+								'batch_no':line.po_grn_id.name,
+								'grn_type':'service'  
+							})
+					if grn_entry.grn_type == 'from_gp':
+						if line.po_exp_id:
+							for exp in line.po_exp_id:
+								if line.uom_id.id != line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									po_coeff = line.product_id.po_uom_coeff
+									product_qty =  exp.product_qty * po_coeff
+									price_unit =  line.price_unit
+										
+								elif line.uom_id.id == line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									product_qty =  exp.product_qty
+									price_unit =  line.price_unit
+								lot_obj.create(cr,uid,
+									{
+									'po_grn_id':grn_entry.id,
+									'po_grn_line_id':line.id,
+									'grn_no':line.po_grn_id.name,
+									'product_id':line.product_id.id,
+									'brand_id':line.brand_id.id,
+									'product_uom':product_uom,
+									'product_qty':product_qty,
+									'pending_qty':product_qty,
+									'issue_qty':product_qty,
+									'batch_no':exp.batch_no,
+									'expiry_date':exp.exp_date,
+									'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
+									'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
+									'po_uom':line.uom_id.id,
+									'grn_type':'service'
+								})
+						else:
+							if line.billing_type == 'free':
+								if line.uom_id.id != line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									po_coeff = line.product_id.po_uom_coeff
+									product_qty = line.po_grn_qty * po_coeff
+									price_unit =  line.price_subtotal / product_qty
+								elif line.uom_id.id == line.product_id.uom_id.id:
+									product_uom = line.product_id.uom_id.id
+									product_qty = line.po_grn_qty
+									price_unit =  line.price_subtotal / product_qty
+							lot_obj.create(cr,uid,
+								{
+								'po_grn_id':grn_entry.id,
+								'po_grn_line_id':line.id,
+								'grn_no':line.po_grn_id.name,
+								'product_id':line.product_id.id,
+								'brand_id':line.brand_id.id,
+								'product_uom':line.product_id.uom_id.id,
+								'product_qty':line.po_grn_qty,
+								'pending_qty':line.po_grn_qty,
+								'issue_qty':line.po_grn_qty,
+								'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
+								'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
+								'po_uom':line.product_id.uom_id.id,
+								'batch_no':line.po_grn_id.name,
 								'grn_type':'service'
 							})
+					#Write a tax amount in line
+					product_tax_amt = self._amount_line_tax(cr, uid, line, context=context)
+					cr.execute("""update po_grn_line set product_tax_amt = %s where id = %s"""%(product_tax_amt,line.id))
+				self.write(cr,uid,ids[0],{'state':'done',
+									  'approve_flag':True,
+									  'confirm_flag':True,
+									  'approved_by':uid,
+									  'approved_date':today })
+				if grn_entry.billing_status == 'applicable':
+					self.write(cr,uid,ids[0],{'invoice_flag':'True'})
+				if grn_entry.grn_type == 'from_so' and grn_entry.so_id.gp_id:
+					sql = """ select * from kg_gate_pass_line where grn_pending_qty > 0 and gate_id = %s"""%(grn_entry.so_id.gp_id.id)
+					cr.execute(sql)
+					data = cr.dictfetchall()
+					if data:
+						gate_obj.write(cr,uid,grn_entry.so_id.gp_id.id,{'in_state':'pending'})
 					else:
-						if line.billing_type == 'free':
-							if line.uom_id.id != line.product_id.uom_id.id:
-								product_uom = line.product_id.uom_id.id
-								po_coeff = line.product_id.po_uom_coeff
-								product_qty = line.po_grn_qty * po_coeff
-								price_unit =  line.price_subtotal / product_qty
-							elif line.uom_id.id == line.product_id.uom_id.id:
-								product_uom = line.product_id.uom_id.id
-								product_qty = line.po_grn_qty
-								price_unit =  line.price_subtotal / product_qty
-						lot_obj.create(cr,uid,
-							{
-							'po_grn_id':grn_entry.id,
-							'po_grn_line_id':line.id,
-							'grn_no':line.po_grn_id.name,
-							'product_id':line.product_id.id,
-							'brand_id':line.brand_id.id,
-							'product_uom':line.product_id.uom_id.id,
-							'product_qty':line.po_grn_qty,
-							'pending_qty':line.po_grn_qty,
-							'issue_qty':line.po_grn_qty,
-							'price_unit':(line.price_subtotal / line.po_grn_qty) or 0.0,
-							'price_tax':(line.price_subtotal / line.po_grn_qty) or 0.0,
-							'po_uom':line.product_id.uom_id.id,
-							'batch_no':line.po_grn_id.name,
-							'grn_type':'service'
-						})
-				#Write a tax amount in line
-				product_tax_amt = self._amount_line_tax(cr, uid, line, context=context)
-				cr.execute("""update po_grn_line set product_tax_amt = %s where id = %s"""%(product_tax_amt,line.id))
-			self.write(cr,uid,ids[0],{'state':'done',
-								  'approve_flag':True,
-								  'confirm_flag':True,
-								  'approved_by':uid,
-								  'approved_date':today })
-			if grn_entry.billing_status == 'applicable':
-				self.write(cr,uid,ids[0],{'invoice_flag':'True'})
-			if grn_entry.grn_type == 'from_so' and grn_entry.so_id.gp_id:
-				sql = """ select * from kg_gate_pass_line where grn_pending_qty > 0 and gate_id = %s"""%(grn_entry.so_id.gp_id.id)
-				cr.execute(sql)
-				data = cr.dictfetchall()
-				if data:
-					gate_obj.write(cr,uid,grn_entry.so_id.gp_id.id,{'in_state':'pending'})
-				else:
-					gate_obj.write(cr,uid,grn_entry.so_id.gp_id.id,{'in_state':'done'})
+						gate_obj.write(cr,uid,grn_entry.so_id.gp_id.id,{'in_state':'done'})
 			return True
 		
 	## GRN to PO Bill creation Part ##
