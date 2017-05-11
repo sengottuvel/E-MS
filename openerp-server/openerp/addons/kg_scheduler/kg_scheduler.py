@@ -20,8 +20,8 @@ class kg_scheduler(osv.osv):
 	def dead_stock_register_scheduler(self,cr,uid,ids=0,context = None):
 		cr.execute(""" SELECT current_database();""")
 		db = cr.dictfetchall()
-		if db[0]['current_database'] == 'foundry_local':
-			db[0]['current_database'] = 'foundry_local'
+		if db[0]['current_database'] == 'machineshop':
+			db[0]['current_database'] = 'machineshop'
 		else:
 			db[0]['current_database'] = 'Others'
 		cr.execute("""select non_moveable_stock_mails('Unused Stock Register')""")
@@ -51,10 +51,10 @@ class kg_scheduler(osv.osv):
 			else:
 				
 				if total :
-					subject = "ERP Foundry - Non-Movable stock (for last 30 days) Details for "+db+' as on ' + time.strftime('%d-%m-%Y') + '. Total Values : Rs. ' +  str(total_sum[0]['cost']) + ' /- '
+					subject = "ERP Machineshop - Non-Movable stock (for last 30 days) Details for "+db+' as on ' + time.strftime('%d-%m-%Y') + '. Total Values : Rs. ' +  str(total_sum[0]['cost']) + ' /- '
 				
 				else:
-					subject = "ERP Foundry - Non-Movable stock (for last 30 days) Details for "+db+' as on ' + time.strftime('%d-%m-%Y') + '.'
+					subject = "ERP Machineshop - Non-Movable stock (for last 30 days) Details for "+db+' as on ' + time.strftime('%d-%m-%Y') + '.'
 				
 				
 				ir_mail_server = self.pool.get('ir.mail_server')
