@@ -403,6 +403,7 @@ class kg_department_issue(osv.osv):
 					dep_stock_location = issue_record.department_id.stock_location.id
 			stock_move_obj.create(cr,uid,
 			{
+			'date':issue_record.issue_date,
 			'dept_issue_id':issue_record.id,
 			'dept_issue_line_id':line_ids.id,
 			'product_id': line_ids.product_id.id,
