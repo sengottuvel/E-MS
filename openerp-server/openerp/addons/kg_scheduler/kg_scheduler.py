@@ -229,7 +229,7 @@ class kg_scheduler(osv.osv):
 	def auto_purchase_indent(self, cr, uid, ids=0, context=None):
 		flag =0
 		product_obj = self.pool.get('product.product')
-		product_ids = """ select id from product_product where flag_minqty_rule = 't'  and state = 'approved' """
+		product_ids = """ select id from product_product where flag_minqty_rule = 't'  and state = 'approved' and active='t' """
 		cr.execute(product_ids)	
 		product_data = cr.dictfetchall()
 		for i in list(product_data):
