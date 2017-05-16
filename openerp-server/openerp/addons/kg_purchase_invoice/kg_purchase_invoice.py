@@ -30,11 +30,17 @@ class kg_purchase_invoice(osv.osv):
 		val = 0.0
 		amt_to_per = (line.discount / (line.rec_qty * line.price_unit or 1.0 )) * 100
 		kg_discount_per = line.kg_discount_per
-		tot_discount_per = amt_to_per 
-		for c in self.pool.get('account.tax').compute_all(cr, uid, line.invoice_tax_ids,
-			line.price_unit * (1-(tot_discount_per or 0.0)/100.0), line.rec_qty, line.product_id,
-			 line.header_id.supplier_id)['taxes']:			 
-			val += c.get('amount', 0.0)
+		tot_discount_per = amt_to_per
+		if line.excise_duty =='applicable_exclusive':
+			for c in self.pool.get('account.tax').compute_all(cr, uid, line.invoice_tax_ids,
+				((line.price_unit * (1-(tot_discount_per or 0.0)/100.0))+(line.excise_amount/line.rec_qty)), line.rec_qty, line.product_id,
+				 line.header_id.supplier_id)['taxes']:			 
+				val += c.get('amount', 0.0)
+		else:
+			for c in self.pool.get('account.tax').compute_all(cr, uid, line.invoice_tax_ids,
+				line.price_unit * (1-(tot_discount_per or 0.0)/100.0), line.rec_qty, line.product_id,
+				 line.header_id.supplier_id)['taxes']:			 
+				val += c.get('amount', 0.0)
 		return val
 	
 	def _amount_line_expense(self, cr, uid, line, context=None):
@@ -60,7 +66,7 @@ class kg_purchase_invoice(osv.osv):
 				'credit_amt': 0.0,
 				'bal_amt': 0.0,
 			}
-			val = val1 = val3 = line_total = val4 = 0.0
+			val = val1 = val3 = line_total = val4 = val5= 0.0
 			cur = order.supplier_id.property_product_pricelist_purchase.currency_id
 			final_adj_amt = 0.0
 			if invoice_rec.supplier_advance_line_ids:
@@ -75,6 +81,8 @@ class kg_purchase_invoice(osv.osv):
 				val += self._amount_line_tax(cr, uid, line, context=context)
 				val3 += tot_discount
 				val4 += line.total_amt
+				if line.excise_duty =='applicable_exclusive':
+					val5 += line.excise_amount
 			
 			if 	order.credit_note_ids:
 				credit_amt = (round(sum(map(lambda c:c.credit_amt,order.credit_note_ids))))
@@ -85,12 +93,13 @@ class kg_purchase_invoice(osv.osv):
 				other_charges = (round(sum(map(lambda c:c.price_subtotal,order.expense_line_ids))))
 			else:
 				other_charges = 0.00
+			val4 =val4 +val5
 			res[order.id]['line_amount_total']= (round(val4,0))
 			res[order.id]['other_charge']=other_charges
 			res[order.id]['advance_adjusted_amt']= final_adj_amt
 			res[order.id]['credit_amt']= credit_amt
 			res[order.id]['amount_tax']=(round(val,0))
-			res[order.id]['amount_untaxed']=((round(line_total,0)) - (round(val3,0)))
+			res[order.id]['amount_untaxed']=(round(line_total,0)) - (round(val3,0))
 			
 			res[order.id]['amount_total']=(round(val1 - final_adj_amt + res[order.id]['other_charge'],0)) - credit_amt + order.round_off_amt
 			res[order.id]['discount']=(round(val3,0))   
@@ -112,6 +121,7 @@ class kg_purchase_invoice(osv.osv):
 		for line in self.pool.get('ch.invoice.line').browse(cr, uid, ids, context=context):
 			result[line.header_id.id] = True
 		return result.keys()
+		
 
 	_name = "kg.purchase.invoice"
 	_order = "invoice_date desc"
@@ -244,6 +254,9 @@ class kg_purchase_invoice(osv.osv):
 		'supplier_advance_line_ids_a':fields.one2many('kg.supplier.advance.invoice.line','invoice_header_id','Supplier Advance Line Id',readonly=True, states={'draft':[('readonly',False)],'confirmed':[('readonly',False)]}),
 		'line_amount_total': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Net Amount',
 			 multi="sums",help="The total amount"),		
+			 
+			 
+		'excise_amount': fields.char('ED Amount'),
 		
 		
 	
@@ -543,7 +556,9 @@ class kg_purchase_invoice(osv.osv):
 							'discount': grn_line_record.kg_discount,
 							'kg_discount_per': grn_line_record.kg_discount_per,
 							'invoice_tax_ids': [(6, 0, [x.id for x in grn_line_record.grn_tax_ids])],
-							})			
+							})
+
+			
 		return True
 		
 	
@@ -552,10 +567,10 @@ class kg_purchase_invoice(osv.osv):
 		
 		
 	def entry_confirm(self, cr, uid, ids,context=None):
-		invoice_rec = self.browse(cr,uid,ids[0])
 		a = datetime.now()
 		today_date = a.strftime('%m/%d/%Y %H:%M:%S')		
 
+		invoice_rec = self.browse(cr,uid,ids[0])
 		### Credit Note Checking ###
 		credit_amt = 0
 
@@ -567,7 +582,6 @@ class kg_purchase_invoice(osv.osv):
 					_('Warning!'),
 					_('Credit Note amount should not be greater than Invoice amount'))
 
-					
 		### Check Advance Amount greater than Zero ###
 			
 		if not invoice_rec.line_ids:
@@ -601,6 +615,8 @@ class kg_purchase_invoice(osv.osv):
 		invoice_rec = self.browse(cr,uid,ids[0])
 		cr.execute(""" update ch_invoice_line set approved_status ='t' where header_id  = %s""" %(ids[0]))		
 		credit_obj = self.pool.get('kg.credit.note')
+		for line in invoice_rec.line_ids:
+			self.pool.get('kg.opening.stock').averageprice_calculation(cr,uid,0,line.product_id.id,line.header_id.invoice_date,context = None)
 		if invoice_rec.conf_user_id.id == uid:
 			pass
 					
@@ -686,11 +702,18 @@ class ch_invoice_line(osv.osv):
 		for line in self.browse(cr, uid, ids, context=context):
 			amt_to_per = (line.discount / (line.rec_qty * line.price_unit or 1.0 )) * 100
 			tot_discount_per = amt_to_per 
-			price = line.price_unit * (1 - (tot_discount_per or 0.0) / 100.0)
-			taxes = tax_obj.compute_all(cr, uid, line.invoice_tax_ids, price, line.rec_qty, line.product_id, line.header_id.supplier_id)
-			#~ cur = line.header_id.supplier_id.property_product_pricelist_purchase.currency_id
-			cur_rec =cur_obj.browse(cr,uid,21)
-			res[line.id] = cur_obj.round(cr, uid, cur_rec, taxes['total_included'])
+			if line.excise_duty =='applicable_exclusive':
+				price = (line.price_unit * (1 - (tot_discount_per or 0.0) / 100.0))+(line.excise_amount/line.rec_qty)
+				taxes = tax_obj.compute_all(cr, uid, line.invoice_tax_ids, price, line.rec_qty, line.product_id, line.header_id.supplier_id)
+				#~ cur = line.header_id.supplier_id.property_product_pricelist_purchase.currency_id
+				cur_rec =cur_obj.browse(cr,uid,21)
+				res[line.id] = cur_obj.round(cr, uid, cur_rec, taxes['total_included'])
+			else:
+				price = line.price_unit * (1 - (tot_discount_per or 0.0) / 100.0)
+				taxes = tax_obj.compute_all(cr, uid, line.invoice_tax_ids, price, line.rec_qty, line.product_id, line.header_id.supplier_id)
+				#~ cur = line.header_id.supplier_id.property_product_pricelist_purchase.currency_id
+				cur_rec =cur_obj.browse(cr,uid,21)
+				res[line.id] = cur_obj.round(cr, uid, cur_rec, taxes['total_included'])
 		return res  
 
 	_name = "ch.invoice.line"
@@ -704,7 +727,6 @@ class ch_invoice_line(osv.osv):
 		'general_grn_line_id' : fields.many2one('kg.general.grn.line', 'GRN Line NO.'),	
 		
 		'soi_id' : fields.many2one('kg.service.invoice', 'Service Invoice No.'),		
-		#~ 'so_id' : fields.many2one('kg.service.order','Service Order'),
 		'soi_line_id' : fields.many2one('kg.service.invoice.line','Service Order Line'),
 		
 		'dc_no' : fields.char('VENDOR DC NO.'),
@@ -733,10 +755,14 @@ class ch_invoice_line(osv.osv):
 		'price_subtotal': fields.function(_amount_line,string='Line Total', store=True,digits_compute= dp.get_precision('Account')),
 		'approved_status': fields.boolean('Approved Status'),
 		
+		#Added  by dinesh
+		'excise_duty': fields.selection([('standards', 'Standards'), ('not_applicable', 'Not Applicable'),('applicable_inclusive', 'Applicable Inclusive'),('applicable_exclusive', 'Applicable Exclusive')], 'Excise Duty',required=True),
+		'excise_amount': fields.float('Excise Amount'),
 	}
 	
 	_defaults = {
         'approved_status': False,
+        'excise_duty': 'not_applicable',
     }
     
 	

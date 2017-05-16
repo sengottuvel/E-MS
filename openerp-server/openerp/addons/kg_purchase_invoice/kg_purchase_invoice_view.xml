@@ -84,7 +84,7 @@
 								<group string = "Line Items">
 								   <group>
 									 <field name="line_ids" nolabel="1" readonly="0">
-										<tree editable="bottom">
+										<tree>
 											<field name="grn_no" readonly="1"/>
 											<field name="dc_no" readonly="1"/>
 											<field name="order_no" readonly="1"/>
@@ -95,10 +95,33 @@
 											<field name="price_unit"/>
 											<field name="total_amt" readonly="1" on_change="onchange_price(total_amt,kg_discount_per)"/>
 											<field name="discount" readonly="1"/>
-											<field name="kg_discount_per" readonly="1"/>
-											<field name="invoice_tax_ids" widget="many2many_tags" readonly="1"/>
+											<field name="excise_duty"/>
+											<field name="invoice_tax_ids"/>
 											<field name="price_subtotal"/>
 										</tree>
+										<form string="Line Items" >
+											<group>
+												<group>
+													<field name="grn_no" readonly="1"/>
+													<field name="dc_no" readonly="1"/>
+													<field name="order_no" readonly="1"/>
+													<field name="product_id" readonly="1"/>
+													<field name="qty" readonly="1"/>
+													<field name="rec_qty" on_change="onchange_qty(rec_qty,price_unit)" readonly='1'/>
+													<field name="uom_id" readonly="1"/>
+												</group>
+												<group>
+													<field name="price_unit"/>
+													<field name="total_amt" readonly="1" on_change="onchange_price(total_amt,kg_discount_per)"/>
+													<field name="discount" readonly="1"/>
+													<field name="excise_duty"/>
+													<field name="excise_amount" attrs="{'invisible': [('excise_duty','in',('standards','not_applicable'))]}"/>
+													<field name="kg_discount_per"  readonly='1'/>
+													<field name="invoice_tax_ids" attrs="{'readonly': [('excise_duty','not in',('standards'))],'required': [('excise_duty','in',('standards'))]}" widget="many2many_tags"/>
+													<field name="price_subtotal"/>
+												</group>
+											</group>
+										</form>										
 									  </field>
 								  </group>
 							    </group>		
@@ -317,13 +340,12 @@
 		</record>
 		
 		
-		<menuitem id="tmi_purchase_invoice_main_menu" name="Invoice" parent="stock.menu_stock_root" sequence="5"/>
+		<menuitem id="tmi_purchase_invoice_main_menu" name="Invoice" parent="stock.menu_stock_root" sequence="3"/>
 		
 		<menuitem id="tmi_kg_purchase_invoice_menu" name="Purchase Invoice" parent="tmi_purchase_invoice_main_menu" sequence="2" action="tma_kg_purchase_invoice_action_form" />
- 
- 
 <!--
-		<record forcecreate="1" id="seq_purchase_invoice" model="ir.sequence.type"> 
+
+ <record forcecreate="1" id="seq_purchase_invoice" model="ir.sequence.type"> 
 			<field name="name">Purchase Invoice</field>
 			<field name="code">kg.purchase.invoice</field>
 		</record>
