@@ -676,32 +676,53 @@ class kg_purchase_order_line(osv.osv):
 			tot_price = (price_unit * product_qty)
 		return {'value':{'tot_price':(round(tot_price,2)),'kg_discount': 0.00}}
 		
-	def onchange_discount_value_calc(self, cr, uid,kg_discount, ids, kg_discount_per, product_qty, price_unit , tot_price):
-		logger.info('[KG OpenERP] Class: kg_purchase_order_line, Method: onchange_discount_value_calc called...')
+	#~ def onchange_discount_value_calc(self, cr, uid, ids,kg_discount, kg_discount_per, product_qty, price_unit , tot_price):
+		#~ logger.info('[KG OpenERP] Class: kg_purchase_order_line, Method: onchange_discount_value_calc called...')
+		#~ discount_value_price = 0.00
+		#~ if kg_discount_per > 25:
+			#~ raise osv.except_osv(_(' Warning!!'),_("Discount percentage must be lesser than 25 % !") )			
+		#~ if kg_discount_per:
+			#~ discount_value_price = (tot_price/100.00)*kg_discount_per
+		#~ discount_value = (product_qty * price_unit) * kg_discount_per / 100.00
+		#~ if kg_discount:
+			#~ return True
+		#~ else:
+			#~ return {'value': {'kg_discount_per_value': discount_value,'kg_discount': discount_value_price}}
+			
+	def onchange_discount_value_calc(self, cr, uid, ids, kg_discount_per, product_qty, price_unit,tot_price):
 		discount_value_price = 0.00
 		if kg_discount_per > 25:
 			raise osv.except_osv(_(' Warning!!'),_("Discount percentage must be lesser than 25 % !") )			
 		if kg_discount_per:
 			discount_value_price = (tot_price/100.00)*kg_discount_per
-		discount_value = (product_qty * price_unit) * kg_discount_per / 100.00
-		if kg_discount:
-			return True
-		else:
-			return {'value': {'kg_discount_per_value': discount_value,'kg_discount': discount_value_price}}
+			#~ print"discount_value_pricediscount_value_price",discount_value_price,round(discount_value_price,2)	
+		discount_value = (product_qty * price_unit) * kg_discount_per / 100
+		return {'value': {'kg_discount_per_value': discount_value,'kg_discount':round(discount_value_price,2)}}	
+				
 		
-	def onchange_disc_amt(self,cr,uid,ids,kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price):
-		logger.info('[KG OpenERP] Class: kg_purchase_order_line, Method: onchange_disc_amt called...')
-		disc_per = 0.00
-		if tot_price:
-			if kg_discount:
-				disc_per = (kg_discount*100)/tot_price
-				kg_discount = kg_discount + 0.00
-				amt_to_per = (kg_discount / (product_qty * price_unit or 1.0 )) * 100.00
-				return {'value': {'kg_disc_amt_per': amt_to_per,'kg_discount_per': disc_per}}	
-			else:
-				return {'value': {'kg_disc_amt_per': 0.0,'kg_discount_per': disc_per}}	
+	#~ def onchange_disc_amt(self,cr,uid,ids,kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price):
+		#~ logger.info('[KG OpenERP] Class: kg_purchase_order_line, Method: onchange_disc_amt called...')
+		#~ disc_per = 0.00
+		#~ if tot_price:
+			#~ if kg_discount:
+				#~ disc_per = (kg_discount*100)/tot_price
+				#~ kg_discount = kg_discount + 0.00
+				#~ amt_to_per = (kg_discount / (product_qty * price_unit or 1.0 )) * 100.00
+				#~ return {'value': {'kg_disc_amt_per': amt_to_per,'kg_discount_per': disc_per}}	
+			#~ else:
+				#~ return {'value': {'kg_disc_amt_per': 0.0,'kg_discount_per': disc_per}}	
+		#~ else:
+			#~ raise osv.except_osv(_(' Warning!!'),_("Total amount must be greater than Zreo!") )			
+			
+	def onchange_disc_amt(self, cr, uid, ids, kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price):
+		disc_per = 0.00		
+		if kg_discount:
+			disc_per = (kg_discount*100)/tot_price			
+			kg_discount = kg_discount + 0.00
+			amt_to_per = (kg_discount / (product_qty * price_unit or 1.0 )) * 100.00
+			return {'value': {'kg_disc_amt_per': amt_to_per,'kg_discount_per': amt_to_per}}
 		else:
-			raise osv.except_osv(_(' Warning!!'),_("Total amount must be greater than Zreo!") )			
+			return {'value': {'kg_disc_amt_per': 0.0,'kg_discount_per': disc_per}}			
 	
 
 		
@@ -815,6 +836,7 @@ class kg_purchase_order_line(osv.osv):
 				raise osv.except_osv(_(' Warning!!'),_("Discount percentage must be lesser than 25 % !") )
 		return True	
 				
+	
 	def create(self, cr, uid, vals,context=None):
 		if vals['product_id']:
 			product_obj =  self.pool.get('product.product')
@@ -831,6 +853,7 @@ class kg_purchase_order_line(osv.osv):
 							})
 		order =  super(kg_purchase_order_line, self).create(cr, uid, vals, context=context)
 		return order
+		
 		
 	
 			

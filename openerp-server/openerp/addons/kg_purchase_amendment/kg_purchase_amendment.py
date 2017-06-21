@@ -526,7 +526,7 @@ class kg_purchase_amendment(osv.osv):
 											pi_line_obj.write(cr,uid,pi_line_record.id,{'pending_qty': 0}) 
 											amend_line_obj.write(cr,uid,amend_line.id,{'pi_line_id':ele.id})
 											line_pending = ele.pending_qty - (amend_line.product_qty_amend - amend_line.product_qty)
-											pi_line_obj.write(cr,uid,ele.id,{'pending_qty': line_pending}) 
+											pi_line_obj.write(cr,uid,ele.id,{'pending_qty': line_pending,'line_state':'process'}) 
 										else:
 											raise osv.except_osv(
 												_('Amendment Qty is greater than indent qty'),
@@ -575,7 +575,7 @@ class kg_purchase_amendment(osv.osv):
 						pi_pending_qty = pi_line_record.pending_qty
 						re_qty = amend_line.product_qty - amend_line.product_qty_amend
 						pi_pending_qty += re_qty
-						pi_line_obj.write(cr,uid,pol_record.pi_line_id.id,{'pending_qty' : pi_pending_qty})
+						pi_line_obj.write(cr,uid,pol_record.pi_line_id.id,{'pending_qty' : pi_pending_qty,'line_state':'process'})
 						
 				if amend_line.line_state == 'cancel':
 					if pol_record.pi_line_id:					
@@ -628,7 +628,7 @@ class kg_purchase_amendment(osv.osv):
 					cr.execute(grn_sql)		
 					grn_data = cr.dictfetchall()
 					if grn_data:
-						if grn_data[0]['po_grn_qty'] == 0:
+						if grn_data[0]['bal_po_grn_qty'] == 0:
 							raise osv.except_osv(
 								_('Please Check GRN!'),
 								_('GRN Already Created For This PO!!'))
@@ -697,10 +697,12 @@ class kg_purchase_amendment(osv.osv):
 					cr.execute(grn_sql)		
 					grn_data = cr.dictfetchall()
 					if grn_data:
-						if grn_data[0]['po_grn_qty'] == 0:
+						if grn_data[0]['bal_po_grn_qty'] == 0:
 							raise osv.except_osv(
 								_('Please Check GRN!'),
 								_('GRN Already Created For This PO!!'))
+						else:
+							pass							
 					po_line_obj.write(cr,uid,po_line_id,{
 						'brand_id': amend_line.brand_id_amend.id})
 				if amend_line.product_id.id != amend_line.product_id_amend.id:

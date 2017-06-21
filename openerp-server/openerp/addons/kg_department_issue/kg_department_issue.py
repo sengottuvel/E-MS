@@ -369,6 +369,11 @@ class kg_department_issue(osv.osv):
 					raise osv.except_osv(
 					_('Item Line Qty can not Zero!'),
 					_('You cannot process Issue with Item Line Qty Zero for Product %s.' %(dep_issue_line_rec.product_id.name)))
+				if obj_rec.dep_issue_type != 'direct':
+					if dep_issue_line_rec.issue_qty > dep_issue_line_rec.indent_qty:
+						raise osv.except_osv(
+						_('Item Line Qty can not Greater than Indent Qty!'),
+						_('Issue qty should never be higher than indent qty for %s.' %(dep_issue_line_rec.product_id.name)))					
 			return True
 			
 	def action_process(self, cr, uid, ids, context=None):

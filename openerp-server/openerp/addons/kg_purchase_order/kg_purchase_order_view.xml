@@ -77,7 +77,7 @@
 		</field>
 		
 		<field name="bill_type" position="replace">
-			 <field name="date_order" required="1" readonly='0' options="{'datepicker':{'maxDate': 0,'minDate':-45}}" on_change="onchange_date_order(date_order)"/>
+			 <field name="date_order" required="1" readonly='0' options="{'datepicker':{'maxDate': 0,'minDate':-12}}" on_change="onchange_date_order(date_order)"/>
 			 <field name="entry_date" readonly='1' invisible='1'/>
 			 <field name="quotation_date" readonly='1'/>
 			 <field name="quot_ref_no" class="aplhanum_expect"  />
@@ -458,9 +458,9 @@
 				<field name="pending_qty" invisible="1" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}"/>
 				<field name="tot_price" readonly="1"/>
 				<field name="pi_qty" readonly="1"/>
-                <field name="kg_discount" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_disc_amt(kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price)" />
+                <field digits="(14, 2)" name="kg_discount" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_disc_amt(kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price)" />
                 <field name="kg_disc_amt_per" invisible="1" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}"/>
-                <field name="kg_discount_per" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_discount_value_calc(kg_discount,kg_discount_per, product_qty, price_unit,tot_price)"/> 
+                <field digits="(14, 5)" name="kg_discount_per" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_discount_value_calc(kg_discount_per, product_qty, price_unit,tot_price)"/> 
                 <field name="kg_discount_per_value" invisible="1"/>
 				<field name="total_disc" invisible="1"/>
                 <field name="taxes_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','!=','sale')]" />

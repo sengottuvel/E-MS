@@ -180,7 +180,7 @@ class kg_purchase_invoice(osv.osv):
 		#### GRN Search #######
 		
 		'po_grn_ids': fields.many2many('kg.po.grn', 'purchase_invoice_grn_ids', 'invoice_id','grn_id', 'GRN', delete=False,
-			 domain="[('state','=','done'),'&',('supplier_id','=',supplier_id),'&',('grn_type','=',type),'&',('billing_status','=','applicable')]"),		 
+			 domain="[('state','=','done'),'&',('supplier_id','=',supplier_id),'&',('grn_type','=',type),'&',('billing_status','=','applicable'),'&',('grn_dc','=','only_grn')]"),		 
 			 
 		'general_grn_ids': fields.many2many('kg.general.grn', 'purchase_invoice_general_grn_ids', 'invoice_id','grn_id', 'GRN', delete=False,
 			 domain="[('supplier_id','=',supplier_id), '&', ('state','=','done'), '&', ('bill','=','applicable')]"),
@@ -571,6 +571,42 @@ class kg_purchase_invoice(osv.osv):
 		today_date = a.strftime('%m/%d/%Y %H:%M:%S')		
 
 		invoice_rec = self.browse(cr,uid,ids[0])
+		
+		
+		for pre_rec in invoice_rec.line_ids:
+			if pre_rec.po_id:
+				if pre_rec.po_id.bill_type=='advance':
+					if not invoice_rec.supplier_advance_line_ids:
+						raise osv.except_osv(
+						_('Warning!'),
+						_('Advance mandatory for %s Purchase Order'%(pre_rec.po_id.name)))
+					else:
+						pass
+				else:
+					pass
+				if invoice_rec.sup_invoice_date < pre_rec.po_id.date_order:
+					raise osv.except_osv(
+					_('Warning!'),
+					_('Supplier Invoice Date Should not be lesser than PO/SO Date'))
+				else:
+					pass
+			elif pre_rec.so_id:
+				if pre_rec.so_id.payment_mode.term_category=='advance':
+					if not invoice_rec.supplier_advance_line_ids:
+						raise osv.except_osv(
+						_('Warning!'),
+						_('Advance mandatory for %s Service Order'%(pre_rec.so_id.name)))
+					else:
+						pass
+				else:
+					pass
+				if invoice_rec.sup_invoice_date < pre_rec.so_id.date:
+					raise osv.except_osv(
+					_('Warning!'),
+					_('Supplier Invoice Date Should not be lesser than PO/SO Date'))
+				else:
+					pass		
+					
 		### Credit Note Checking ###
 		credit_amt = 0
 
