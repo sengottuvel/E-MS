@@ -61,6 +61,7 @@ class kg_product(osv.osv):
 		'company_id': fields.many2one('res.company', 'Company Name',readonly=True),
 		'stockable': fields.selection([('yes','Yes'),('no','No')],'Stockable Item',required=True),
 		'supplier_details': fields.one2many('ch.supplier.details', 'supplier_id', 'Supplier Details'),
+		'hsn_code': fields.char('HSN Code'),
 		
 	}
 	
@@ -159,9 +160,26 @@ class kg_product(osv.osv):
 					   
 		return res 
 		
+	def _hsn_validation(self, cr, uid,ids, context=None):
+		rec = self.browse(cr,uid,ids[0])
+		if len(rec.hsn_code) >=6 and len(rec.hsn_code) <=8:
+			for i in rec.hsn_code:
+				if i.isdigit():
+					return True
+				else:
+					raise osv.except_osv(_('Warning !!'),
+				_('Enter correct values in HSN Code !!'))
+		else:
+			raise osv.except_osv(_('Warning !!'),
+				_('Enter correct values in HSN Code !!'))
+		res = True
+					   
+		return res 		
+		
 	_constraints = [
 		
 		(_name_validate, 'product name must be unique !!', ['name']),
+		(_hsn_validation, 'HSN Code must be in the range of 6 to 8 !!', ['hsn_code']),
 	   
 	]	   
 	

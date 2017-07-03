@@ -16,6 +16,10 @@
 			<field name="abc" invisible="1"/>
 			<field name="stockable" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
 		</field>
+		
+		<field name="categ_id" position="after">
+			<field name="hsn_code" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+		</field>		
 
 		<field name="variants" position="replace">
 		<field name="variants" invisible="1"/>

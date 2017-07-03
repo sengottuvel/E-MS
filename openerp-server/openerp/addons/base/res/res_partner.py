@@ -305,6 +305,7 @@ class res_partner(osv.osv, format_address):
 		'updated_date': fields.datetime('Last Updated Date',readonly=True),
 		'updated_by': fields.many2one('res.users','Last Updated By',readonly=True),		
 		'cancel_remark': fields.text('Cancel Remarks'),
+		'gstin_no': fields.char('GSTIN Number'),
 		
 		
 	}
@@ -460,7 +461,19 @@ class res_partner(osv.osv, format_address):
 				return True
 			else:
 				return False
-		return True				
+		return True			
+		
+			
+#check GSTIN No
+
+	def _check_gstin_no(self, cr, uid, ids, context=None):
+		rec = self.browse(cr, uid, ids[0])
+		if rec.gstin_no:
+			if len(rec.gstin_no) == 15:
+				return True
+			else:
+				return False
+		return True					
 		
 #chec Job position
 
@@ -482,6 +495,7 @@ class res_partner(osv.osv, format_address):
 		(_check_cst, 'Enter a correct CST Number in CST field!!', ['cst_no']),
 		(_check_vat, 'Enter a correct VAT Number in VAT Field!!', ['vat_no']),
 		(_check_website, 'Enter a correct URL in Website Field!!', ['website']),
+		(_check_gstin_no, 'Enter a correct GSTIN Number!', ['gstin_no']),
 		(_check_job_position, 'Special characters are not allowed in the job position Field!!', ['function']),
        	]
 	
