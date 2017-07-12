@@ -175,7 +175,7 @@ class kg_product(osv.osv):
 					_('Enter correct values in HSN Code !!'))
 			res = True
 					   
-		return res 		
+			return res 		
 		
 	_constraints = [
 		
