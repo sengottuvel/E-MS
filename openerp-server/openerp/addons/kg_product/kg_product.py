@@ -162,17 +162,18 @@ class kg_product(osv.osv):
 		
 	def _hsn_validation(self, cr, uid,ids, context=None):
 		rec = self.browse(cr,uid,ids[0])
-		if len(rec.hsn_code) >=6 and len(rec.hsn_code) <=8:
-			for i in rec.hsn_code:
-				if i.isdigit():
-					return True
-				else:
-					raise osv.except_osv(_('Warning !!'),
-				_('Enter correct values in HSN Code !!'))
-		else:
-			raise osv.except_osv(_('Warning !!'),
-				_('Enter correct values in HSN Code !!'))
-		res = True
+		if rec.hsn_code:
+			if len(rec.hsn_code) >=6 and len(rec.hsn_code) <=8:
+				for i in rec.hsn_code:
+					if i.isdigit():
+						return True
+					else:
+						raise osv.except_osv(_('Warning !!'),
+					_('Enter correct values in HSN Code !!'))
+			else:
+				raise osv.except_osv(_('Warning !!'),
+					_('Enter correct values in HSN Code !!'))
+			res = True
 					   
 		return res 		
 		
