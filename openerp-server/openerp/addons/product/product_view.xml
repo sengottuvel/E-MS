@@ -83,7 +83,7 @@
                         </div>
                         <group>
 							<group>
-								<field name="name" placeholder="Name" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+								<field name="name" placeholder="Name" attrs="{'required':[('state','in',('approved','reject','cancel'))]}"/>
 								<field name="categ_id" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" required='1'/>
 							</group>
 							<group>
