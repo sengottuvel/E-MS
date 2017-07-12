@@ -178,6 +178,7 @@ class kg_product(osv.osv):
 			res = True
 					   
 			return res 		
+		return True
 		
 	_constraints = [
 		
