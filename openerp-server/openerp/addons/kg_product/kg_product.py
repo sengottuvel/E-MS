@@ -162,7 +162,9 @@ class kg_product(osv.osv):
 		
 	def _hsn_validation(self, cr, uid,ids, context=None):
 		rec = self.browse(cr,uid,ids[0])
+		print "=========================",rec.hsn_code
 		if rec.hsn_code:
+			print "========%%%%%%%%%%%%%%%%%%%%%%"
 			if len(rec.hsn_code) >=6 and len(rec.hsn_code) <=8:
 				for i in rec.hsn_code:
 					if i.isdigit():
