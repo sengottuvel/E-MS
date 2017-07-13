@@ -18,7 +18,7 @@
 		</field>
 		
 		<field name="categ_id" position="after">
-			<field name="hsn_code" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+			<field name="hsn_code"/>
 		</field>		
 
 		<field name="variants" position="replace">
