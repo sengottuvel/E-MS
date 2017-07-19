@@ -954,7 +954,7 @@
                     <group>
                         <group>
 							<field name="modify" invisible='1'/>
-                            <field name="name" class="aplhanum_expect"  required='1' attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+                            <field name="name"  required='1' attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
                             <field name="description" class="aplhanum_expect"  required = "1" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
                             <field name="creation_date" invisible='1'/>
                             
