@@ -961,6 +961,7 @@
                         </group>
                         <group>
                             <field name="type_tax_use" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
+                            <field name="tax_type" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}"/>
                         </group>
                     </group>
                  		<group string='Remarks' attrs="{'invisible':[('state','=','draft')]}">

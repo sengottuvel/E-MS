@@ -463,7 +463,7 @@
                 <field digits="(14, 5)" name="kg_discount_per" attrs="{'readonly': [('cancel_flag','=', True),'|',('line_flag', '=', True)]}" on_change="onchange_discount_value_calc(kg_discount_per, product_qty, price_unit,tot_price)"/> 
                 <field name="kg_discount_per_value" invisible="1"/>
 				<field name="total_disc" invisible="1"/>
-                <field name="taxes_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','!=','sale')]" />
+                <field name="taxes_id" attrs="{'readonly': [('price_unit','=', 0)]}" on_change="onchange_tax_value(taxes_id,kg_discount ,tot_price, cgst, sgst,igst)"  widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','!=','sale')]" />
                 <field name="pi_line_id" invisible="1"/>
 				</field>
 				<field name="price_unit" position="replace">
@@ -479,6 +479,11 @@
 				<field name="least_price" readonly="1"/>
 				<field name="high_price" readonly="1"/>
 				<field name="recent_price" readonly="1"/>
+				</group>
+				<group string="Tax Details">
+				<field name="cgst" readonly="1"/>
+				<field name="sgst" readonly="1"/>
+				<field name="igst" readonly="1"/>
 				</group>
 				<button name="get_old_details" string="Show Price List" type="object" class="oe_highlight" invisible="1"/>
                 </field>

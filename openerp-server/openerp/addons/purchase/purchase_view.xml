@@ -228,6 +228,9 @@
                                     <field name="product_uom" groups="product.group_uom" on_change="onchange_product_uom(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,context)"/>
                                     <field name="price_unit"/>
                                     <field name="taxes_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','!=','sale')]" invisible="0"/>
+                                    <field name="cgst"/>
+                                    <field name="sgst"/>
+                                    <field name="igst"/>
                                     <field name="price_subtotal"/>
                                 </tree>
                             </field>
@@ -259,6 +262,9 @@
                     <group class="oe_subtotal_footer oe_right">
 						<field name="amount_untaxed" widget="monetary" />
 						<field name="amount_tax" widget="monetary" />
+						<field name="cgst" readonly='1'/>
+						<field name="sgst" readonly='1'/>
+						<field name="igst" readonly='1'/>
 						<div class="oe_subtotal_footer_separator oe_inline">
 							<label for="amount_total"/>
 						        <button name="button_dummy" states="draft" string="Update" type="object" class="oe_edit_only"/>						
@@ -374,6 +380,9 @@
                     <group class="oe_subtotal_footer oe_right">
 						<field name="amount_untaxed" widget="monetary" />
 						<field name="amount_tax" widget="monetary" />
+						<field name="cgst" readonly='1'/>
+						<field name="sgst" readonly='1'/>
+						<field name="igst" readonly='1'/>
 						<div class="oe_subtotal_footer_separator oe_inline">
 							<label for="amount_total"/>
 						        <button name="button_dummy" states="draft" string="Update" type="object" class="oe_edit_only"/>						

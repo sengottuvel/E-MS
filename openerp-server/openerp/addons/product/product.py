@@ -387,6 +387,7 @@ class product_category(osv.osv):
 		
 	_name = "product.category"
 	_description = "Product Category"
+	_order = 'name'
 	_columns = {
 		'name': fields.char('Name', size=64, required=True, translate=True, select=True),
 		'complete_name': fields.function(_name_get_fnc, type="char", string='Name'),
@@ -442,7 +443,6 @@ class product_category(osv.osv):
 	_parent_name = "parent_id"
 	_parent_store = True
 	_parent_order = 'sequence, name'
-	_order = 'parent_left'
 	
 	def entry_confirm(self,cr,uid,ids,context=None):
 		b = datetime.now()		

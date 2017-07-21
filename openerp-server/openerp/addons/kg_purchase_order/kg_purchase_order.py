@@ -71,7 +71,7 @@ class kg_purchase_order(osv.osv):
 				'discount' : 0.0,
 				'other_charge': 0.0,
 			}
-			val = val1 = val3 = val4 = val5 = 0.0
+			val = val1 = val3 = val4 = val5 =cgst =sgst =igst = 0.0
 			cur = order.pricelist_id.currency_id
 			po_charges=order.value1 + order.value2
 			if order.expense_line_id:
@@ -87,6 +87,15 @@ class kg_purchase_order(osv.osv):
 				val3 += tot_discount
 				val4 += line.product_qty * line.price_unit or 0
 				val5 += line.price_subtotal
+				cgst +=line.cgst
+				sgst +=line.sgst
+				igst +=line.igst
+			res[order.id]['cgst']= cgst
+			res[order.id]['sgst']= sgst
+			res[order.id]['igst']= igst
+			print "==========cgstcgst=================",cgst
+			print "==========sgstsgst=================",sgst
+			print "========igstigstigst===================",igst
 			res[order.id]['line_amount_total']= (round(val5,0))
 			res[order.id]['other_charge']= other_charges_amt or 0
 			res[order.id]['amount_tax']=(round(val,0))
@@ -101,7 +110,7 @@ class kg_purchase_order(osv.osv):
 		for line in self.pool.get('purchase.order.line').browse(cr, uid, ids, context=context):
 			result[line.order_id.id] = True
 		return result.keys()
-
+		
 	_name = "purchase.order"
 	_inherit = "purchase.order"
 	_order = "creation_date desc"
@@ -630,7 +639,7 @@ class kg_purchase_order(osv.osv):
 		self.write(cr,uid,ids,{'state':'draft'})
 		return True
 		
-	def write(self, cr, uid, ids, vals, context=None):		
+	def write(self, cr, uid, ids, vals, context=None):			
 		vals.update({'update_date': time.strftime('%Y-%m-%d %H:%M:%S'),'update_user_id':uid})
 		return super(kg_purchase_order, self).write(cr, uid, ids, vals, context)
 		
@@ -698,6 +707,30 @@ class kg_purchase_order_line(osv.osv):
 			#~ print"discount_value_pricediscount_value_price",discount_value_price,round(discount_value_price,2)	
 		discount_value = (product_qty * price_unit) * kg_discount_per / 100
 		return {'value': {'kg_discount_per_value': discount_value,'kg_discount':round(discount_value_price,2)}}	
+		
+	def onchange_tax_value(self, cr, uid, ids,taxes_id, kg_discount ,tot_price,  cgst, sgst,igst):
+		val1 =val2 =val3 =t1 =t2 =t3 =0
+		for i in taxes_id:
+			for j in i[2]:
+				cr.execute(""" select amount from account_tax where tax_type='cgst' and id=%s """ %(j))
+				data1 = cr.dictfetchall()
+				if data1:
+					val1 +=data1[0]['amount']
+				cr.execute(""" select amount from account_tax where tax_type='sgst' and id=%s """ %(j))
+				data2 = cr.dictfetchall()
+				if data2:
+					val2 +=data2[0]['amount']
+				cr.execute(""" select amount from account_tax where tax_type='igst' and id=%s """ %(j))
+				data3 = cr.dictfetchall()
+				if data3:
+					val3 +=data3[0]['amount']
+		if val1:
+			t1 =((tot_price-kg_discount)*val1)
+		if val2:
+			t2 =((tot_price-kg_discount)*val2)
+		if val3:
+			t3 =((tot_price-kg_discount)*val3)
+		return {'value': {'cgst': t1,'sgst': t2,'igst': t3,}}			
 				
 		
 	#~ def onchange_disc_amt(self,cr,uid,ids,kg_discount,product_qty,price_unit,kg_disc_amt_per,tot_price):

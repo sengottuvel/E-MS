@@ -2029,6 +2029,7 @@ class account_tax(osv.osv):
 	_name = 'account.tax'
 	_description = 'Tax'
 	_columns = {
+		'tax_type': fields.selection([('sgst', 'SGST'),('cgst','CGST'),('igst', 'IGST')], 'Tax Type',required=True),
 		'name': fields.char('Name', size=64, translate=True, help="This name will be displayed on reports",readonly=True, states={'draft':[('readonly',False)]}),
 		'sequence': fields.integer('Sequence', required=True, states={'waiting':[('readonly',False)]},help="The sequence field is used to order the tax lines from the lowest sequences to the higher ones. The order is important if you have a tax with several tax children. In this case, the evaluation order is important."),
 		'amount': fields.float('Amount', required=True, states={'waiting':[('readonly',False)]},digits_compute=get_precision_tax(), help="For taxes of type percentage, enter % ratio between 0-1."),
