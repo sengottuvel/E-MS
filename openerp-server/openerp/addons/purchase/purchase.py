@@ -234,9 +234,7 @@ class purchase_order(osv.osv):
 		'can_remark': fields.text('Cancel Remarks'),
 		'reject_remark': fields.text('Reject Remarks'),
 		'cgst': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Tax(CGST)',
-			store={
-				'purchase.order.line': (_get_order, None, 10),
-			}, multi="sums",help="The CGST amount"),
+			store=True, multi="sums",help="The CGST amount"),
 		'igst': fields.function(_amount_all, digits_compute= dp.get_precision('Account'), string='Tax(IGST)',
 			store={
 				'purchase.order.line': (_get_order, None, 10),
