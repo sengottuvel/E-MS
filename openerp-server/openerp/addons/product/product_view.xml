@@ -87,7 +87,7 @@
 								<field name="categ_id" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" required='1'/>
 							</group>
 							<group>
-								<field name="product_code" class="aplhanum_expect"  placeholder="Code" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" required="1"/>
+								<field name="product_code" class="aplhanum_expect"  placeholder="Code"  required="1"/>
 								<field name="creation_date" invisible ="1"/>
 								<field name="expiry" invisible ="1"/>
 								<field name="qa_status" invisible='1'/>
