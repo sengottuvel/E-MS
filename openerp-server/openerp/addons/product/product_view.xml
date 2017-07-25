@@ -113,7 +113,7 @@
 										<field name="minimum_qty" attrs="{'readonly':[('state','in',('approved','reject','cancel'))],'required':[('flag_minqty_rule','=',True)]}"/>
                                         <field name="reorder_qty" attrs="{'readonly':[('state','in',('approved','reject','cancel'))],'required':[('flag_minqty_rule','=',True)]}"/>
                                         <field name="qty_available" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" invisible='1'/>
-                                        <field name="tolerance_plus" attrs="{'readonly':[('state','in',('approved','reject','cancel'))],'required':[('tolerance_applicable','=',True)]}" />                                        
+                                        <field name="tolerance_plus" attrs="{'required':[('tolerance_applicable','=',True)]}" />                                        
                                         <field name="self_life_days"  class="aplhanum_expect" attrs="{'readonly':[('state','in',('approved','reject','cancel'))],'required':[('flag_expiry_alert','=',True)]}" />                                        
                                         <field name="stock_in_hand" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" invisible='1'/>
                                         <field name="default_code" attrs="{'readonly':[('state','in',('approved','reject','cancel'))]}" invisible ="1"/>
