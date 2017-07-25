@@ -840,6 +840,8 @@ class kg_po_grn(osv.osv):
 							po_line_qty = line.po_qty
 							po_line_pending_qty = pending_qty - grn_qty
 							rec_qty += line.po_grn_qty
+							if po_line_pending_qty <0:
+								po_line_pending_qty = 0							
 							po_line_obj.write(cr, uid, [line.po_line_id.id],
 									{
 									'pending_qty' : po_line_pending_qty,
